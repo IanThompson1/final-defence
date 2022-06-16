@@ -46,6 +46,8 @@ var selectedTower :string = "none";
 var mouseX :number = 0;
 var mouseY :number = 0;
 var round :number = 0;
+var autostart :string = "StartWave";
+var waveStart :number = 0;
 
 //enemy class
 class Enemy {
@@ -57,6 +59,8 @@ class Enemy {
     speed: number;
     direction: string;
     distance: number;
+    gold: number;
+    lives: number;
 
     constructor(x :number, y :number, health :number, speed :number, direction :string, radius :number, color :string){
         this.x = x;
@@ -144,7 +148,7 @@ class Tower {
             this.range = 150;
             this.lasermin = 0.5;
             this.lasermax = 10;
-            this.lasertime = 10;
+            this.lasertime = 8;
             this.target = "strong";
         }else{
             console.log("invalid tower type");
@@ -247,31 +251,31 @@ class Tower {
                 this.range = 150;
                 this.lasermax = 10;
                 this.lasermin = 0.5;
-                this.lasertime = 10;
+                this.lasertime = 8;
             }else if(this.level == 2){
                 this.reload = 10;
                 this.range = 160;
                 this.lasermax = 15;
                 this.lasermin = 1;
-                this.lasertime = 9;
+                this.lasertime = 7;
             }else if(this.level == 3){
                 this.reload = 10;
                 this.range = 170;
                 this.lasermax = 20;
                 this.lasermin = 2;
-                this.lasertime = 8;
+                this.lasertime = 6;
             }else if(this.level == 4){
                 this.reload = 10;
                 this.range = 180;
                 this.lasermax = 30;
                 this.lasermin = 2;
-                this.lasertime = 7;
+                this.lasertime = 5;
             }else if(this.level == 5){
                 this.reload = 10;
                 this.range = 190;
                 this.lasermax = 40;
                 this.lasermin = 2;
-                this.lasertime = 6;
+                this.lasertime = 4;
             }
         }
     }
@@ -349,6 +353,7 @@ function spawnWave(numenemies :number, density :number, health :number, speed :n
         }
         current++;
         if(current >= numenemies && bossRound == 0){
+            waveStart = 0;
             clearInterval(enemiesfunction);
         }
         //check when to stop spawning
@@ -362,6 +367,7 @@ function spawnWave(numenemies :number, density :number, health :number, speed :n
                 }
             }
             if(bossRound == 0){//boss is dead
+                waveStart = 0;
                 clearInterval(enemiesfunction);
             }
         }
@@ -525,8 +531,18 @@ function animate(){
     animationId = requestAnimationFrame(animate);
     
     //entire gui 
-    //@ts-ignore
+    // @ts-ignore
     drawLayout();
+
+    //handles wave interactions with autostart
+    if(activeWave() == 0 && autostart == "AutoStart: On"){
+        round ++;
+        nextWave();
+        waveStart = 1;
+    }else if(activeWave() == 0 && autostart == "AutoStart: Off"){
+        autostart = "StartWave";
+    }
+
 
     //handles all enemy interactions 
     enemies.forEach(function (enemy, index) {
@@ -694,6 +710,16 @@ function animate(){
         mouseover = "sell";
     }else{
         mouseover = "none";
+    }
+}
+
+function activeWave(){
+    if(waveStart == 1){
+        return 1;
+    }else if(enemies.length == 0){
+        return 0;
+    }else{
+        return 1;
     }
 }
 
@@ -888,8 +914,16 @@ addEventListener("click", () => {
     }
     //start wave button
     if(mouseover == "startWave"){
-        round++;
-        nextWave();
+        if(autostart == "StartWave"){
+            round++;
+            nextWave();
+            waveStart = 1;
+            autostart = "AutoStart: Off";
+        }else if(autostart == "AutoStart: Off"){
+            autostart = "AutoStart: On";
+        }else if(autostart == "AutoStart: On"){
+            autostart = "AutoStart: Off";
+        }
     }
 })
 
