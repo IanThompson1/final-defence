@@ -22,16 +22,15 @@ var impossibleDifficulty = document.querySelector('#difficultyImpossible');
 // const background = document.querySelector('#myVideo');
 // to do 
 /*
-startscreen / loss screen (video) 
-heroku: make game playable on other devices (or google javascript) 
-fix armored 
-add tesla tower 
-retry round + fix startwave with autostart 
-vary enemy money given 
-enemy with phases 
-
-future changes: 
-increasing difficulty adventure mode I.E. unlock better towers
+netlify
+dragability
+no select html
+startscreen / loss screen (video)
+heroku: make game playable on other devices (or google javascript)
+fix armored
+add tesla tower
+retry round + fix startwave with autostart
+add range to laser?
 */
 //global variables (no counter for points)
 canvas.width = innerWidth;
@@ -46,6 +45,8 @@ var selectedTower = "none";
 var mouseX = 0;
 var mouseY = 0;
 var round = 0;
+var autostart = "StartWave";
+var waveStart = 0;
 //enemy class
 var Enemy = /** @class */ (function () {
     function Enemy(x, y, health, speed, direction, radius, color) {
@@ -124,7 +125,7 @@ var Tower = /** @class */ (function () {
             this.range = 150;
             this.lasermin = 0.5;
             this.lasermax = 10;
-            this.lasertime = 10;
+            this.lasertime = 8;
             this.target = "strong";
         }
         else {
@@ -238,35 +239,35 @@ var Tower = /** @class */ (function () {
                 this.range = 150;
                 this.lasermax = 10;
                 this.lasermin = 0.5;
-                this.lasertime = 10;
+                this.lasertime = 8;
             }
             else if (this.level == 2) {
                 this.reload = 10;
                 this.range = 160;
                 this.lasermax = 15;
                 this.lasermin = 1;
-                this.lasertime = 9;
+                this.lasertime = 7;
             }
             else if (this.level == 3) {
                 this.reload = 10;
                 this.range = 170;
                 this.lasermax = 20;
                 this.lasermin = 2;
-                this.lasertime = 8;
+                this.lasertime = 6;
             }
             else if (this.level == 4) {
                 this.reload = 10;
                 this.range = 180;
                 this.lasermax = 30;
                 this.lasermin = 2;
-                this.lasertime = 7;
+                this.lasertime = 5;
             }
             else if (this.level == 5) {
                 this.reload = 10;
                 this.range = 190;
                 this.lasermax = 40;
                 this.lasermin = 2;
-                this.lasertime = 6;
+                this.lasertime = 4;
             }
         }
     };
@@ -335,6 +336,7 @@ function spawnWave(numenemies, density, health, speed, size, color, boss) {
         }
         current++;
         if (current >= numenemies && bossRound == 0) {
+            waveStart = 0;
             clearInterval(enemiesfunction);
         }
         //check when to stop spawning
@@ -349,6 +351,7 @@ function spawnWave(numenemies, density, health, speed, size, color, boss) {
                 }
             }
             if (bossRound == 0) { //boss is dead
+                waveStart = 0;
                 clearInterval(enemiesfunction);
             }
         }
@@ -513,8 +516,17 @@ var animationId;
 function animate() {
     animationId = requestAnimationFrame(animate);
     //entire gui 
-    //@ts-ignore
+    // @ts-ignore
     drawLayout();
+    //handles wave interactions with autostart
+    if (activeWave() == 0 && autostart == "AutoStart: On") {
+        round++;
+        nextWave();
+        waveStart = 1;
+    }
+    else if (activeWave() == 0 && autostart == "AutoStart: Off") {
+        autostart = "StartWave";
+    }
     //handles all enemy interactions 
     enemies.forEach(function (enemy, index) {
         enemy.update();
@@ -693,6 +705,17 @@ function animate() {
     }
     else {
         mouseover = "none";
+    }
+}
+function activeWave() {
+    if (waveStart == 1) {
+        return 1;
+    }
+    else if (enemies.length == 0) {
+        return 0;
+    }
+    else {
+        return 1;
     }
 }
 //function for when you click
@@ -908,8 +931,18 @@ addEventListener("click", function () {
     }
     //start wave button
     if (mouseover == "startWave") {
-        round++;
-        nextWave();
+        if (autostart == "StartWave") {
+            round++;
+            nextWave();
+            waveStart = 1;
+            autostart = "AutoStart: Off";
+        }
+        else if (autostart == "AutoStart: Off") {
+            autostart = "AutoStart: On";
+        }
+        else if (autostart == "AutoStart: On") {
+            autostart = "AutoStart: Off";
+        }
     }
 });
 function changeTarget(tower) {
