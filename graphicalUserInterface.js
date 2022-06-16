@@ -39,11 +39,7 @@ function drawLayout() {
             //startwave button
             c.fillStyle = "#2CF721";
             c.fillRect(canvas.width - canvas.width / 7.5 + 2.5, canvas.height - canvas.height / (numboxes / 2) + 2.5, (canvas.width / 7.5) - 5, canvas.height / (numboxes / 2) - 5);
-            c.fillStyle = "black";
-            c.font = "40px serif";
-            c.textAlign = "center";
-            c.fillText("Start Wave", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height - canvas.height / (numboxes / 2) + canvas.height / (numboxes));
-            //reset color
+            addText(autostart.toString(), canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 4, canvas.height / (numboxes / 2) * (14 / 2), "black", numboxes, 1, 0.2);
             c.fillStyle = "#A6A6A6";
         }
     }
@@ -265,12 +261,14 @@ function drawLayout() {
     }
     c.lineWidth = 1;
 }
-function addText(text, x, y, color, numboxes) {
+function addText(text, x, y, color, numboxes, double, size) {
+    if (double === void 0) { double = 2; }
+    if(double === void 0) { size = 1; }
     c.fillStyle = color;
     c.textAlign = "center";
-    var font = canvas.height / (numboxes) - 2 * text.length + "px serif";
+    var font = canvas.height / (numboxes) - 2 * text.length * size + "px serif";
     c.font = font;
-    c.fillText(text, x + (canvas.width / 7.5) / 4, y + canvas.height / (numboxes) + canvas.height / (numboxes) / 3, (canvas.width / 7.5) / 2);
+    c.fillText(text, x + (canvas.width / 7.5) / 4, y + canvas.height / (numboxes) + canvas.height / (numboxes) / 3, (canvas.width / 7.5) / double);
     c.stroke();
 }
 function addDoubleText(toptext, bottomtext, x, y, color, numboxes, color2) {
