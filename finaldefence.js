@@ -2,10 +2,42 @@
 // exports.__esModule = true;
 var canvas = document.querySelector("canvas");
 var c = canvas.getContext("2d");
+//images
+var bossEnemy = new Image();
+bossEnemy.src = "./img/basic.png";
+var backgroundImage = new Image();
+backgroundImage.src = "./img/stillbackground.png";
+//html buttons
+var startGameButton = document.querySelector('#startGameBtn');
+var mainMenu = document.querySelector('#mainMen');
+var basicMap = document.querySelector('#mapBasic');
+var castleMap = document.querySelector('#mapCastle');
+var diamondMap = document.querySelector('#mapDiamond');
+var circleMap = document.querySelector('#mapCircle');
+var cornerMap = document.querySelector('#mapCorner');
+var easyDifficulty = document.querySelector('#difficultyEasy');
+var mediumDifficulty = document.querySelector('#difficultyMedium');
+var hardDifficulty = document.querySelector('#difficultyHard');
+var impossibleDifficulty = document.querySelector('#difficultyImpossible');
+// const background = document.querySelector('#myVideo');
+// to do 
+/*
+startscreen / loss screen (video) 
+heroku: make game playable on other devices (or google javascript) 
+fix armored 
+add tesla tower 
+retry round + fix startwave with autostart 
+vary enemy money given 
+enemy with phases 
+
+future changes: 
+increasing difficulty adventure mode I.E. unlock better towers
+*/
 //global variables (no counter for points)
 canvas.width = innerWidth;
 canvas.height = innerHeight;
-var difficulty = 2; // 1-4 1=easy, 2=medium, 3=hard(default), 4=insane
+var difficulty = 3; // 1-4 1=easy, 2=medium, 3=hard(default), 4=insane
+var paths = choosepath(0); // 0=basic 1=castle 2=corner 3=diamond 4=circle
 var money = 500;
 var lives = 10;
 var numboxes = 16;
@@ -14,29 +46,6 @@ var selectedTower = "none";
 var mouseX = 0;
 var mouseY = 0;
 var round = 0;
-var paths = choosepath(0); // 0=basic 1=castle 2=corner 3=diamond 4=circle
-switch (difficulty) {
-    case 1:
-        money = 1000;
-        lives = 100;
-        round = 0;
-        break;
-    case 2:
-        money = 750;
-        lives = 50;
-        round = 0;
-        break;
-    case 3:
-        money = 500;
-        lives = 10;
-        round = 0;
-        break;
-    case 4:
-        money = 400;
-        lives = 1;
-        round = 0;
-        break;
-}
 //enemy class
 var Enemy = /** @class */ (function () {
     function Enemy(x, y, health, speed, direction, radius, color) {
@@ -51,11 +60,17 @@ var Enemy = /** @class */ (function () {
     }
     //draws the Enemy
     Enemy.prototype.draw = function () {
-        c.lineWidth = 1;
-        c.beginPath();
-        c.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        c.fillStyle = this.color;
-        c.fill();
+        if (this.color == "boss") {
+            c.drawImage(bossEnemy, 222, 111, 1117, 525, this.x - this.radius / 2, this.y - this.radius / 2, this.radius, this.radius); //entire enemy
+            // c.drawImage(bossEnemy,527,194,418,392,this.x-this.radius, this.y-this.radius, this.radius*2, this.radius*2);//face 
+        }
+        else {
+            c.lineWidth = 1;
+            c.beginPath();
+            c.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            c.fillStyle = this.color;
+            c.fill();
+        }
         //health bar
         c.fillStyle = "white";
         c.textAlign = "center";
@@ -96,11 +111,13 @@ var Tower = /** @class */ (function () {
             this.reload = 700;
             this.damage = 5;
             this.range = 250;
+            this.target = "first";
         }
         else if (this.type == "machinegun") {
             this.reload = 100;
             this.damage = 1;
             this.range = 110;
+            this.target = "first";
         }
         else if (this.type == "laser") {
             this.reload = 10;
@@ -108,6 +125,7 @@ var Tower = /** @class */ (function () {
             this.lasermin = 0.5;
             this.lasermax = 10;
             this.lasertime = 10;
+            this.target = "strong";
         }
         else {
             console.log("invalid tower type");
@@ -343,6 +361,8 @@ function towershoot(tower) {
     var laserdamage = tower.damage;
     var lastenemy;
     var firstenemy;
+    var strongenemy;
+    var weakenemy;
     var target;
     var firefunction = setInterval(function () {
         var inrange = 0;
@@ -353,14 +373,22 @@ function towershoot(tower) {
             if (distance <= tower.range && inrange == 0) {
                 lastenemy = enemies[i];
                 firstenemy = enemies[i];
+                strongenemy = enemies[i];
+                weakenemy = enemies[i];
                 inrange = 1;
             }
             else if (distance <= tower.range) {
                 if (lastenemy.distance > enemies[i].distance) {
                     lastenemy = enemies[i];
                 }
-                else if (firstenemy.distance < enemies[i].distance) {
+                if (firstenemy.distance < enemies[i].distance) {
                     firstenemy = enemies[i];
+                }
+                if (strongenemy.health < enemies[i].health) {
+                    strongenemy = enemies[i];
+                }
+                if (weakenemy.health > enemies[i].health) {
+                    weakenemy = enemies[i];
                 }
             }
         }
@@ -373,7 +401,24 @@ function towershoot(tower) {
                     //half of the time damage is 1 other half damage is 2
                     damage = Math.floor(Math.random() * 2) + 1;
                 }
-                shots.push(new Projectile(tower.x, tower.y, damage, speed, 5, "red", firstenemy));
+                switch (tower.target) {
+                    case "first": {
+                        shots.push(new Projectile(tower.x, tower.y, damage, speed, 5, "red", firstenemy));
+                        break;
+                    }
+                    case "last": {
+                        shots.push(new Projectile(tower.x, tower.y, damage, speed, 5, "red", lastenemy));
+                        break;
+                    }
+                    case "strong": {
+                        shots.push(new Projectile(tower.x, tower.y, damage, speed, 5, "red", strongenemy));
+                        break;
+                    }
+                    case "weak": {
+                        shots.push(new Projectile(tower.x, tower.y, damage, speed, 5, "red", weakenemy));
+                        break;
+                    }
+                }
             }
             if (tower.sold == 0) {
                 towershoot(tower);
@@ -394,7 +439,24 @@ function towershoot(tower) {
                     }
                 }
                 if (found == 0) {
-                    target = lastenemy;
+                    switch (tower.target) {
+                        case "first": {
+                            target = firstenemy;
+                            break;
+                        }
+                        case "last": {
+                            target = lastenemy;
+                            break;
+                        }
+                        case "strong": {
+                            target = strongenemy;
+                            break;
+                        }
+                        case "weak": {
+                            target = weakenemy;
+                            break;
+                        }
+                    }
                     laserdamage = tower.lasermin;
                 }
                 drawLine(c, [tower.x, tower.y], [target.x, target.y], "red");
@@ -450,7 +512,8 @@ function towershoot(tower) {
 var animationId;
 function animate() {
     animationId = requestAnimationFrame(animate);
-    //entire gui
+    //entire gui 
+    //@ts-ignore
     drawLayout();
     //handles all enemy interactions 
     enemies.forEach(function (enemy, index) {
@@ -615,6 +678,9 @@ function animate() {
     }
     else if (mouseX > canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2 && mouseX < canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2 + (canvas.width / 7.5) / 2 && mouseY > canvas.height / (numboxes / 2) * ((5 - 1) / 2) && mouseY < canvas.height / (numboxes / 2) * ((5 - 1) / 2) + canvas.height / (numboxes / 2)) {
         mouseover = "laser";
+    }
+    else if (mouseX > canvas.width - canvas.width / 7.5 && mouseX < canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2 && mouseY > canvas.height / (numboxes / 2) * (8 / 2) && mouseY < canvas.height / (numboxes / 2) * (8 / 2) + canvas.height / (numboxes / 2)) {
+        mouseover = "target";
     }
     else if (mouseX > canvas.width - canvas.width / 7.5 + 2.5 && mouseX < canvas.width - canvas.width / 7.5 + 2.5 + (canvas.width / 7.5) - 5 && mouseY > canvas.height - canvas.height / (numboxes / 2) + 2.5 && mouseY < canvas.height - canvas.height / (numboxes / 2) + 2.5 + canvas.height / (numboxes / 2) - 5) {
         mouseover = "startWave";
@@ -820,6 +886,13 @@ addEventListener("click", function () {
             }
         }
     }
+    else if (mouseover == "target") { //change targeting
+        for (var i = 0; i < towers.length; i++) {
+            if (towers[i].selected == 1) { //find selected tower
+                changeTarget(towers[i]);
+            }
+        }
+    }
     else { //deselects all towers
         for (var i = 0; i < towers.length; i++) {
             towers[i].selected = 0;
@@ -839,6 +912,46 @@ addEventListener("click", function () {
         nextWave();
     }
 });
+function changeTarget(tower) {
+    if (tower.type != "laser") {
+        switch (tower.target) {
+            case "first": {
+                tower.target = "last";
+                break;
+            }
+            case "last": {
+                tower.target = "strong";
+                break;
+            }
+            case "strong": {
+                tower.target = "weak";
+                break;
+            }
+            case "weak": {
+                tower.target = "first";
+            }
+        }
+    }
+    else { // targetting for laser
+        switch (tower.target) {
+            case "first": {
+                tower.target = "last";
+                break;
+            }
+            case "last": {
+                tower.target = "strong";
+                break;
+            }
+            case "strong": {
+                tower.target = "weak";
+                break;
+            }
+            case "weak": {
+                tower.target = "first";
+            }
+        }
+    }
+}
 //checks if current mouse location is open to place a tower in
 function freespace() {
     //check against menu
@@ -882,280 +995,6 @@ onmousemove = function (e) {
     mouseX = e.clientX;
     mouseY = e.clientY;
 };
-//starts the program by calling the animate function
-animate();
-//entire gui
-function drawLayout() {
-    //redraws the background
-    c.fillStyle = "#289E6A";
-    c.fillRect(0, 0, canvas.width, canvas.height);
-    //path
-    c.fillStyle = "#FF6A6A";
-    for (var i = 0; i < paths.length - 1; i++) {
-        if (paths[i][0] == paths[i + 1][0] && paths[i][1] > paths[i + 1][1]) { // up 
-            c.fillRect((canvas.width / 100) * paths[i][0], (canvas.height / 100) * paths[i + 1][1], 50, (canvas.height / 100) * (paths[i][1] - paths[i + 1][1]) + 50);
-        }
-        else if (paths[i][0] == paths[i + 1][0] && paths[i][1] < paths[i + 1][1]) { // down
-            c.fillRect((canvas.width / 100) * paths[i][0], (canvas.height / 100) * paths[i][1], 50, (canvas.height / 100) * (paths[i + 1][1] - paths[i][1]) + 50);
-        }
-        else if (paths[i][1] == paths[i + 1][1] && paths[i][0] > paths[i + 1][0]) { // left
-            c.fillRect((canvas.width / 100) * paths[i + 1][0], (canvas.height / 100) * paths[i][1], (canvas.width / 100) * (paths[i][0] - paths[i + 1][0]), 50);
-        }
-        else if (paths[i][1] == paths[i + 1][1] && paths[i][0] < paths[i + 1][0]) { // right
-            c.fillRect((canvas.width / 100) * paths[i][0], (canvas.height / 100) * paths[i][1], (canvas.width / 100) * (paths[i + 1][0] - paths[i][0]), 50);
-        }
-    }
-    //menu background
-    c.fillStyle = "#A6A6A6";
-    c.lineWidth = 1;
-    c.fillRect(canvas.width - canvas.width / 7.5, 0, canvas.width / 7.5, canvas.height);
-    c.strokeRect(canvas.width - canvas.width / 7.5, 0, canvas.width / 7.5, canvas.height);
-    //boxes
-    for (var i = 0; i < numboxes; i++) {
-        if (i % 2 == 0 && i < numboxes - 2) {
-            c.strokeRect(canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (i / 2), (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2));
-        }
-        else if (i < numboxes - 2) {
-            c.strokeRect(canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * ((i - 1) / 2), (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2));
-        }
-        else {
-            //startwave button
-            c.fillStyle = "#2CF721";
-            c.fillRect(canvas.width - canvas.width / 7.5 + 2.5, canvas.height - canvas.height / (numboxes / 2) + 2.5, (canvas.width / 7.5) - 5, canvas.height / (numboxes / 2) - 5);
-            c.fillStyle = "black";
-            c.font = "40px serif";
-            c.textAlign = "center";
-            c.fillText("Start Wave", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height - canvas.height / (numboxes / 2) + canvas.height / (numboxes));
-            //reset color
-            c.fillStyle = "#A6A6A6";
-        }
-    }
-    //lives / money
-    c.fillStyle = "yellow";
-    c.font = "40px serif";
-    c.textAlign = "center";
-    c.fillText(money.toString(), canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 4, canvas.height / (numboxes / 2) - canvas.height / (numboxes * 5));
-    c.fillText("Money", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 4, canvas.height / (numboxes / 2) - canvas.height / (numboxes));
-    c.stroke();
-    c.fillStyle = "red";
-    c.fillText(lives.toString(), canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 4 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) - canvas.height / (numboxes * 5));
-    c.fillText("Lives", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 4 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) - canvas.height / (numboxes));
-    c.stroke();
-    //current wave 
-    if (round == 7 || round == 15) {
-        c.fillStyle = "red";
-    }
-    else {
-        c.fillStyle = "white";
-    }
-    c.font = "60px serif";
-    c.textAlign = "left";
-    c.fillText("Wave# " + round, 0, 50);
-    c.stroke();
-    //next wave hints
-    if (round == 6 || round == 14) {
-        c.fillStyle = "red";
-    }
-    else {
-        c.fillStyle = "white";
-    }
-    var hint = "";
-    switch (round) {
-        case 0:
-            hint = "easy";
-            break;
-        case 1:
-            hint = "basic";
-            break;
-        case 2:
-            hint = "basic again";
-            break;
-        case 3:
-            hint = "fast";
-            break;
-        case 4:
-            hint = "grouped enemies";
-            break;
-        case 5:
-            hint = "final basic";
-            break;
-        case 6:
-            hint = "mini-boss round!";
-            break;
-        case 7:
-            hint = "fast on grouped";
-            break;
-        case 8:
-            hint = "armored";
-            break;
-        case 9:
-            hint = "mega grouped";
-            break;
-        case 10:
-            hint = "everything";
-            break;
-        case 11:
-            hint = "fast-armored";
-            break;
-        case 12:
-            hint = "the clump";
-            break;
-        case 13:
-            hint = "grouped-armored";
-            break;
-        case 14:
-            hint = "final boss!";
-            break;
-        default:
-            hint = "endless good luck";
-            break;
-    }
-    c.font = "60px serif";
-    c.textAlign = "left";
-    c.fillText("Next wave: " + hint, 0, 100);
-    c.stroke();
-    //towers
-    addText("Sniper", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes);
-    addText("MiniGun", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes);
-    addText("Cannon", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (4 / 2), "black", numboxes);
-    addText("laser", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (4 / 2), "black", numboxes);
-    addText("Burst", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (6 / 2), "black", numboxes);
-    addText("Tesla", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (6 / 2), "black", numboxes);
-    //selected tower info
-    for (var i = 0; i < towers.length; i++) {
-        if (towers[i].selected == 1) {
-            if (towers[i].type == "sniper" && towers[i].level == 1) { //level 1 sniper
-                addText("Sniper 1", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("D:5->10", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("Spd:7->7.5", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("Ran:25->30", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("sell:70", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-                addText("upgrade:90", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-            }
-            else if (towers[i].type == "sniper" && towers[i].level == 2) { //level 2 sniper
-                addText("Sniper 2", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("D:10->20", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("Spd:7.5->8", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("Ran:30->35", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("sell:130", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-                addText("upgrade:150", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-            }
-            else if (towers[i].type == "sniper" && towers[i].level == 3) { //level 3 sniper
-                addText("Sniper 3", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("D:20->35", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("Spd:8->8.5", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("Ran:35->40", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("sell:230", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-                addText("upgrade:400", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-            }
-            else if (towers[i].type == "sniper" && towers[i].level == 4) { //level 4 sniper
-                addText("Sniper 4", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("D:35->50", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("Spd:8.5->9", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("Ran:40->45", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("sell:600", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-                addText("upgrade:350", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-            }
-            else if (towers[i].type == "sniper" && towers[i].level == 5) { //level 5 sniper
-                addText("Sniper 5", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("D:50", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("Spd:9", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("Ran:45", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("sell:800", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-                addText("MaxLevel", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-            }
-            else if (towers[i].type == "machinegun" && towers[i].level == 1) { //level 1 minigun
-                addText("MiniGun 1", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("D:1->(1-2)", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("Spd:1->0.75", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("Ran:11->12", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("sell:80", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-                addText("upgrade:100", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-            }
-            else if (towers[i].type == "machinegun" && towers[i].level == 2) { //level 2 minigun
-                addText("MiniGun 2", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("D:(1-2)->2", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("Spd:0.75->0.5", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("Ran:12->13", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("sell:150", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-                addText("upgrade:200", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-            }
-            else if (towers[i].type == "machinegun" && towers[i].level == 3) { //level 3 minigun
-                addText("MiniGun 3", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("D:2->3", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("Spd:0.5->0.4", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("Ran:13->14", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("sell:310", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-                addText("upgrade:350", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-            }
-            else if (towers[i].type == "machinegun" && towers[i].level == 4) { //level 4 minigun
-                addText("MiniGun 4", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("D:3->4", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("Spd:0.4->0.3", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("Ran:14->15", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("sell:630", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-                addText("upgrade:400", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-            }
-            else if (towers[i].type == "machinegun" && towers[i].level == 5) { //level 5 minigun
-                addText("MiniGun 5", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("D:4", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("Spd:0.3", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("Ran:15", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("sell:850", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-                addText("MaxLevel", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-            }
-            else if (towers[i].type == "laser" && towers[i].level == 1) { //level 1 laser
-                addText("Laser 1", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("D:(.5-10)->(1-15)", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("Spd:10->9", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("Ran:15->16", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("sell:250", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-                addText("upgrade:400", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-            }
-            else if (towers[i].type == "laser" && towers[i].level == 2) { //level 2 laser
-                addText("Laser 2", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("D:(1-15)->(2-20)", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("Spd:9->8", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("Ran:16->17", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("sell:550", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-                addText("upgrade:500", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-            }
-            else if (towers[i].type == "laser" && towers[i].level == 3) { //level 3 laser
-                addText("Laser 3", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("D:(2-20)->(2->30)", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("Spd:8->7", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("Ran:17->8", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("sell:1000", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-                addText("upgrade:600", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-            }
-            else if (towers[i].type == "laser" && towers[i].level == 4) { //level 4 laser
-                addText("Laser 4", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("D:(2-30)->(2->40)", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("Spd:7->6", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("Ran:18->19", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("sell:1500", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-                addText("upgrade:700", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-            }
-            else if (towers[i].type == "laser" && towers[i].level == 5) { //level 5 laser
-                addText("Laser 5", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("D:(2-40)", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addText("Spd:6", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("Ran:19", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("sell:2000", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-                addText("MaxLevel", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes);
-            }
-        }
-    }
-    c.lineWidth = 1;
-}
-function addText(text, x, y, color, numboxes) {
-    c.fillStyle = color;
-    c.textAlign = "center";
-    var font = canvas.height / (numboxes) - 2 * text.length + "px serif";
-    c.font = font;
-    c.fillText(text, x + (canvas.width / 7.5) / 4, y + canvas.height / (numboxes) + canvas.height / (numboxes) / 3, (canvas.width / 7.5) / 2);
-    c.stroke();
-}
 //sending waves function
 function nextWave() {
     //multipliers
@@ -1233,7 +1072,7 @@ function nextWave() {
             spawnWave(25, 800 * den, Math.floor(50 * hp), 2 * spd, 15, "red"); //armored / multiple
             break;
         case 15:
-            var boss = new Enemy(spawnPoint()[0], spawnPoint()[1], Math.floor(10000 * hp), 0.4 * spd, spawnDirection(), 50, "black");
+            var boss = new Enemy(spawnPoint()[0], spawnPoint()[1], Math.floor(10000 * hp), 0.4 * spd, spawnDirection(), 50, "boss");
             enemies.push(boss);
             if (difficulty != 1) { //no minions for easy
                 spawnWave(10, 1000 * den, Math.floor(10 * hp), 3 * spd, 7.5 * spd, "red", boss); //minions
