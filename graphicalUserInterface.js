@@ -39,13 +39,15 @@ function drawLayout() {
             //startwave button
             c.fillStyle = "#2CF721";
             c.fillRect(canvas.width - canvas.width / 7.5 + 2.5, canvas.height - canvas.height / (numboxes / 2) + 2.5, (canvas.width / 7.5) - 5, canvas.height / (numboxes / 2) - 5);
-            addText(autostart.toString(), canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 4, canvas.height / (numboxes / 2) * (14 / 2), "black", numboxes, 1, 0.2);
+            addText(autostart.toString(), canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 4, canvas.height / (numboxes / 2) * (16 / 2), "black", numboxes, 1, 0.2);
             c.fillStyle = "#A6A6A6";
         }
     }
     //lives / money
     addDoubleText("Money", money.toString(), canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (0 / 2), "yellow", numboxes);
     addDoubleText("Lives", lives.toString(), canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (0 / 2), "red", numboxes);
+    //placing towers button
+    addText(placingTowers.toString(), canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (14 / 2), "black", numboxes);
     //current wave 
     if (round == 7 || round == 15) {
         c.fillStyle = "red";

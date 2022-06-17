@@ -27,11 +27,8 @@ var retryButton = document.querySelector('#retry');
 // to do 
 /*
 dragability
-no select html
-startscreen / loss screen (video)
 fix armored
 add tesla tower
-retry round
 */
 //global variables and inital state
 canvas.width = innerWidth;
@@ -40,7 +37,7 @@ var difficulty = 3; // 1-4 1=easy, 2=medium, 3=hard(default), 4=insane
 var paths = choosepath(0); // 0=basic 1=castle 2=corner 3=diamond 4=circle
 var money = 500;
 var lives = 10;
-var numboxes = 16;
+var numboxes = 18;
 var mouseover = "none";
 var selectedTower = "none";
 var mouseX = 0;
@@ -50,6 +47,9 @@ var autostart = "StartWave";
 var waveStart = 0;
 var retried = 0;
 var gameIsOver = 0;
+var mouseDown = 0;
+var draggingTower = 0;
+var placingTowers = "Click to Place";
 //@ts-ignore
 gameOverMenu.style.display = "none";
 //enemy class
@@ -543,6 +543,47 @@ function animate() {
     //entire gui 
     // @ts-ignore
     drawLayout();
+    //handles dragging
+    if (placingTowers == "Drag and Drop") {
+        if (mouseDown) {
+            if (mouseover == "sniper" && selectedTower == "none" && money >= 100) {
+                selectedTower = "sniper";
+                draggingTower = 1;
+            }
+            else if (mouseover == "machinegun" && selectedTower == "none" && money >= 120) {
+                selectedTower = "machinegun";
+                draggingTower = 1;
+            }
+            else if (mouseover == "laser" && selectedTower == "none" && money >= 300) {
+                selectedTower = "laser";
+                draggingTower = 1;
+            }
+        }
+        if (!mouseDown && draggingTower) {
+            if (selectedTower == "sniper" && freespace() == 1) {
+                selectedTower = "none";
+                money -= 100;
+                towers.push(new Tower(mouseX, mouseY, "sniper", 1, 0));
+                towershoot(towers[towers.length - 1]);
+            }
+            else if (selectedTower == "machinegun" && freespace() == 1) {
+                selectedTower = "none";
+                money -= 120;
+                towers.push(new Tower(mouseX, mouseY, "machinegun", 1, 0));
+                towershoot(towers[towers.length - 1]);
+            }
+            else if (selectedTower == "laser" && freespace() == 1) {
+                selectedTower = "none";
+                money -= 300;
+                towers.push(new Tower(mouseX, mouseY, "laser", 1, 0));
+                towershoot(towers[towers.length - 1]);
+            }
+            else {
+                selectedTower = "none";
+            }
+            draggingTower = 0;
+        }
+    }
     //handles wave interactions with autostart
     if (activeWave() == 0 && autostart == "AutoStart: On") {
         //@ts-ignore
@@ -733,6 +774,9 @@ function animate() {
     }
     else if (mouseX > canvas.width - canvas.width / 7.5 && mouseX < canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2 && mouseY > canvas.height / (numboxes / 2) * (12 / 2) && mouseY < canvas.height / (numboxes / 2) * (12 / 2) + canvas.height / (numboxes / 2)) {
         mouseover = "sell";
+    }
+    else if (mouseX > canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2 && mouseX < canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2 + (canvas.width / 7.5) / 2 && mouseY > canvas.height / (numboxes / 2) * (14 / 2) && mouseY < canvas.height / (numboxes / 2) * (14 / 2) + canvas.height / (numboxes / 2)) {
+        mouseover = "towerPlacement";
     }
     else {
         mouseover = "none";
@@ -981,7 +1025,23 @@ addEventListener("click", function () {
             autostart = "AutoStart: Off";
         }
     }
+    //tower placement button
+    if (mouseover == "towerPlacement") {
+        if (placingTowers == "Click to Place") {
+            placingTowers = "Drag and Drop";
+        }
+        else {
+            placingTowers = "Click to Place";
+        }
+    }
 });
+//drag functionality
+document.body.onmousedown = function () {
+    ++mouseDown;
+};
+document.body.onmouseup = function () {
+    --mouseDown;
+};
 function changeTarget(tower) {
     if (tower.type != "laser") {
         switch (tower.target) {
