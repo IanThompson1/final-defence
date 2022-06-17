@@ -27,9 +27,10 @@ const retryButton = document.querySelector('#retry');
 
 // to do 
 /*
+dragability 
+no select html 
+fix armored 
 add tesla tower 
-add more waves 
-add tower paths. sniper: epic range, high damage. minigun: double shot, 
 */
 //global variables and inital state
 canvas.width = innerWidth;
@@ -38,7 +39,7 @@ var difficulty :number = 3; // 1-4 1=easy, 2=medium, 3=hard(default), 4=insane
 var paths = choosepath(0); // 0=basic 1=castle 2=corner 3=diamond 4=circle
 var money :number = 500;
 var lives :number = 10;
-var numboxes : number = 18;
+var numboxes : number = 16;
 var mouseover :string = "none";
 var selectedTower :string = "none";
 var mouseX :number = 0;
@@ -48,9 +49,6 @@ var autostart :string = "StartWave";
 var waveStart :number = 0;
 var retried :number = 0;
 var gameIsOver :number = 0;
-var mouseDown :number = 0;
-var draggingTower :number = 0;
-var placingTowers :string = "Click to Place";
 //@ts-ignore
 gameOverMenu.style.display = "none";
 
@@ -564,42 +562,6 @@ function animate(){
     // @ts-ignore
     drawLayout();
 
-    //handles dragging
-    if(placingTowers == "Drag and Drop"){
-        if(mouseDown){
-            if(mouseover == "sniper" && selectedTower == "none" && money >= 100){ 
-                selectedTower = "sniper";
-                draggingTower = 1;
-            }else if(mouseover == "machinegun" && selectedTower == "none" && money >= 120){
-                selectedTower = "machinegun";
-                draggingTower = 1;
-            }else if(mouseover == "laser" && selectedTower == "none" && money >= 300){
-                selectedTower = "laser";
-                draggingTower = 1;
-            }
-        }
-        if(!mouseDown && draggingTower){
-            if(selectedTower == "sniper" && freespace() == 1){
-                selectedTower = "none";
-                money -= 100;
-                towers.push(new Tower(mouseX, mouseY, "sniper", 1, 0));
-                towershoot(towers[towers.length-1]);
-            }else if(selectedTower == "machinegun" && freespace() == 1){
-                selectedTower = "none";
-                money -= 120;
-                towers.push(new Tower(mouseX, mouseY, "machinegun", 1, 0));
-                towershoot(towers[towers.length-1]);
-            }else if(selectedTower == "laser" && freespace() == 1){
-                selectedTower = "none";
-                money -= 300;
-                towers.push(new Tower(mouseX, mouseY, "laser", 1, 0));
-                towershoot(towers[towers.length-1]);
-            }else{
-                selectedTower = "none";
-            }
-            draggingTower = 0;
-        }
-    }
     //handles wave interactions with autostart
     if(activeWave() == 0 && autostart == "AutoStart: On"){
         //@ts-ignore
@@ -780,8 +742,6 @@ function animate(){
         mouseover = "upgrade";
     }else if(mouseX > canvas.width-canvas.width/7.5 && mouseX < canvas.width-canvas.width/7.5 + (canvas.width/7.5)/2 && mouseY > canvas.height/(numboxes/2)*(12/2) && mouseY < canvas.height/(numboxes/2)*(12/2) + canvas.height/(numboxes/2)){
         mouseover = "sell";
-    }else if(mouseX > canvas.width-canvas.width/7.5 + (canvas.width/7.5)/2 && mouseX < canvas.width - canvas.width/7.5 + (canvas.width/7.5)/2 + (canvas.width/7.5)/2 && mouseY > canvas.height/(numboxes/2)*(14/2) && mouseY < canvas.height/(numboxes/2)*(14/2)+canvas.height/(numboxes/2)){
-        mouseover = "towerPlacement";
     }else{
         mouseover = "none";
     }
@@ -1004,23 +964,7 @@ addEventListener("click", () => {
             autostart = "AutoStart: Off";
         }
     }
-    //tower placement button
-    if(mouseover == "towerPlacement"){
-        if(placingTowers == "Click to Place"){
-            placingTowers = "Drag and Drop";
-        }else{
-            placingTowers = "Click to Place";
-        }
-    }
 })
-
-//drag functionality
-document.body.onmousedown = function() { 
-  ++mouseDown;
-}
-document.body.onmouseup = function() {
-  --mouseDown;
-}
 
 function changeTarget(tower :Tower){
     if(tower.type != "laser"){
