@@ -53,6 +53,7 @@ dist/tailwind.min.css" rel="stylesheet">
 </video> -->
 
 <canvas id="javascript"></canvas>
+
 <div class="fixed inset-0 flex items-center justify-center" id="mainMen">
     <div class="bg-white h-2/3 max-w-screen-2xl w-full p-6 text-center">
         <div class="w-full">
@@ -134,11 +135,37 @@ dist/tailwind.min.css" rel="stylesheet">
                 Start Game
             </button>
         </div>
-
     </div>
 </div>
-
-
+<!-- game over UI -->
+<div class="fixed inset-0 flex items-center justify-center" id="gameOver">
+    <div class="bg-white max-w-screen-2xl w-full p-6 text-center">
+        <div class="w-full">
+            <h1 class="text-6xl font-bold leading-none">Game Over!</h1>
+            <button
+                class="button button3 py-3 
+                rounded-full"
+                id="menu"
+            >
+                Main Menu
+            </button>
+            <button
+                class="button button3 py-3 
+                rounded-full"
+                id="startOver"
+            >
+                Restart Game
+            </button>
+            <button
+                class="button button3 py-3 
+                rounded-full"
+                id="retry"
+            >
+                Retry Last Round
+            </button>
+        </div>
+    </div>
+</div>
 
 
 <script src="./finaldefence.js"></script>

@@ -19,21 +19,22 @@ const easyDifficulty = document.querySelector('#difficultyEasy');
 const mediumDifficulty = document.querySelector('#difficultyMedium');
 const hardDifficulty = document.querySelector('#difficultyHard');
 const impossibleDifficulty = document.querySelector('#difficultyImpossible');
+const gameOverMenu = document.querySelector('#gameOver');
+const menuButton = document.querySelector('#menu');
+const restartButton = document.querySelector('#startOver');
+const retryButton = document.querySelector('#retry');
 // const background = document.querySelector('#myVideo');
 
 // to do 
 /*
-netlify 
 dragability 
 no select html 
 startscreen / loss screen (video)
-heroku: make game playable on other devices (or google javascript)
 fix armored
 add tesla tower
-retry round + fix startwave with autostart
-add range to laser? 
+retry round 
 */
-//global variables (no counter for points)
+//global variables and inital state
 canvas.width = innerWidth;
 canvas.height = innerHeight;
 var difficulty :number = 3; // 1-4 1=easy, 2=medium, 3=hard(default), 4=insane
@@ -48,6 +49,10 @@ var mouseY :number = 0;
 var round :number = 0;
 var autostart :string = "StartWave";
 var waveStart :number = 0;
+var retried :number = 0;
+var gameIsOver :number = 0;
+//@ts-ignore
+gameOverMenu.style.display = "none";
 
 //enemy class
 class Enemy {
@@ -330,11 +335,33 @@ class Projectile {
     }
 }
 
+//game state class
+class GameState {
+    lives :number;
+    money :number;
+    round :number;
+    towers :Tower[];
+
+    constructor(lives :number, money :number, round :number, towers :Tower[]){
+        this.lives = lives;
+        this.money = money;
+        this.round = round;
+        this.towers = towers.map((x) => x);
+    }
+
+    update(lives :number, money :number, round :number, towers :Tower[]){
+        this.lives = lives;
+        this.money = money;
+        this.round = round;
+        this.towers = towers.map((x) => x);
+    }
+}
 
 //creates the array of enemies
 var enemies :Enemy[] = [];
 var towers :Tower[] = [];
 var shots :Projectile[] = [];
+var state :GameState = new GameState(9,9,9,[]);
 
 //creates a new enemy every 2 seconds
 function spawnWave(numenemies :number, density :number, health :number, speed :number, size :number, color :string, boss = new Enemy(0, 0, 0, 0, "E", 0, "black")) :void {
@@ -344,6 +371,9 @@ function spawnWave(numenemies :number, density :number, health :number, speed :n
         bossRound = 1;
     }
     var enemiesfunction = setInterval(() => {
+        if(gameIsOver == 1){
+            clearInterval(enemiesfunction);
+        }
         //spawn at enterance 
         if(bossRound == 0){//default
             enemies.push(new Enemy(spawnPoint()[0], spawnPoint()[1], health, speed, spawnDirection(), size, color));
@@ -440,7 +470,7 @@ function towershoot(tower :Tower) :void {
                     }
                 }
             }
-            if (tower.sold == 0) {
+            if (tower.sold == 0 && gameIsOver == 0) {
                 towershoot(tower);
                 clearInterval(firefunction);
             }
@@ -518,7 +548,7 @@ function towershoot(tower :Tower) :void {
                     lasercounter++;
                 }
             }
-            if (tower.sold == 1) {
+            if (tower.sold == 1 || gameIsOver == 1) {
                 clearInterval(firefunction);
             }
         }
@@ -529,13 +559,15 @@ function towershoot(tower :Tower) :void {
 let animationId;
 function animate(){
     animationId = requestAnimationFrame(animate);
-    
+
     //entire gui 
     // @ts-ignore
     drawLayout();
 
     //handles wave interactions with autostart
     if(activeWave() == 0 && autostart == "AutoStart: On"){
+        //@ts-ignore
+        state.update(lives, money, round, towers);
         round ++;
         nextWave();
         waveStart = 1;
@@ -543,6 +575,10 @@ function animate(){
         autostart = "StartWave";
     }
 
+    //checks if you lost
+    if(lives <=0){
+        gameOver();
+    }
 
     //handles all enemy interactions 
     enemies.forEach(function (enemy, index) {
@@ -915,6 +951,11 @@ addEventListener("click", () => {
     //start wave button
     if(mouseover == "startWave"){
         if(autostart == "StartWave"){
+            if(retried == 0){
+                state.update(lives, money, round, towers);
+            }else{
+                retried = 0;
+            }
             round++;
             nextWave();
             waveStart = 1;
@@ -1249,4 +1290,11 @@ function choosepath(i :number){
             break;
     }
     return paths;
+}
+
+//game over implementation
+function gameOver(){
+    gameIsOver = 1;
+    //@ts-ignore
+    gameOverMenu.style.display = "flex";
 }

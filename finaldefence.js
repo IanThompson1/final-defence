@@ -19,20 +19,21 @@ var easyDifficulty = document.querySelector('#difficultyEasy');
 var mediumDifficulty = document.querySelector('#difficultyMedium');
 var hardDifficulty = document.querySelector('#difficultyHard');
 var impossibleDifficulty = document.querySelector('#difficultyImpossible');
+var gameOverMenu = document.querySelector('#gameOver');
+var menuButton = document.querySelector('#menu');
+var restartButton = document.querySelector('#startOver');
+var retryButton = document.querySelector('#retry');
 // const background = document.querySelector('#myVideo');
 // to do 
 /*
-netlify
 dragability
 no select html
 startscreen / loss screen (video)
-heroku: make game playable on other devices (or google javascript)
 fix armored
 add tesla tower
-retry round + fix startwave with autostart
-add range to laser?
+retry round
 */
-//global variables (no counter for points)
+//global variables and inital state
 canvas.width = innerWidth;
 canvas.height = innerHeight;
 var difficulty = 3; // 1-4 1=easy, 2=medium, 3=hard(default), 4=insane
@@ -47,6 +48,10 @@ var mouseY = 0;
 var round = 0;
 var autostart = "StartWave";
 var waveStart = 0;
+var retried = 0;
+var gameIsOver = 0;
+//@ts-ignore
+gameOverMenu.style.display = "none";
 //enemy class
 var Enemy = /** @class */ (function () {
     function Enemy(x, y, health, speed, direction, radius, color) {
@@ -313,10 +318,27 @@ var Projectile = /** @class */ (function () {
     };
     return Projectile;
 }());
+//game state class
+var GameState = /** @class */ (function () {
+    function GameState(lives, money, round, towers) {
+        this.lives = lives;
+        this.money = money;
+        this.round = round;
+        this.towers = towers.map(function (x) { return x; });
+    }
+    GameState.prototype.update = function (lives, money, round, towers) {
+        this.lives = lives;
+        this.money = money;
+        this.round = round;
+        this.towers = towers.map(function (x) { return x; });
+    };
+    return GameState;
+}());
 //creates the array of enemies
 var enemies = [];
 var towers = [];
 var shots = [];
+var state = new GameState(9, 9, 9, []);
 //creates a new enemy every 2 seconds
 function spawnWave(numenemies, density, health, speed, size, color, boss) {
     if (boss === void 0) { boss = new Enemy(0, 0, 0, 0, "E", 0, "black"); }
@@ -326,6 +348,9 @@ function spawnWave(numenemies, density, health, speed, size, color, boss) {
         bossRound = 1;
     }
     var enemiesfunction = setInterval(function () {
+        if (gameIsOver == 1) {
+            clearInterval(enemiesfunction);
+        }
         //spawn at enterance 
         if (bossRound == 0) { //default
             enemies.push(new Enemy(spawnPoint()[0], spawnPoint()[1], health, speed, spawnDirection(), size, color));
@@ -423,7 +448,7 @@ function towershoot(tower) {
                     }
                 }
             }
-            if (tower.sold == 0) {
+            if (tower.sold == 0 && gameIsOver == 0) {
                 towershoot(tower);
                 clearInterval(firefunction);
             }
@@ -505,7 +530,7 @@ function towershoot(tower) {
                     lasercounter++;
                 }
             }
-            if (tower.sold == 1) {
+            if (tower.sold == 1 || gameIsOver == 1) {
                 clearInterval(firefunction);
             }
         }
@@ -520,12 +545,18 @@ function animate() {
     drawLayout();
     //handles wave interactions with autostart
     if (activeWave() == 0 && autostart == "AutoStart: On") {
+        //@ts-ignore
+        state.update(lives, money, round, towers);
         round++;
         nextWave();
         waveStart = 1;
     }
     else if (activeWave() == 0 && autostart == "AutoStart: Off") {
         autostart = "StartWave";
+    }
+    //checks if you lost
+    if (lives <= 0) {
+        gameOver();
     }
     //handles all enemy interactions 
     enemies.forEach(function (enemy, index) {
@@ -932,6 +963,12 @@ addEventListener("click", function () {
     //start wave button
     if (mouseover == "startWave") {
         if (autostart == "StartWave") {
+            if (retried == 0) {
+                state.update(lives, money, round, towers);
+            }
+            else {
+                retried = 0;
+            }
             round++;
             nextWave();
             waveStart = 1;
@@ -1269,4 +1306,10 @@ function choosepath(i) {
             break;
     }
     return paths;
+}
+//game over implementation
+function gameOver() {
+    gameIsOver = 1;
+    //@ts-ignore
+    gameOverMenu.style.display = "flex";
 }

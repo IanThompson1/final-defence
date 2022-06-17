@@ -220,7 +220,7 @@ function drawLayout() {
             else if (towers[i].type == "laser" && towers[i].level == 1) { //level 1 laser
                 addDoubleText("Laser 1", towers[i].target, canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
                 addDoubleText("Damage", "(.5-10)->(1-15)", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addDoubleText("Speed", "10->9", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
+                addDoubleText("Speed", "8->7", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
                 addDoubleText("Range", "15->16", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
                 addText("sell:250", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "yellow", numboxes);
                 addDoubleText("upgrade", "Cost: 400", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes, canAfford(400));
@@ -228,7 +228,7 @@ function drawLayout() {
             else if (towers[i].type == "laser" && towers[i].level == 2) { //level 2 laser
                 addDoubleText("Laser 2", towers[i].target, canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
                 addDoubleText("Damage", "(1-15)->(2-20)", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addDoubleText("Speed", "9->8", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
+                addDoubleText("Speed", "7->6", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
                 addDoubleText("Range", "16->17", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
                 addText("sell:550", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "yellow", numboxes);
                 addDoubleText("upgrade", "Cost: 500", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes, canAfford(500));
@@ -236,7 +236,7 @@ function drawLayout() {
             else if (towers[i].type == "laser" && towers[i].level == 3) { //level 3 laser
                 addDoubleText("Laser 3", towers[i].target, canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
                 addDoubleText("Damage", "(2-20)->(2->30)", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addDoubleText("Speed", "8->7", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
+                addDoubleText("Speed", "6->5", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
                 addDoubleText("Range", "17->8", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
                 addText("sell:1000", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "yellow", numboxes);
                 addDoubleText("upgrade", "Cost: 600", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes, canAfford(600));
@@ -244,7 +244,7 @@ function drawLayout() {
             else if (towers[i].type == "laser" && towers[i].level == 4) { //level 4 laser
                 addDoubleText("Laser 4", towers[i].target, canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
                 addDoubleText("Damage", "(2-30)->(2->40)", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addDoubleText("Speed", "7->6", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
+                addDoubleText("Speed", "5->4", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
                 addDoubleText("Range", "18->19", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
                 addText("sell:1500", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "yellow", numboxes);
                 addDoubleText("upgrade", "Cost: 700", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes, canAfford(700));
@@ -252,7 +252,7 @@ function drawLayout() {
             else if (towers[i].type == "laser" && towers[i].level == 5) { //level 5 laser
                 addDoubleText("Laser 5", towers[i].target, canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
                 addDoubleText("Damage", "(2-40)", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addDoubleText("Speed", "6", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
+                addDoubleText("Speed", "4", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
                 addDoubleText("Range", "19", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
                 addText("sell:2000", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "yellow", numboxes);
                 addText("MaxLevel", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "#8A1212", numboxes);
