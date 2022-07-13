@@ -1,6 +1,7 @@
 "use strict";
 // exports.__esModule = true;
 var canvas = document.querySelector("canvas");
+//@ts-ignore
 var c = canvas.getContext("2d");
 //images
 var bossEnemy = new Image();
@@ -26,21 +27,22 @@ var retryButton = document.querySelector('#retry');
 // const background = document.querySelector('#myVideo');
 // to do 
 /*
-dragability
-no select html
-startscreen / loss screen (video)
-fix armored
-add tesla tower
-retry round
+add tower paths. sniper: armor piercing, high damage but slow. minigun: double shot, more damage. laser: multi target, super beem. tesla: multitarget, always charging.
 */
 //global variables and inital state
+//@ts-ignore
 canvas.width = innerWidth;
+//@ts-ignore
 canvas.height = innerHeight;
+//@ts-ignore
+var scaleH = canvas.height / 890;
+//@ts-ignore
+var scaleW = canvas.width / 1920;
 var difficulty = 3; // 1-4 1=easy, 2=medium, 3=hard(default), 4=insane
 var paths = choosepath(0); // 0=basic 1=castle 2=corner 3=diamond 4=circle
 var money = 500;
 var lives = 10;
-var numboxes = 16;
+var numboxes = 18;
 var mouseover = "none";
 var selectedTower = "none";
 var mouseX = 0;
@@ -50,6 +52,9 @@ var autostart = "StartWave";
 var waveStart = 0;
 var retried = 0;
 var gameIsOver = 0;
+var mouseDown = 0;
+var draggingTower = 0;
+var placingTowers = "Click to Place";
 //@ts-ignore
 gameOverMenu.style.display = "none";
 //enemy class
@@ -67,39 +72,53 @@ var Enemy = /** @class */ (function () {
     //draws the Enemy
     Enemy.prototype.draw = function () {
         if (this.color == "boss") {
-            c.drawImage(bossEnemy, 222, 111, 1117, 525, this.x - this.radius / 2, this.y - this.radius / 2, this.radius, this.radius); //entire enemy
+            //@ts-ignore
+            c.drawImage(bossEnemy, 222, 111, 1117, 525, this.x - scaleW * (this.radius / 2), this.y - scaleH * (this.radius / 2), scaleW * this.radius, scaleH * this.radius); //entire enemy
             // c.drawImage(bossEnemy,527,194,418,392,this.x-this.radius, this.y-this.radius, this.radius*2, this.radius*2);//face 
         }
         else {
+            //@ts-ignore
             c.lineWidth = 1;
+            //@ts-ignore
             c.beginPath();
-            c.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            //@ts-ignore
+            c.arc(this.x, this.y, scaleH * this.radius, 0, Math.PI * 2);
+            //@ts-ignore
             c.fillStyle = this.color;
+            //@ts-ignore
             c.fill();
         }
         //health bar
+        //@ts-ignore
         c.fillStyle = "white";
+        //@ts-ignore
         c.textAlign = "center";
+        //@ts-ignore
         c.font = "30px serif";
         var healthbar = this.health + "";
+        //@ts-ignore
         c.fillText(healthbar, this.x, this.y - this.radius - 10);
+        //@ts-ignore
         c.stroke();
     };
     //moves the Enemy with speed
     Enemy.prototype.update = function () {
         if (this.direction == "N") {
-            this.y -= this.speed;
+            this.y -= scaleH * this.speed;
+            this.distance += scaleH * this.speed;
         }
         else if (this.direction == "E") {
-            this.x += this.speed;
+            this.x += scaleW * this.speed;
+            this.distance += scaleW * this.speed;
         }
         else if (this.direction == "S") {
-            this.y += this.speed;
+            this.y += scaleH * this.speed;
+            this.distance += scaleH * this.speed;
         }
         else if (this.direction == "W") {
-            this.x -= this.speed;
+            this.x -= scaleW * this.speed;
+            this.distance += scaleW * this.speed;
         }
-        this.distance += this.speed;
         this.draw();
     };
     return Enemy;
@@ -125,6 +144,17 @@ var Tower = /** @class */ (function () {
             this.range = 110;
             this.target = "first";
         }
+        else if (this.type == "tesla") {
+            this.maxcharge = 180;
+            this.damage = 2;
+            this.range = 170;
+            this.ischarging = 1;
+            this.target = "first";
+            this.reload = 10;
+            this.charge = 0;
+            this.attackspd = 10;
+            this.chargespd = 1;
+        }
         else if (this.type == "laser") {
             this.reload = 10;
             this.range = 150;
@@ -142,44 +172,77 @@ var Tower = /** @class */ (function () {
     // draws the tower
     Tower.prototype.draw = function () {
         //base
+        //@ts-ignore
         c.fillStyle = "black";
-        c.fillRect(this.x - 50, this.y - 50, 100, 100);
+        //@ts-ignore
+        c.fillRect(this.x - scaleW * 50, this.y - scaleH * 50, scaleW * 100, scaleH * 100);
         //head
         if (this.type == "sniper") {
+            //@ts-ignore
             c.fillStyle = "gray";
         }
         else if (this.type == "machinegun") {
+            //@ts-ignore
             c.fillStyle = "#800000";
         }
-        else if (this.type = "laser") {
+        else if (this.type == "laser") {
+            //@ts-ignore
             c.fillStyle = "#8F2E86";
         }
+        else if (this.type == "tesla") {
+            //@ts-ignore
+            c.fillStyle = "green";
+        }
+        //@ts-ignore
         c.beginPath();
-        c.arc(this.x, this.y, 20, 0, Math.PI * 2);
+        //@ts-ignore
+        c.arc(this.x, this.y, scaleH * 20, 0, Math.PI * 2);
+        //@ts-ignore
         c.fill();
         //level
         if (this.level >= 1) {
+            //@ts-ignore
             c.fillStyle = "yellow";
-            c.fillRect(this.x + 25, this.y - 45, 20, 10);
+            //@ts-ignore
+            c.fillRect(this.x + scaleW * 25, this.y - scaleH * 45, scaleW * 20, scaleH * 10);
         }
         if (this.level >= 2) {
-            c.fillRect(this.x + 25, this.y - 30, 20, 10);
+            //@ts-ignore
+            c.fillRect(this.x + scaleW * 25, this.y - scaleH * 30, scaleW * 20, scaleH * 10);
         }
         if (this.level >= 3) {
-            c.fillRect(this.x + 25, this.y - 15, 20, 10);
+            //@ts-ignore
+            c.fillRect(this.x + scaleW * 25, this.y - scaleH * 15, scaleW * 20, scaleH * 10);
         }
         if (this.level >= 4) {
-            c.fillRect(this.x + 25, this.y, 20, 10);
+            //@ts-ignore
+            c.fillRect(this.x + scaleW * 25, this.y, scaleW * 20, scaleH * 10);
         }
         if (this.level >= 5) {
-            c.fillRect(this.x + 25, this.y + 15, 20, 10);
+            //@ts-ignore
+            c.fillRect(this.x + scaleW * 25, this.y + scaleH * 15, scaleW * 20, scaleH * 10);
         }
         //range
         if (this.selected == 1) {
+            //@ts-ignore
             c.beginPath();
-            c.ellipse(this.x, this.y, this.range, this.range, 0, 0, Math.PI * 2);
+            //@ts-ignore
+            c.ellipse(this.x, this.y, scaleW * this.range, scaleH * this.range, 0, 0, Math.PI * 2);
+            //@ts-ignore
             c.lineWidth = 1;
+            //@ts-ignore
             c.stroke();
+        }
+        //tesla charge amount
+        if (this.type == "tesla") {
+            //@ts-ignore
+            c.fillStyle = "blue";
+            //@ts-ignore
+            c.fillRect(this.x - scaleW * 45, this.y + scaleH * 45, scaleW * 10, -scaleH * 90);
+            //@ts-ignore
+            c.fillStyle = "yellow";
+            //@ts-ignore
+            c.fillRect(this.x - scaleW * 45, this.y + scaleH * 45, scaleW * 10, -(this.charge / this.maxcharge) * scaleH * 90);
         }
     };
     //updates level
@@ -243,7 +306,7 @@ var Tower = /** @class */ (function () {
                 this.reload = 10;
                 this.range = 150;
                 this.lasermax = 10;
-                this.lasermin = 0.5;
+                this.lasermin = 1;
                 this.lasertime = 8;
             }
             else if (this.level == 2) {
@@ -271,8 +334,60 @@ var Tower = /** @class */ (function () {
                 this.reload = 10;
                 this.range = 190;
                 this.lasermax = 40;
-                this.lasermin = 2;
+                this.lasermin = 3;
                 this.lasertime = 4;
+            }
+        }
+        else if (this.type == "tesla") {
+            if (this.level == 1) {
+                this.maxcharge = 180;
+                this.damage = 2;
+                this.range = 170;
+                this.ischarging = 1;
+                this.reload = 10;
+                this.charge = 0;
+                this.attackspd = 10;
+                this.chargespd = 1;
+            }
+            else if (this.level == 2) {
+                this.maxcharge = 240;
+                this.damage = 4;
+                this.range = 180;
+                this.ischarging = 1;
+                this.reload = 10;
+                this.charge = 0;
+                this.attackspd = 9;
+                this.chargespd = 24 / 18;
+            }
+            else if (this.level == 3) {
+                this.maxcharge = 300;
+                this.damage = 6;
+                this.range = 190;
+                this.ischarging = 1;
+                this.reload = 10;
+                this.charge = 0;
+                this.attackspd = 8;
+                this.chargespd = 30 / 18;
+            }
+            else if (this.level == 4) {
+                this.maxcharge = 360;
+                this.damage = 8;
+                this.range = 200;
+                this.ischarging = 1;
+                this.reload = 10;
+                this.charge = 0;
+                this.attackspd = 7;
+                this.chargespd = 36 / 18;
+            }
+            else if (this.level == 5) {
+                this.maxcharge = 420;
+                this.damage = 10;
+                this.range = 210;
+                this.ischarging = 1;
+                this.reload = 10;
+                this.charge = 0;
+                this.attackspd = 6;
+                this.chargespd = 42 / 18;
             }
         }
     };
@@ -291,10 +406,15 @@ var Projectile = /** @class */ (function () {
         this.lifespan = 0;
     }
     Projectile.prototype.draw = function () {
+        //@ts-ignore
         c.lineWidth = 1;
+        //@ts-ignore
         c.fillStyle = this.color;
+        //@ts-ignore
         c.beginPath();
-        c.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        //@ts-ignore
+        c.arc(this.x, this.y, scaleH * this.size, 0, Math.PI * 2);
+        //@ts-ignore
         c.fill();
     };
     Projectile.prototype.update = function () {
@@ -302,21 +422,67 @@ var Projectile = /** @class */ (function () {
         var ydiff = Math.abs(this.y - this.target.y);
         var angle = (Math.atan(ydiff / xdiff));
         if (this.x > this.target.x) {
-            this.x = this.x - (this.speed * Math.cos(angle));
+            this.x = this.x - scaleW * (this.speed * Math.cos(angle));
         }
         else {
-            this.x = this.x + (this.speed * Math.cos(angle));
+            this.x = this.x + scaleW * (this.speed * Math.cos(angle));
         }
         if (this.y > this.target.y) {
-            this.y = this.y - (this.speed * Math.sin(angle));
+            this.y = this.y - scaleH * (this.speed * Math.sin(angle));
         }
         else {
-            this.y = this.y + (this.speed * Math.sin(angle));
+            this.y = this.y + scaleH * (this.speed * Math.sin(angle));
         }
         this.lifespan++;
         this.draw();
     };
     return Projectile;
+}());
+//laser projectile class
+var Laser = /** @class */ (function () {
+    function Laser(size, color, target, tower) {
+        this.size = size;
+        this.color = color;
+        this.target = target;
+        this.tower = tower;
+    }
+    Laser.prototype.draw = function () {
+        if (this.tower.type == "tesla") {
+            var dist = Math.abs(Math.sqrt((this.target.x - this.tower.x) * (this.target.x - this.tower.x) + (this.target.y - this.tower.y) * (this.target.y - this.tower.y)));
+            //first coil
+            var angle = Math.atan((this.target.y - this.tower.y) / (this.tower.x - this.target.x));
+            var chain = Math.floor(Math.random() * 50) / 100 - 0.25;
+            if (this.target.x > this.tower.x) { //right
+                drawLine(c, [this.tower.x, this.tower.y], [(dist / 3) * Math.cos(angle + chain) + this.tower.x, this.tower.y - (dist / 3) * Math.sin(angle + chain)], this.color, this.size);
+            }
+            else {
+                drawLine(c, [this.tower.x, this.tower.y], [this.tower.x - (dist / 3) * Math.cos(angle + chain), this.tower.y + (dist / 3) * Math.sin(angle + chain)], this.color, this.size);
+            }
+            //second coil 
+            if (this.target.x > this.tower.x) { //right
+                drawLine(c, [(dist / 3) * Math.cos(angle + chain) + this.tower.x, this.tower.y - (dist / 3) * Math.sin(angle + chain)], [(dist - dist / 3) * Math.cos(angle - chain) + this.tower.x, this.tower.y - (dist - dist / 3) * Math.sin(angle - chain)], this.color, this.size);
+            }
+            else {
+                drawLine(c, [this.tower.x - (dist / 3) * Math.cos(angle + chain), this.tower.y + (dist / 3) * Math.sin(angle + chain)], [this.tower.x - (dist - dist / 3) * Math.cos(angle - chain), this.tower.y + (dist - dist / 3) * Math.sin(angle - chain)], this.color, this.size);
+            }
+            //third coil 
+            if (this.target.x > this.tower.x) { //right
+                drawLine(c, [(dist - dist / 3) * Math.cos(angle - chain) + this.tower.x, this.tower.y - (dist - dist / 3) * Math.sin(angle - chain)], [this.target.x, this.target.y], this.color, this.size);
+            }
+            else {
+                drawLine(c, [this.tower.x - (dist - dist / 3) * Math.cos(angle - chain), this.tower.y + (dist - dist / 3) * Math.sin(angle - chain)], [this.target.x, this.target.y], this.color, this.size);
+            }
+        }
+        else { //laser
+            drawLine(c, [this.target.x, this.target.y], [this.tower.x, this.tower.y], this.color, this.size);
+        }
+        //@ts-ignore
+        c.strokeStyle = "black";
+    };
+    Laser.prototype.update = function () {
+        this.draw();
+    };
+    return Laser;
 }());
 //game state class
 var GameState = /** @class */ (function () {
@@ -338,6 +504,7 @@ var GameState = /** @class */ (function () {
 var enemies = [];
 var towers = [];
 var shots = [];
+var lasers = [];
 var state = new GameState(9, 9, 9, []);
 //creates a new enemy every 2 seconds
 function spawnWave(numenemies, density, health, speed, size, color, boss) {
@@ -382,6 +549,15 @@ function spawnWave(numenemies, density, health, speed, size, color, boss) {
         }
     }, density);
 }
+function targetinellipse(towerX, towerY, towerRange, targetX, targetY) {
+    var fun = (((targetX - towerX) * (targetX - towerX)) / ((towerRange * scaleW) * (towerRange * scaleW))) + (((targetY - towerY) * (targetY - towerY)) / ((towerRange * scaleH) * (towerRange * scaleH)));
+    if (fun <= 1) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
 //handles shooting
 function towershoot(tower) {
     //global variables
@@ -392,20 +568,21 @@ function towershoot(tower) {
     var strongenemy;
     var weakenemy;
     var target;
+    var newtarget;
     var firefunction = setInterval(function () {
         var inrange = 0;
         for (var i = 0; i < enemies.length; i++) { //find fist and last enemies in range
             var Xdist = Math.abs(enemies[i].x - tower.x);
             var Ydist = Math.abs(enemies[i].y - tower.y);
             var distance = Math.sqrt((Xdist * Xdist) + (Ydist * Ydist));
-            if (distance <= tower.range && inrange == 0) {
+            if (targetinellipse(tower.x, tower.y, tower.range, enemies[i].x, enemies[i].y) == 1 && inrange == 0) {
                 lastenemy = enemies[i];
                 firstenemy = enemies[i];
                 strongenemy = enemies[i];
                 weakenemy = enemies[i];
                 inrange = 1;
             }
-            else if (distance <= tower.range) {
+            else if (targetinellipse(tower.x, tower.y, tower.range, enemies[i].x, enemies[i].y) == 1) {
                 if (lastenemy.distance > enemies[i].distance) {
                     lastenemy = enemies[i];
                 }
@@ -424,6 +601,9 @@ function towershoot(tower) {
             if (inrange == 1) {
                 //inputs
                 var speed = 10;
+                if (tower.type == "sniper") {
+                    speed = 15;
+                }
                 var damage = tower.damage;
                 if (tower.type == "machinegun" && tower.level == 2) {
                     //half of the time damage is 1 other half damage is 2
@@ -462,11 +642,12 @@ function towershoot(tower) {
                     var Xdist = Math.abs(enemies[i].x - tower.x);
                     var Ydist = Math.abs(enemies[i].y - tower.y);
                     var distance = Math.sqrt((Xdist * Xdist) + (Ydist * Ydist));
-                    if (distance <= tower.range && enemies[i] == target) {
+                    if (targetinellipse(tower.x, tower.y, tower.range, enemies[i].x, enemies[i].y) == 1 && enemies[i] == target) {
                         found = 1;
                     }
                 }
-                if (found == 0) {
+                if (found == 0 || newtarget == 1) {
+                    newtarget = 0;
                     switch (tower.target) {
                         case "first": {
                             target = firstenemy;
@@ -486,8 +667,8 @@ function towershoot(tower) {
                         }
                     }
                     laserdamage = tower.lasermin;
+                    lasers.push(new Laser(tower.level, "red", target, tower));
                 }
-                drawLine(c, [tower.x, tower.y], [target.x, target.y], "red");
                 //do damage here instead
                 if (lasercounter > tower.lasertime * 2) {
                     if (found == 1) { //heat up
@@ -499,25 +680,32 @@ function towershoot(tower) {
                         }
                     }
                     if (target.color == "red") {
-                        if (laserdamage > 2) { //low damage deals 0
-                            if (laserdamage <= 5) {
-                                target.health -= 1; //mid damage deals 1
-                            }
-                            else {
-                                target.health -= laserdamage / 2; //high damage deals half
-                            }
+                        if (laserdamage <= 6) {
+                            target.health -= 1; //mid damage deals 1
+                        }
+                        else {
+                            target.health -= Math.floor(laserdamage / 2); //high damage deals half
                         }
                     }
                     else {
-                        target.health -= laserdamage;
+                        target.health -= Math.floor(laserdamage);
                     }
-                    if (target.health <= 0) { //remove enemy
+                    if (target.health <= 0) {
+                        //remove laser
+                        for (var i = lasers.length - 1; i >= 0; i--) {
+                            if (lasers[i].target == target) {
+                                lasers.splice(i, 1);
+                            }
+                        }
+                        money += round;
+                        //calculate money
                         if (target.color == "pink" && difficulty >= 3) {
                             money += 5;
                         }
                         else {
                             money += 10;
                         }
+                        //remove enemy
                         enemies.forEach(function (enemy, index) {
                             if (enemy == target) {
                                 enemies.splice(index, 1);
@@ -529,6 +717,78 @@ function towershoot(tower) {
                 else {
                     lasercounter++;
                 }
+            }
+            else {
+                laserdamage = tower.lasermin;
+                newtarget = 1;
+            }
+            if (tower.sold == 1 || gameIsOver == 1) {
+                clearInterval(firefunction);
+            }
+        }
+        else if (tower.type == "tesla") {
+            //charging 
+            if (tower.ischarging == 1 && tower.charge < tower.maxcharge) {
+                tower.charge += tower.chargespd;
+            }
+            else {
+                tower.ischarging = 0;
+                if (inrange == 1) {
+                    var found = 0;
+                    for (var i = 0; i < enemies.length; i++) {
+                        var Xdist = Math.abs(enemies[i].x - tower.x);
+                        var Ydist = Math.abs(enemies[i].y - tower.y);
+                        var distance = Math.sqrt((Xdist * Xdist) + (Ydist * Ydist));
+                        if (targetinellipse(tower.x, tower.y, tower.range, enemies[i].x, enemies[i].y) == 1 && enemies[i] == target) {
+                            found = 1;
+                        }
+                    }
+                    if (found == 0) {
+                        switch (tower.target) {
+                            case "first": {
+                                target = firstenemy;
+                                break;
+                            }
+                            case "last": {
+                                target = lastenemy;
+                                break;
+                            }
+                            case "strong": {
+                                target = strongenemy;
+                                break;
+                            }
+                            case "weak": {
+                                target = weakenemy;
+                                break;
+                            }
+                        }
+                    }
+                    if (lasercounter < tower.attackspd) { //attack spd
+                        lasercounter++;
+                    }
+                    else {
+                        tower.charge -= 10;
+                        if (target.color == "red") {
+                            if (tower.damage <= 6) {
+                                target.health -= 1; //mid damage deals 1
+                            }
+                            else {
+                                target.health -= tower.damage / 2; //high damage deals half
+                            }
+                        }
+                        else {
+                            target.health -= tower.damage;
+                        }
+                        lasers.push(new Laser(tower.level + 4, "blue", target, tower));
+                        lasercounter = 0;
+                    }
+                }
+                else {
+                    tower.ischarging = 1;
+                }
+            }
+            if (tower.charge <= 0) {
+                tower.ischarging = 1;
             }
             if (tower.sold == 1 || gameIsOver == 1) {
                 clearInterval(firefunction);
@@ -543,6 +803,57 @@ function animate() {
     //entire gui 
     // @ts-ignore
     drawLayout();
+    //handles dragging
+    if (placingTowers == "Drag and Drop") {
+        if (mouseDown) {
+            if (mouseover == "sniper" && selectedTower == "none" && money >= 100) {
+                selectedTower = "sniper";
+                draggingTower = 1;
+            }
+            else if (mouseover == "machinegun" && selectedTower == "none" && money >= 120) {
+                selectedTower = "machinegun";
+                draggingTower = 1;
+            }
+            else if (mouseover == "laser" && selectedTower == "none" && money >= 300) {
+                selectedTower = "laser";
+                draggingTower = 1;
+            }
+            else if (mouseover == "tesla" && selectedTower == "none" && money >= 250) {
+                selectedTower = "tesla";
+                draggingTower = 1;
+            }
+        }
+        if (!mouseDown && draggingTower) {
+            if (selectedTower == "sniper" && freespace() == 1) {
+                selectedTower = "none";
+                money -= 100;
+                towers.push(new Tower(mouseX, mouseY, "sniper", 1, 0));
+                towershoot(towers[towers.length - 1]);
+            }
+            else if (selectedTower == "machinegun" && freespace() == 1) {
+                selectedTower = "none";
+                money -= 120;
+                towers.push(new Tower(mouseX, mouseY, "machinegun", 1, 0));
+                towershoot(towers[towers.length - 1]);
+            }
+            else if (selectedTower == "laser" && freespace() == 1) {
+                selectedTower = "none";
+                money -= 300;
+                towers.push(new Tower(mouseX, mouseY, "laser", 1, 0));
+                towershoot(towers[towers.length - 1]);
+            }
+            else if (selectedTower == "tesla" && freespace() == 1) {
+                selectedTower = "none";
+                money -= 250;
+                towers.push(new Tower(mouseX, mouseY, "tesla", 1, 0));
+                towershoot(towers[towers.length - 1]);
+            }
+            else {
+                selectedTower = "none";
+            }
+            draggingTower = 0;
+        }
+    }
     //handles wave interactions with autostart
     if (activeWave() == 0 && autostart == "AutoStart: On") {
         //@ts-ignore
@@ -566,13 +877,15 @@ function animate() {
             //chenge the enemies direction
             if (paths[i][0] == paths[i + 1][0] && paths[i][1] > paths[i + 1][1]) { // up path
                 if (paths[i][0] > paths[i - 1][0]) { //coming from left side
-                    if (enemy.x > (canvas.width / 100) * paths[i][0] + 25 && enemy.x < (canvas.width / 100) * paths[i][0] + 50 && enemy.y > (canvas.height / 100) * paths[i][1] && enemy.y < (canvas.height / 100) * paths[i][1] + 50) {
+                    //@ts-ignore
+                    if (enemy.x > (canvas.width / 100) * paths[i][0] + scaleW * 25 && enemy.x < (canvas.width / 100) * paths[i][0] + scaleW * 50 && enemy.y > (canvas.height / 100) * paths[i][1] && enemy.y < (canvas.height / 100) * paths[i][1] + scaleH * 50) {
                         enemy.direction = "N";
                         // console.log("right up");
                     }
                 }
                 else { //coming from right side
-                    if (enemy.x > (canvas.width / 100) * paths[i][0] && enemy.x < (canvas.width / 100) * paths[i][0] + 25 && enemy.y > (canvas.height / 100) * paths[i][1] && enemy.y < (canvas.height / 100) * paths[i][1] + 50) {
+                    //@ts-ignore
+                    if (enemy.x > (canvas.width / 100) * paths[i][0] && enemy.x < (canvas.width / 100) * paths[i][0] + scaleW * 25 && enemy.y > (canvas.height / 100) * paths[i][1] && enemy.y < (canvas.height / 100) * paths[i][1] + scaleH * 50) {
                         enemy.direction = "N";
                         // console.log("left up");
                     }
@@ -580,13 +893,15 @@ function animate() {
             }
             else if (paths[i][0] == paths[i + 1][0] && paths[i][1] < paths[i + 1][1]) { // down path
                 if (paths[i][0] > paths[i - 1][0]) { //coming from left side
-                    if (enemy.x > (canvas.width / 100) * paths[i][0] + 25 && enemy.x < (canvas.width / 100) * paths[i][0] + 50 && enemy.y > (canvas.height / 100) * paths[i][1] && enemy.y < (canvas.height / 100) * paths[i][1] + 50) {
+                    //@ts-ignore
+                    if (enemy.x > (canvas.width / 100) * paths[i][0] + scaleW * 25 && enemy.x < (canvas.width / 100) * paths[i][0] + scaleW * 50 && enemy.y > (canvas.height / 100) * paths[i][1] && enemy.y < (canvas.height / 100) * paths[i][1] + scaleH * 50) {
                         enemy.direction = "S";
                         // console.log("right down");
                     }
                 }
                 else { //coming from right side
-                    if (enemy.x > (canvas.width / 100) * paths[i][0] && enemy.x < (canvas.width / 100) * paths[i][0] + 25 && enemy.y > (canvas.height / 100) * paths[i][1] && enemy.y < (canvas.height / 100) * paths[i][1] + 50) {
+                    //@ts-ignore
+                    if (enemy.x > (canvas.width / 100) * paths[i][0] && enemy.x < (canvas.width / 100) * paths[i][0] + scaleW * 25 && enemy.y > (canvas.height / 100) * paths[i][1] && enemy.y < (canvas.height / 100) * paths[i][1] + scaleH * 50) {
                         enemy.direction = "S";
                         // console.log("left down");
                     }
@@ -594,13 +909,15 @@ function animate() {
             }
             else if (paths[i][1] == paths[i + 1][1] && paths[i][0] > paths[i + 1][0]) { // left path
                 if (paths[i][1] > paths[i - 1][1]) { //coming from top
-                    if (enemy.x > (canvas.width / 100) * paths[i][0] && enemy.x < (canvas.width / 100) * paths[i][0] + 50 && enemy.y > (canvas.height / 100) * paths[i][1] + 25 && enemy.y < (canvas.height / 100) * paths[i][1] + 50) {
+                    //@ts-ignore
+                    if (enemy.x > (canvas.width / 100) * paths[i][0] && enemy.x < (canvas.width / 100) * paths[i][0] + scaleW * 50 && enemy.y > (canvas.height / 100) * paths[i][1] + scaleH * 25 && enemy.y < (canvas.height / 100) * paths[i][1] + scaleH * 50) {
                         enemy.direction = "W";
                         // console.log("down left");
                     }
                 }
                 else { //coming from bottom
-                    if (enemy.x > (canvas.width / 100) * paths[i][0] && enemy.x < (canvas.width / 100) * paths[i][0] + 50 && enemy.y > (canvas.height / 100) * paths[i][1] && enemy.y < (canvas.height / 100) * paths[i][1] + 25) {
+                    //@ts-ignore
+                    if (enemy.x > (canvas.width / 100) * paths[i][0] && enemy.x < (canvas.width / 100) * paths[i][0] + scaleW * 50 && enemy.y > (canvas.height / 100) * paths[i][1] && enemy.y < (canvas.height / 100) * paths[i][1] + scaleH * 25) {
                         enemy.direction = "W";
                         // console.log("up left");
                     }
@@ -608,13 +925,15 @@ function animate() {
             }
             else if (paths[i][1] == paths[i + 1][1] && paths[i][0] < paths[i + 1][0]) { // right path
                 if (paths[i][1] > paths[i - 1][1]) { //coming from top
-                    if (enemy.x > (canvas.width / 100) * paths[i][0] && enemy.x < (canvas.width / 100) * paths[i][0] + 50 && enemy.y > (canvas.height / 100) * paths[i][1] + 25 && enemy.y < (canvas.height / 100) * paths[i][1] + 50) {
+                    //@ts-ignore
+                    if (enemy.x > (canvas.width / 100) * paths[i][0] && enemy.x < (canvas.width / 100) * paths[i][0] + scaleW * 50 && enemy.y > (canvas.height / 100) * paths[i][1] + scaleH * 25 && enemy.y < (canvas.height / 100) * paths[i][1] + scaleH * 50) {
                         enemy.direction = "E";
                         // console.log("down right");
                     }
                 }
                 else { //coming from bottom
-                    if (enemy.x > (canvas.width / 100) * paths[i][0] && enemy.x < (canvas.width / 100) * paths[i][0] + 50 && enemy.y > (canvas.height / 100) * paths[i][1] && enemy.y < (canvas.height / 100) * paths[i][1] + 25) {
+                    //@ts-ignore
+                    if (enemy.x > (canvas.width / 100) * paths[i][0] && enemy.x < (canvas.width / 100) * paths[i][0] + scaleW * 50 && enemy.y > (canvas.height / 100) * paths[i][1] && enemy.y < (canvas.height / 100) * paths[i][1] + scaleH * 25) {
                         enemy.direction = "E";
                         // console.log("up right");
                     }
@@ -625,13 +944,11 @@ function animate() {
         shots.forEach(function (shot, index) {
             if (shot.x > enemy.x - enemy.radius - shot.size && shot.x < enemy.x + enemy.radius + shot.size && shot.y > enemy.y - enemy.radius - shot.size && shot.y < enemy.y + enemy.radius + shot.size) {
                 if (enemy.color == "red") {
-                    if (shot.damage > 2) { //low damage deals 0
-                        if (shot.damage <= 5) {
-                            enemy.health -= 1; //mid damage deals 1
-                        }
-                        else {
-                            enemy.health -= shot.damage / 2; //high damage deals half
-                        }
+                    if (shot.damage <= 6) {
+                        enemy.health -= 1; //mid damage deals 1
+                    }
+                    else {
+                        enemy.health -= shot.damage / 2; //high damage deals half
                     }
                 }
                 else {
@@ -648,7 +965,14 @@ function animate() {
                     shots.splice(i, 1);
                 }
             }
+            //check for laser projectiles to remove
+            for (var i = lasers.length - 1; i >= 0; i--) {
+                if (lasers[i].target == enemy) {
+                    lasers.splice(i, 1);
+                }
+            }
             //remove enemy
+            money += round;
             if (enemy.color == "pink" && difficulty >= 3) {
                 money += 5;
             }
@@ -675,6 +999,7 @@ function animate() {
             }
         }
         else if (paths[paths.length - 1][1] == 100) { // bottom exit
+            //@ts-ignore
             if (enemy.y >= canvas.height + 10) {
                 setTimeout(function () {
                     enemies.splice(index, 1);
@@ -683,6 +1008,7 @@ function animate() {
             }
         }
         else { //right exit 
+            //@ts-ignore
             if (enemy.x >= canvas.width + 10) {
                 setTimeout(function () {
                     enemies.splice(index, 1);
@@ -709,30 +1035,62 @@ function animate() {
         }
         shots[i].update();
     }
+    //handles the laser projectiles
+    for (var i = lasers.length - 1; i >= 0; i--) {
+        //check if still in range
+        // var dist = Math.sqrt((lasers[i].target.x - lasers[i].tower.x)*(lasers[i].target.x - lasers[i].tower.x)+(lasers[i].target.y - lasers[i].tower.y)*(lasers[i].target.y - lasers[i].tower.y));
+        if (targetinellipse(lasers[i].tower.x, lasers[i].tower.y, lasers[i].tower.range, lasers[i].target.x, lasers[i].target.y) == 0) {
+            lasers[i].update();
+            lasers.splice(i, 1);
+        }
+        else if (lasers[i].tower.type == "tesla") {
+            lasers[i].update();
+            lasers.splice(i, 1);
+        }
+        else {
+            lasers[i].update();
+        }
+    }
     //handles mouse movement 
+    //@ts-ignore
     if (mouseX > canvas.width - canvas.width / 7.5 && mouseX < canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2 && mouseY > canvas.height / (numboxes / 2) * (2 / 2) && mouseY < canvas.height / (numboxes / 2) * (2 / 2) + canvas.height / (numboxes / 2)) {
         mouseover = "sniper";
+        //@ts-ignore
     }
     else if (mouseX > canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2 && mouseX < canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2 + (canvas.width / 7.5) / 2 && mouseY > canvas.height / (numboxes / 2) * ((3 - 1) / 2) && mouseY < canvas.height / (numboxes / 2) * ((3 - 1) / 2) + canvas.height / (numboxes / 2)) {
         mouseover = "machinegun";
+        //@ts-ignore
     }
     else if (mouseX > canvas.width - canvas.width / 7.5 && mouseX < canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2 && mouseY > canvas.height / (numboxes / 2) * (4 / 2) && mouseY < canvas.height / (numboxes / 2) * (4 / 2) + canvas.height / (numboxes / 2)) {
         mouseover = "cannon";
+        //@ts-ignore
     }
     else if (mouseX > canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2 && mouseX < canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2 + (canvas.width / 7.5) / 2 && mouseY > canvas.height / (numboxes / 2) * ((5 - 1) / 2) && mouseY < canvas.height / (numboxes / 2) * ((5 - 1) / 2) + canvas.height / (numboxes / 2)) {
         mouseover = "laser";
+        //@ts-ignore
+    }
+    else if (mouseX > canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2 && mouseX < canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2 + (canvas.width / 7.5) / 2 && mouseY > canvas.height / (numboxes / 2) * ((7 - 1) / 2) && mouseY < canvas.height / (numboxes / 2) * ((7 - 1) / 2) + canvas.height / (numboxes / 2)) {
+        mouseover = "tesla";
+        //@ts-ignore
     }
     else if (mouseX > canvas.width - canvas.width / 7.5 && mouseX < canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2 && mouseY > canvas.height / (numboxes / 2) * (8 / 2) && mouseY < canvas.height / (numboxes / 2) * (8 / 2) + canvas.height / (numboxes / 2)) {
         mouseover = "target";
+        //@ts-ignore
     }
     else if (mouseX > canvas.width - canvas.width / 7.5 + 2.5 && mouseX < canvas.width - canvas.width / 7.5 + 2.5 + (canvas.width / 7.5) - 5 && mouseY > canvas.height - canvas.height / (numboxes / 2) + 2.5 && mouseY < canvas.height - canvas.height / (numboxes / 2) + 2.5 + canvas.height / (numboxes / 2) - 5) {
         mouseover = "startWave";
+        //@ts-ignore
     }
     else if (mouseX > canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2 && mouseX < canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2 + (canvas.width / 7.5) / 2 && mouseY > canvas.height / (numboxes / 2) * (12 / 2) && mouseY < canvas.height / (numboxes / 2) * (12 / 2) + canvas.height / (numboxes / 2)) {
         mouseover = "upgrade";
+        //@ts-ignore
     }
     else if (mouseX > canvas.width - canvas.width / 7.5 && mouseX < canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2 && mouseY > canvas.height / (numboxes / 2) * (12 / 2) && mouseY < canvas.height / (numboxes / 2) * (12 / 2) + canvas.height / (numboxes / 2)) {
         mouseover = "sell";
+        //@ts-ignore
+    }
+    else if (mouseX > canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2 && mouseX < canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2 + (canvas.width / 7.5) / 2 && mouseY > canvas.height / (numboxes / 2) * (14 / 2) && mouseY < canvas.height / (numboxes / 2) * (14 / 2) + canvas.height / (numboxes / 2)) {
+        mouseover = "towerPlacement";
     }
     else {
         mouseover = "none";
@@ -761,6 +1119,9 @@ addEventListener("click", function () {
     else if (mouseover == "laser" && selectedTower == "none" && money >= 300) {
         selectedTower = "laser";
     }
+    else if (mouseover == "tesla" && selectedTower == "none" && money >= 250) {
+        selectedTower = "tesla";
+    }
     else if (selectedTower == "sniper" && freespace() == 1) {
         selectedTower = "none";
         money -= 100;
@@ -777,6 +1138,12 @@ addEventListener("click", function () {
         selectedTower = "none";
         money -= 300;
         towers.push(new Tower(mouseX, mouseY, "laser", 1, 0));
+        towershoot(towers[towers.length - 1]);
+    }
+    else if (selectedTower == "tesla" && freespace() == 1) {
+        selectedTower = "none";
+        money -= 250;
+        towers.push(new Tower(mouseX, mouseY, "tesla", 1, 0));
         towershoot(towers[towers.length - 1]);
     }
     else if (mouseover == "upgrade") {
@@ -868,6 +1235,34 @@ addEventListener("click", function () {
                     towers[i].update();
                     money -= 700;
                 }
+                else if (towers[i].type == "tesla" && money >= 400 && towers[i].level == 1) {
+                    //upgrades tower
+                    towers[i].level = 2;
+                    towers[i].selected = 1;
+                    towers[i].update();
+                    money -= 400;
+                }
+                else if (towers[i].type == "tesla" && money >= 500 && towers[i].level == 2) {
+                    //upgrades tower
+                    towers[i].level = 3;
+                    towers[i].selected = 1;
+                    towers[i].update();
+                    money -= 500;
+                }
+                else if (towers[i].type == "tesla" && money >= 600 && towers[i].level == 3) {
+                    //upgrades tower
+                    towers[i].level = 4;
+                    towers[i].selected = 1;
+                    towers[i].update();
+                    money -= 600;
+                }
+                else if (towers[i].type == "tesla" && money >= 700 && towers[i].level == 4) {
+                    //upgrades tower
+                    towers[i].level = 5;
+                    towers[i].selected = 1;
+                    towers[i].update();
+                    money -= 700;
+                }
             }
         }
     }
@@ -931,6 +1326,25 @@ addEventListener("click", function () {
                             break;
                     }
                 }
+                else if (towers[i].type == "tesla") {
+                    switch (towers[i].level) {
+                        case 1:
+                            money += 190;
+                            break;
+                        case 2:
+                            money += 550;
+                            break;
+                        case 3:
+                            money += 900;
+                            break;
+                        case 4:
+                            money += 1400;
+                            break;
+                        case 5:
+                            money += 1800;
+                            break;
+                    }
+                }
                 //remove tower and projectiles 
                 towers[i].sold = 1;
                 //remove range
@@ -981,7 +1395,23 @@ addEventListener("click", function () {
             autostart = "AutoStart: Off";
         }
     }
+    //tower placement button
+    if (mouseover == "towerPlacement") {
+        if (placingTowers == "Click to Place") {
+            placingTowers = "Drag and Drop";
+        }
+        else {
+            placingTowers = "Click to Place";
+        }
+    }
 });
+//drag functionality
+document.body.onmousedown = function () {
+    ++mouseDown;
+};
+document.body.onmouseup = function () {
+    --mouseDown;
+};
 function changeTarget(tower) {
     if (tower.type != "laser") {
         switch (tower.target) {
@@ -1025,34 +1455,39 @@ function changeTarget(tower) {
 //checks if current mouse location is open to place a tower in
 function freespace() {
     //check against menu
-    if (mouseX > canvas.width - canvas.width / 7.5 - 50) {
+    //@ts-ignore
+    if (mouseX > canvas.width - canvas.width / 7.5 - scaleW * 50) {
         return 0;
     }
     //check against other towers
     for (var i = 0; i < towers.length; i++) {
-        if (mouseX > towers[i].x - 100 && mouseX < towers[i].x + 100 && mouseY > towers[i].y - 100 && mouseY < towers[i].y + 100) {
+        if (mouseX > towers[i].x - scaleW * 100 && mouseX < towers[i].x + scaleW * 100 && mouseY > towers[i].y - scaleH * 100 && mouseY < towers[i].y + scaleH * 100) {
             return 0;
         }
     }
     //check paths
     for (var i = 0; i < paths.length - 1; i++) {
         if (paths[i][0] == paths[i + 1][0] && paths[i][1] > paths[i + 1][1]) { // up 
-            if (mouseX > (canvas.width / 100) * paths[i][0] - 50 && mouseX < (canvas.width / 100) * paths[i][0] + 100 && mouseY > (canvas.height / 100) * paths[i + 1][1] - 50 && mouseY < (canvas.height / 100) * paths[i + 1][1] + (canvas.height / 100) * (paths[i][1] - paths[i + 1][1]) + 100) {
+            //@ts-ignore
+            if (mouseX > (canvas.width / 100) * paths[i][0] - scaleW * 50 && mouseX < (canvas.width / 100) * paths[i][0] + scaleW * 100 && mouseY > (canvas.height / 100) * paths[i + 1][1] - scaleH * 50 && mouseY < (canvas.height / 100) * paths[i + 1][1] + (canvas.height / 100) * (paths[i][1] - paths[i + 1][1]) + scaleH * 100) {
                 return 0;
             }
         }
         else if (paths[i][0] == paths[i + 1][0] && paths[i][1] < paths[i + 1][1]) { // down
-            if (mouseX > (canvas.width / 100) * paths[i][0] - 50 && mouseX < (canvas.width / 100) * paths[i][0] + 100 && mouseY > (canvas.height / 100) * paths[i][1] - 50 && mouseY < (canvas.height / 100) * paths[i][1] + (canvas.height / 100) * (paths[i + 1][1] - paths[i][1]) + 100) {
+            //@ts-ignore
+            if (mouseX > (canvas.width / 100) * paths[i][0] - scaleW * 50 && mouseX < (canvas.width / 100) * paths[i][0] + scaleW * 100 && mouseY > (canvas.height / 100) * paths[i][1] - scaleH * 50 && mouseY < (canvas.height / 100) * paths[i][1] + (canvas.height / 100) * (paths[i + 1][1] - paths[i][1]) + scaleH * 100) {
                 return 0;
             }
         }
         else if (paths[i][1] == paths[i + 1][1] && paths[i][0] > paths[i + 1][0]) { // left
-            if (mouseX > (canvas.width / 100) * paths[i + 1][0] - 50 && mouseX < (canvas.width / 100) * paths[i + 1][0] + (canvas.width / 100) * (paths[i][0] - paths[i + 1][0]) + 50 && mouseY > (canvas.height / 100) * paths[i][1] - 50 && mouseY < (canvas.height / 100) * paths[i][1] + 100) {
+            //@ts-ignore
+            if (mouseX > (canvas.width / 100) * paths[i + 1][0] - scaleW * 50 && mouseX < (canvas.width / 100) * paths[i + 1][0] + (canvas.width / 100) * (paths[i][0] - paths[i + 1][0]) + scaleW * 50 && mouseY > (canvas.height / 100) * paths[i][1] - scaleH * 50 && mouseY < (canvas.height / 100) * paths[i][1] + scaleH * 100) {
                 return 0;
             }
         }
         else if (paths[i][1] == paths[i + 1][1] && paths[i][0] < paths[i + 1][0]) { // right
-            if (mouseX > (canvas.width / 100) * paths[i][0] - 50 && mouseX < (canvas.width / 100) * paths[i][0] + (canvas.width / 100) * (paths[i + 1][0] - paths[i][0]) + 50 && mouseY > (canvas.height / 100) * paths[i][1] - 50 && mouseY < (canvas.height / 100) * paths[i][1] + 100) {
+            //@ts-ignore
+            if (mouseX > (canvas.width / 100) * paths[i][0] - scaleW * 50 && mouseX < (canvas.width / 100) * paths[i][0] + (canvas.width / 100) * (paths[i + 1][0] - paths[i][0]) + scaleW * 50 && mouseY > (canvas.height / 100) * paths[i][1] - scaleH * 50 && mouseY < (canvas.height / 100) * paths[i][1] + scaleH * 100) {
                 return 0;
             }
         }
@@ -1121,14 +1556,14 @@ function nextWave() {
             spawnWave(50, 100, 3, 3 * spd, 10, "pink"); //grouped
             break;
         case 9:
-            spawnWave(10, 1300 * den, Math.floor(15 * hp), 3 * spd, 15, "red"); //armored 
+            spawnWave(10, 1300 * den, Math.floor(30 * hp), 3 * spd, 15, "red"); //armored 
             break;
         case 10:
-            spawnWave(200, 75, Math.floor(4 * hp), 3 * spd, 10, "pink"); //mega grouped
+            spawnWave(200, 75, Math.floor(5 * hp), 3 * spd, 10, "pink"); //mega grouped
             break;
         case 11:
             spawnWave(15, 1500 * den, Math.floor(20 * hp), 6 * spd, 10, "yellow"); //fast + 
-            spawnWave(40, 100, Math.floor(5 * hp), 3 * spd, 10, "pink"); //grouped + 
+            spawnWave(100, 100, Math.floor(5 * hp), 3 * spd, 10, "pink"); //grouped + 
             spawnWave(12, 1800 * den, Math.floor(25 * hp), 3 * spd, 10, "red"); //armored + 
             spawnWave(20, 1000 * den, Math.floor(40 * hp), 3 * spd, 10, "green"); //basic
             break;
@@ -1146,6 +1581,69 @@ function nextWave() {
             enemies.push(boss);
             if (difficulty != 1) { //no minions for easy
                 spawnWave(10, 1000 * den, Math.floor(10 * hp), 3 * spd, 7.5 * spd, "red", boss); //minions
+            }
+            break;
+        case 16: //fast
+            spawnWave(50, 350, 50, 6.5, 10, "yellow");
+            break;
+        case 17: //grouped
+            spawnWave(150, 80, 30, 3, 10, "pink");
+            break;
+        case 18: //tanks
+            spawnWave(5, 6000, 2500, 2, 20, "green");
+            break;
+        case 19: // armored 
+            spawnWave(20, 1200, 200, 1.5, 20, "red");
+            break;
+        case 20: // fast, grouped, armored, tanks
+            spawnWave(10, 250, 150, 4, 25, "red");
+            break;
+        case 21: // fast armored on grouped
+            spawnWave(60, 300, 250, 1.5, 20, "pink");
+            spawnWave(30, 600, 100, 5, 10, "red");
+            break;
+        case 22: // stacks 
+            spawnWave(10, 1500, 50, 3, 10, "pink");
+            spawnWave(10, 1500, 50, 3, 10, "pink");
+            spawnWave(10, 1500, 50, 3, 10, "pink");
+            spawnWave(10, 1500, 50, 3, 10, "pink");
+            spawnWave(10, 1500, 50, 3, 10, "pink");
+            spawnWave(10, 1500, 50, 3, 10, "pink");
+            spawnWave(10, 1500, 50, 3, 10, "pink");
+            spawnWave(10, 1500, 50, 3, 10, "pink");
+            spawnWave(10, 1500, 50, 3, 10, "pink");
+            spawnWave(10, 1500, 50, 3, 10, "pink");
+            spawnWave(10, 1500, 50, 3, 10, "pink");
+            spawnWave(10, 1500, 50, 3, 10, "pink");
+            spawnWave(10, 1500, 50, 3, 10, "pink");
+            spawnWave(10, 1500, 50, 3, 10, "pink");
+            spawnWave(10, 1500, 50, 3, 10, "pink");
+            spawnWave(10, 1500, 50, 3, 10, "pink");
+            spawnWave(10, 1500, 50, 3, 10, "pink");
+            spawnWave(10, 1500, 50, 3, 10, "pink");
+            spawnWave(10, 1500, 50, 3, 10, "pink");
+            spawnWave(10, 1500, 50, 3, 10, "pink");
+            spawnWave(10, 1500, 50, 3, 10, "pink");
+            spawnWave(10, 1500, 50, 3, 10, "pink");
+            spawnWave(10, 1500, 50, 3, 10, "pink");
+            spawnWave(10, 1500, 50, 3, 10, "pink");
+            spawnWave(10, 1500, 50, 3, 10, "pink");
+            break;
+        case 23: // tanks 2
+            spawnWave(5, 5000, 15000, 0.6, 25, "green");
+            break;
+        case 24: // everything again
+            spawnWave(30, 1500, 200, 6, 10, "yellow"); //fast + 
+            spawnWave(250, 100, 50, 3, 10, "pink"); //grouped + 
+            spawnWave(25, 1900, 50, 2.8, 10, "red"); //armored + 
+            spawnWave(15, 1500, 700, 3.2, 10, "green"); //basic
+            break;
+        case 25: // fboss
+            var fboss = new Enemy(spawnPoint()[0], spawnPoint()[1], 50000, 0.3, spawnDirection(), 50, "boss");
+            enemies.push(fboss);
+            if (difficulty != 1) { //no minions for easy
+                spawnWave(10, 10000, 2000, 2, 20, "black", fboss); //minions
+                spawnWave(10, 3000, 200, 6, 15, "yellow", fboss); //minions
             }
             break;
         default:
@@ -1184,20 +1682,26 @@ function spawnPoint() {
     var x = 0;
     var y = 0;
     if (paths[0][0] == 0) { // left enterance
-        x = -10;
-        y = (canvas.height / 100) * paths[0][1] + 25;
+        x = -scaleW * 10;
+        //@ts-ignore
+        y = (canvas.height / 100) * paths[0][1] + scaleH * 25;
     }
     else if (paths[0][1] == 0) { // top enterance
-        x = (canvas.width / 100) * paths[0][0] + 25;
-        y = -10;
+        //@ts-ignore
+        x = (canvas.width / 100) * paths[0][0] + scaleW * 25;
+        y = -scaleH * 10;
     }
     else if (paths[0][1] == 100) { // bottom enterance
-        x = (canvas.width / 100) * paths[0][0] + 25;
-        y = canvas.height + 10;
+        //@ts-ignore
+        x = (canvas.width / 100) * paths[0][0] + scaleW * 25;
+        //@ts-ignore
+        y = canvas.height + scaleH * 10;
     }
     else { //right enterance 
-        x = canvas.width + 100;
-        y = (canvas.height / 100) * paths[0][1] + 25;
+        //@ts-ignore
+        x = canvas.width + scaleW * 100;
+        //@ts-ignore
+        y = (canvas.height / 100) * paths[0][1] + scaleH * 25;
     }
     point[0] = x;
     point[1] = y;
@@ -1225,18 +1729,22 @@ function choosepath(i) {
     switch (i) {
         case 0:
             // basic path
+            //@ts-ignore
             paths = [[0, 40], [20, 40], [20, 80], [40, 80], [40, 60], [70, 60], [70, 20], [50, 20], [50, 0]];
             break;
         case 1:
             // castle path
+            //@ts-ignore
             paths = [[50, 100], [50, 80], [60, 80], [60, 90], [80, 90], [80, 30], [70, 30], [70, 10], [20, 10], [20, 30], [10, 30], [10, 90], [30, 90], [30, 80], [40, 80], [40, 100]];
             break;
         case 2:
             // corner path
+            //@ts-ignore
             paths = [[0, 40], [20, 40], [20, 0]];
             break;
         case 3:
             // diamond path
+            //@ts-ignore
             paths = [[0, 60], [20, 60]];
             var ypath = 60;
             var xpath = 20;
@@ -1245,63 +1753,77 @@ function choosepath(i) {
                 if (i < 40) { //fist quarter
                     if (i % 2 == 0) {
                         ypath++;
+                        //@ts-ignore
                         paths.push([xpath, ypath]);
                     }
                     else {
                         xpath++;
+                        //@ts-ignore
                         paths.push([xpath, ypath]);
                     }
                 }
                 else if (i < 80) {
                     if (i % 2 == 0) {
                         ypath--;
+                        //@ts-ignore
                         paths.push([xpath, ypath]);
                     }
                     else {
                         xpath++;
+                        //@ts-ignore
                         paths.push([xpath, ypath]);
                     }
                 }
                 else if (i == 80) { //middle section
+                    //@ts-ignore
                     paths.push([60, 40]);
                     ypath = 40;
                 }
                 else if (i < 122) {
                     if (i % 2 == 0) {
                         ypath--;
+                        //@ts-ignore
                         paths.push([xpath, ypath]);
                     }
                     else {
                         xpath--;
+                        //@ts-ignore
                         paths.push([xpath, ypath]);
                     }
                 }
                 else {
                     if (i % 2 == 0) {
                         ypath++;
+                        //@ts-ignore
                         paths.push([xpath, ypath]);
                     }
                     else {
                         xpath--;
+                        //@ts-ignore
                         paths.push([xpath, ypath]);
                     }
                 }
             }
+            //@ts-ignore
             paths.push([0, 40]);
             break;
         case 4:
             //circle path
+            //@ts-ignore
             paths = [[Math.cos((80 * Math.PI / 180)) * 40 + 40, 100], [Math.cos((80 * Math.PI / 180)) * 40 + 40, Math.sin(((80 - 1) * Math.PI / 180)) * 40 + 40]];
             for (var i = 80; i > -260; i--) {
                 if (i % 2 == 0) {
+                    //@ts-ignore
                     paths.push([Math.cos((i * Math.PI / 180)) * 40 + 40, Math.sin(((i - 1) * Math.PI / 180)) * 40 + 40]);
                     console.log(i + " " + Math.cos((i * Math.PI / 180)) * 40 + 40 + " " + Math.sin(((i - 1) * Math.PI / 180)) * 40 + 40);
                 }
                 else {
+                    //@ts-ignore
                     paths.push([Math.cos(((i - 1) * Math.PI / 180)) * 40 + 40, Math.sin((i * Math.PI / 180)) * 40 + 40]);
                     console.log(i + " " + Math.cos(((i - 1) * Math.PI / 180)) * 40 + 40 + " " + Math.sin((i * Math.PI / 180)) * 40 + 40);
                 }
             }
+            //@ts-ignore
             paths.push([Math.cos(((-260) * Math.PI / 180)) * 40 + 40, 100]);
             break;
     }
