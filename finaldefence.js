@@ -1590,17 +1590,17 @@ function nextWave() {
             spawnWave(150, 80, 30, 3, 10, "pink");
             break;
         case 18: //tanks
-            spawnWave(5, 6000, 2500, 2, 20, "green");
+            spawnWave(7, 6000, 3500, 1.5, 20, "green");
             break;
         case 19: // armored 
             spawnWave(20, 1200, 200, 1.5, 20, "red");
             break;
         case 20: // fast, grouped, armored, tanks
-            spawnWave(10, 250, 150, 4, 25, "red");
+            spawnWave(10, 250, 100, 4, 25, "red");
             break;
         case 21: // fast armored on grouped
-            spawnWave(60, 300, 250, 1.5, 20, "pink");
-            spawnWave(30, 600, 100, 5, 10, "red");
+            spawnWave(60, 300, 150, 1.5, 15, "pink");
+            spawnWave(30, 600, 50, 5, 10, "red");
             break;
         case 22: // stacks 
             spawnWave(10, 1500, 50, 3, 10, "pink");
@@ -1630,20 +1630,19 @@ function nextWave() {
             spawnWave(10, 1500, 50, 3, 10, "pink");
             break;
         case 23: // tanks 2
-            spawnWave(5, 5000, 15000, 0.6, 25, "green");
+            spawnWave(6, 5000, 10000, 0.5, 25, "green");
             break;
         case 24: // everything again
-            spawnWave(30, 1500, 200, 6, 10, "yellow"); //fast + 
-            spawnWave(250, 100, 50, 3, 10, "pink"); //grouped + 
+            spawnWave(30, 1500, 150, 6, 10, "yellow"); //fast + 
+            spawnWave(250, 100, 40, 3, 10, "pink"); //grouped + 
             spawnWave(25, 1900, 50, 2.8, 10, "red"); //armored + 
-            spawnWave(15, 1500, 700, 3.2, 10, "green"); //basic
+            spawnWave(15, 1500, 500, 3.2, 10, "green"); //basic
             break;
         case 25: // fboss
             var fboss = new Enemy(spawnPoint()[0], spawnPoint()[1], 50000, 0.3, spawnDirection(), 50, "boss");
             enemies.push(fboss);
             if (difficulty != 1) { //no minions for easy
-                spawnWave(10, 10000, 2000, 2, 20, "black", fboss); //minions
-                spawnWave(10, 3000, 200, 6, 15, "yellow", fboss); //minions
+                spawnWave(10, 5000, 500, 1.5, 20, "red", fboss); //minions
             }
             break;
         default:
