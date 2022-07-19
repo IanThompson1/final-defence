@@ -3,27 +3,50 @@ startGameButton.addEventListener('click', function () {
     //starts the program by calling the animate function
     switch (difficulty) {
         case 1:
-            money = 1000;
+            totalmoney = 1000;
             lives = 100;
             round = 0;
             break;
         case 2:
-            money = 750;
+            totalmoney = 750;
             lives = 50;
             round = 0;
             break;
         case 3:
-            money = 500;
+            totalmoney = 500;
             lives = 10;
             round = 0;
             break;
         case 4:
-            money = 400;
+            totalmoney = 400;
             lives = 1;
             round = 0;
             break;
+        case 5:
+            totalmoney = 100000;
+            lives = 10000;
+            round = 0;
+            break;
     }
-    state.update(lives, money, round, towers);
+    //calculate round money
+    if(round != 0){
+        for(var i=0; i<round; i++){
+            if(i < 10){
+                totalmoney += 100+i*10;
+            }else if(i < 20){
+                totalmoney += 200+(i-10)*20;
+            }else{
+                totalmoney += 400+(i-20)*50;
+            }
+        }
+    }
+    if(round > 15){//extra boss money
+        totalmoney += 1000;
+    }
+    if(round > 25){
+        totalmoney += 2000;
+    }
+    state.update(lives, totalmoney, round, towers);
     animate();
     //@ts-ignore
     mainMenu.style.display = "none";
@@ -51,6 +74,12 @@ circleMap.addEventListener('click', function () {
     resetButtons(1);
     //@ts-ignore
     circleMap.style.backgroundColor = "red";
+});
+crossMap.addEventListener('click', function () {
+    paths = choosepath(5);
+    resetButtons(1);
+    //@ts-ignore
+    crossMap.style.backgroundColor = "red";
 });
 cornerMap.addEventListener('click', function () {
     paths = choosepath(2);
@@ -82,6 +111,12 @@ impossibleDifficulty.addEventListener('click', function () {
     //@ts-ignore
     impossibleDifficulty.style.backgroundColor = "red";
 });
+sandboxDifficulty.addEventListener('click', function () {
+    difficulty = 5;
+    resetButtons(0);
+    //@ts-ignore
+    sandboxDifficulty.style.backgroundColor = "red";
+});
 //reset color function
 function resetButtons(path) {
     if (path == 1) {
@@ -95,6 +130,8 @@ function resetButtons(path) {
         circleMap.style.backgroundColor = "blue";
         //@ts-ignore
         cornerMap.style.backgroundColor = "blue";
+
+        crossMap.style.backgroundColor = "blue";
     }
     else if (path == 0) {
         //@ts-ignore
@@ -105,6 +142,8 @@ function resetButtons(path) {
         hardDifficulty.style.backgroundColor = "blue";
         //@ts-ignore
         impossibleDifficulty.style.backgroundColor = "blue";
+
+        sandboxDifficulty.style.backgroundColor = "blue";
     }
 }
 
@@ -144,27 +183,32 @@ restartButton.addEventListener('click', function () {
     //restart level
     switch (difficulty) {
         case 1:
-            money = 1000;
+            totalmoney = 1000;
             lives = 100;
             round = 0;
             break;
         case 2:
-            money = 750;
+            totalmoney = 750;
             lives = 50;
             round = 0;
             break;
         case 3:
-            money = 500;
+            totalmoney = 500;
             lives = 10;
             round = 0;
             break;
         case 4:
-            money = 400;
+            totalmoney = 400;
             lives = 1;
             round = 0;
             break;
+        case 5:
+            totalmoney = 50000;
+            lives = 9999;
+            round = 0;
+            break;
     }
-    state.update(lives, money, round, towers);
+    state.update(lives, totalmoney, round, towers);
     animate();
 });
 
@@ -187,10 +231,15 @@ retryButton.addEventListener('click', function () {
         towers.push(state.towers[i]);
         towers[i].update();
         towershoot(towers[towers.length-1]);
+        if(state.towers[i].level =="6" && (state.towers[i].type == "laser" || state.towers[i].type == "tesla")){
+            towershoot(towers[towers.length-1]);
+            towershoot(towers[towers.length-1]);
+            towershoot(towers[towers.length-1]);
+            towershoot(towers[towers.length-1]);
+        }
     }
     lives = state.lives;
-    money = state.money;
+    totalmoney = state.totalmoney;
     retried = 1;
     animate();
 });
-
