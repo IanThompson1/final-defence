@@ -15,7 +15,7 @@ startGameButton.addEventListener('click', function () {
         case 3:
             totalmoney = 500;
             lives = 10;
-            round = 0;
+            round = 29;
             break;
         case 4:
             totalmoney = 400;

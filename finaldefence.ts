@@ -923,23 +923,10 @@ function towershoot(tower :Tower) :void {
                             }
                         }
                         //ignores armor
-                        target.health -= Math.floor(laserdamage);
-
-                        if (target.health <= 0) {
-                            //remove laser
-                            for (var i = lasers.length - 1; i >= 0; i--) {
-                                if (lasers[i].target == target) {
-                                    lasers.splice(i, 1);
-                                }
-                            }
-                            //add money
-                            totalmoney += target.enemymoney;
-                            //remove enemy
-                            enemies.forEach(function (enemy, index) {
-                                if (enemy == target) {
-                                    enemies.splice(index, 1);
-                                }
-                            });
+                        if(target.health <= Math.floor(laserdamage)){
+                            target.health = 0;
+                        }else{
+                            target.health -= Math.floor(laserdamage);
                         }
                         lasercounter = 0;
                     }
@@ -1017,9 +1004,11 @@ function towershoot(tower :Tower) :void {
                             if(tower.level != 7){ //reduces charge
                                 tower.charge -= 10;
                             }
-                            if (tower.damage <= target.armor) {
+                            if (tower.damage <= target.armor) {//low damage against armored
                                 target.health -= 1;
-                            }else {
+                            }else if(target.health+target.armor <= tower.damage){//enough damage to kill
+                                target.health = 0;
+                            }else{//deals damage
                                 target.health -= tower.damage-target.armor;
                             }
                             lasers.push(new Laser(tower.level+4, "yellow", target, tower));
@@ -1221,16 +1210,26 @@ function animate(){
         shots.forEach(function(shot, index){
             if(shot.x > enemy.x-enemy.radius-shot.size && shot.x < enemy.x+enemy.radius+shot.size && shot.y > enemy.y-enemy.radius-shot.size && shot.y < enemy.y+enemy.radius+shot.size){
                 if(shot.ap == 0){
-                    if (shot.damage <= enemy.armor) {
+                    if(shot.damage >= enemy.health+enemy.armor){//kills enemy
+                        enemy.health = 0;
+                    }else if (shot.damage <= enemy.armor) {//less than armor
                         enemy.health -= 1;
-                    }else {
+                    }else {//lower health
                         enemy.health -= (shot.damage-enemy.armor);
                     }
                 }else{ //armor piercing
                     if(enemy.armor > 0){
-                        enemy.health -= shot.damage*2;
+                        if(enemy.health <= shot.damage*2){
+                            enemy.health = 0;
+                        }else{
+                            enemy.health -= shot.damage*2;
+                        }
                     }else{
-                        enemy.health -= shot.damage;
+                        if(enemy.health <= shot.damage){
+                            enemy.health = 0;
+                        }else{
+                            enemy.health -= shot.damage;
+                        }
                     }
                 }
                 shots.splice(index, 1);
@@ -1967,9 +1966,7 @@ function nextWave(){
         case 15: // money 280ish
             var boss = new Enemy(spawnPoint()[0], spawnPoint()[1], Math.floor(10000 * hp), 0.4 * spd, spawnDirection(), 50, "boss", 1000, 0);
             enemies.push(boss);
-            if (difficulty > 2) { //no minions for easy
-                spawnWave(10, 500 * den, Math.floor(5 * hp), 3 * spd, 7.5 * spd, "pink", 2, 0, boss); //minions
-            }
+            spawnWave(10, 500 * den, Math.floor(5 * hp), 3 * spd, 7.5 * spd, "pink", 2, 0, boss); //minions
             break;
         case 16: //fast 300
             spawnWave(50, 400 * den, Math.floor(100 * hp), 8 * spd, 10, "yellow", 8, 0);
@@ -2045,10 +2042,10 @@ function nextWave(){
             break;
         case 30: // 750 matrioshkas 
             spawnWave(10, 5000 * den, Math.floor(1500 * hp), 3 * spd, 25, "green", 40, 0);
-            spawnWave(10, 5000 * den, Math.floor(1500 * hp), 3 * spd, 20, "green", 40, 0);
-            spawnWave(10, 5000 * den, Math.floor(1500 * hp), 3 * spd, 15, "green", 40, 0);
-            spawnWave(10, 5000 * den, Math.floor(1500 * hp), 3 * spd, 10, "green", 40, 0);
-            spawnWave(10, 5000 * den, Math.floor(1500 * hp), 3 * spd, 5, "green", 40, 0);
+            spawnWave(10, 5000 * den, Math.floor(1000 * hp), 3 * spd, 20, "green", 40, 0);
+            spawnWave(10, 5000 * den, Math.floor(900 * hp), 3 * spd, 15, "green", 40, 0);
+            spawnWave(10, 5000 * den, Math.floor(700 * hp), 3 * spd, 10, "green", 40, 0);
+            spawnWave(10, 5000 * den, Math.floor(500 * hp), 3 * spd, 5, "green", 40, 0);
             break;
         // case 31: // 700
         //     spawnWave(10, 7000, 1500, 0.5, 25, "green", 40, 30);
