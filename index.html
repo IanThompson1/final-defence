@@ -11,7 +11,7 @@ dist/tailwind.min.css" rel="stylesheet">
 <style>
     body {
         margin: 0;
-        background: rgb(45, 121, 74);
+        background: rgb(4, 219, 86);
     }
 </style>
 <style>
@@ -26,9 +26,9 @@ dist/tailwind.min.css" rel="stylesheet">
     .button3 {width: 32%}
     .button4 {width: 24%}
     .space{
-        color: white;
+        color: rgb(4, 219, 86);
     }
-    .spacesmall {color: white; height: 5}
+    .spacesmall {color: rgb(4, 219, 86); height: 5}
 
     /* background gif */
     #myvideo {
@@ -38,13 +38,34 @@ dist/tailwind.min.css" rel="stylesheet">
         min-width: 100%;
         min-height: 100%;
     }
+    .bg-green{
+        background-color:rgb(4, 219, 86);
+    }
 
     #javascript{
         position: fixed;
         
     }
-
-
+    .slider {
+        -webkit-appearance: none;  /* Override default CSS styles */
+        appearance: none;
+        width: 100%; /* Full-width */
+        height: 25px; /* Specified height */
+        background: #d3d3d3; /* Grey background */
+        outline: none; /* Remove outline */
+        opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+        -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+        transition: opacity .2s;
+    }
+    .slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 50px;
+        height: 50px;
+        background: #ff4800;
+        cursor: pointer;
+    }
+    
 </style>
 
 
@@ -55,29 +76,29 @@ dist/tailwind.min.css" rel="stylesheet">
 <canvas id="javascript"></canvas>
 
 <div class="fixed inset-0 flex items-center justify-center select-none" id="mainMen">
-    <div class="bg-white h-2/3 max-w-screen-2xl w-full p-6 text-center">
+    <div class="bg-green h-2/3 w-full h-full p-6 text-center">
         <div class="w-full">
-            <h1 class="text-6xl font-bold leading-none">Pick a map!</h1>
+            <h1 class="text-6xl font-bold leading-none">Pick a map</h1>
             <button
                 class="button button3 buttonRed py-3 
                 rounded-full"
                 id="mapBasic"
             >
-                Basic
+                Basic(medium)
             </button>
             <button
                 class="button button3 py-3 
                 rounded-full"
                 id="mapCastle"
             >
-                Castle
+                Castle(hard)
             </button>
             <button
                 class="button button3 py-3 
                 rounded-full"
                 id="mapDiamond"
             >
-                Diamond
+                Diamond(medium)
             </button>
             
             <p class="spacesmall">.</p>
@@ -86,24 +107,24 @@ dist/tailwind.min.css" rel="stylesheet">
                 rounded-full"
                 id="mapCircle"
             >
-                Circle
+                Circle(hard)
             </button>
             <button
                 class="button button3 py-3 
                 rounded-full"
                 id="mapCorner"
             >
-                Corner
+                Corner(extreme)
             </button>
             <button
                 class="button button3 py-3 
                 rounded-full"
                 id="mapCross"
             >
-                Cross
+                Cross(easy)
             </button>
             <p class="space">.</p>
-            <h1 class="text-6xl font-bold leading-none">Pick a difficulty!</h1>
+            <h1 class="text-6xl font-bold leading-none">Pick a difficulty</h1>
             <button
                 class="button button3 py-3 
                 rounded-full"
@@ -141,9 +162,15 @@ dist/tailwind.min.css" rel="stylesheet">
                 Sandbox
             </button>
             <p class="space">.</p>
-            <h1 class="text-6xl font-bold leading-none">Start!</h1>
+            <h1 class="text-6xl font-bold leading-none">Set Wave:<input class="absolute bg-green font-bold text-6xl leading-none" type="text" id="startround" value="1"></h1>
+            
+<div class="slidecontainer py-3 rounded-full">
+    <input type="range" min="1" max="31" value="1" class="slider" id="setRound" oninput="startround.value=setRound.value">
+  </div>
+            <p class="space">.</p>
+            <h1 class="text-6xl font-bold leading-none">Start</h1>
             <button
-                class="button button1 py-3 
+                class="button button3 py-3 
                 rounded-full"
                 id="startGameBtn"
             >
@@ -183,6 +210,7 @@ dist/tailwind.min.css" rel="stylesheet">
 </div>
 
 
+<script src="./sprites.js"></script>
 <script src="./finaldefence.js"></script>
 <script src="./htmlInteractions.js"></script>
 <script src="./graphicalUserInterface.js"></script>

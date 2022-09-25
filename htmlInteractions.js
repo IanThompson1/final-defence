@@ -3,31 +3,27 @@ startGameButton.addEventListener('click', function () {
     //starts the program by calling the animate function
     switch (difficulty) {
         case 1:
-            totalmoney = 1000;
-            lives = 100;
-            round = 0;
+            totalmoney = 800;
+            lives = 40;
             break;
         case 2:
-            totalmoney = 750;
-            lives = 50;
-            round = 0;
+            totalmoney = 650;
+            lives = 25;
             break;
         case 3:
             totalmoney = 500;
             lives = 10;
-            round = 29;
             break;
         case 4:
             totalmoney = 400;
             lives = 1;
-            round = 0;
             break;
         case 5:
             totalmoney = 100000;
             lives = 10000;
-            round = 0;
             break;
     }
+    round = startingRound.value-1;
     //calculate round money
     if(round != 0){
         for(var i=0; i<round; i++){
@@ -216,22 +212,35 @@ retryButton.addEventListener('click', function () {
     gameOverMenu.style.display = "none";
     cancelAnimationFrame(animationId);
     //remove all towers and enemies
-    for(var i = towers.length; i > -1; i--){
+    for(var i = towers.length-1; i > -1; i--){
+        towers[i].sold = 1;
+        //remove range
+        towers[i].selected = 0;
+        towers[i].draw();
         towers.splice(i, 1);
     }
-    for(var i = enemies.length; i > -1; i--){
+    for(var i = enemies.length-1; i > -1; i--){
         enemies.splice(i, 1);
     }
     //reset variables to previous rounds
     gameIsOver = 0;
     autostart = "StartWave";
     round = state.round;
-    console.log(state.towers.length);
-    for(var i=0; i<state.towers.length; i++){//replace towers
-        towers.push(state.towers[i]);
-        towers[i].update();
+
+    //deep copy state.towers so it doesn't get updated
+    var tempTowers = state.towers.map((x) => x);
+
+    for(var i=0; i<tempTowers.length; i++){//replace towers
+        towers.push(new Tower(tempTowers[i].x, tempTowers[i].y, tempTowers[i].type, state.levels[i], 0));
+        towers[towers.length-1].update();
+        if(towers[i].type == "tesla"){//reset tesla charge
+            towers[towers.length-1].charge = tempTowers[i].charge;
+        }
+        if(towers[i].type == "farm"){//remember farm generated
+            towers[towers.length-1].generated = tempTowers[i].generated;
+        }
         towershoot(towers[towers.length-1]);
-        if(state.towers[i].level =="6" && (state.towers[i].type == "laser" || state.towers[i].type == "tesla")){
+        if(tempTowers[i].level =="6" && (tempTowers[i].type == "laser" || tempTowers[i].type == "tesla")){
             towershoot(towers[towers.length-1]);
             towershoot(towers[towers.length-1]);
             towershoot(towers[towers.length-1]);
