@@ -7,15 +7,15 @@ startGameButton.addEventListener('click', function () {
             lives = 40;
             break;
         case 2:
-            totalmoney = 650;
+            totalmoney = 700;
             lives = 25;
             break;
         case 3:
-            totalmoney = 500;
+            totalmoney = 600;
             lives = 10;
             break;
         case 4:
-            totalmoney = 400;
+            totalmoney = 500;
             lives = 1;
             break;
         case 5:

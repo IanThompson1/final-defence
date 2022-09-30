@@ -31,6 +31,8 @@ new tower ideas: area slow(big range vs small), cannon, some really strong but e
 max towers more expensive. round 6 easier
 set round
 higher level higher start round
+
+minigun cheaper, mega damage sniper $800
 */
 //global variables and inital state
 //@ts-ignore
@@ -121,11 +123,6 @@ var Enemy = /** @class */ (function () {
                 enemySrc += "Left.png";
                 break;
         }
-        // if (this.color == "boss") {
-        //     //@ts-ignore
-        //     c.drawImage(bossEnemy, 222, 111, 1117, 525, this.x - scaleW*(this.radius / 2), this.y - scaleH*(this.radius / 2), scaleW*this.radius, scaleH*this.radius); //entire enemy
-        //     // c.drawImage(bossEnemy,527,194,418,392,this.x-this.radius, this.y-this.radius, this.radius*2, this.radius*2);//face 
-        // }
         var enemyImg = new Sprite({
             position: {
                 x: this.x,
@@ -154,22 +151,30 @@ var Enemy = /** @class */ (function () {
     };
     //moves the Enemy with speed
     Enemy.prototype.update = function () {
+        //calculate slow
+        var slows = 1;
+        for (var i = 0; i < towers.length; i++) {
+            if (towers[i].type == "ice" && towers[i].slow > slows) {
+                if (targetinellipse(towers[i].x, towers[i].y, towers[i].range, this.x, this.y, this) == 1) {
+                    slows = towers[i].slow;
+                }
+            }
+        }
+        console.log(slows);
+        slows = slows / 100;
         if (this.direction == "N") {
-            this.y -= speedModifier * scaleH * this.speed;
-            this.distance += speedModifier * scaleH * this.speed;
+            this.y -= (speedModifier * scaleH * this.speed) - (speedModifier * scaleH * this.speed) * slows;
         }
         else if (this.direction == "E") {
-            this.x += speedModifier * scaleW * this.speed;
-            this.distance += speedModifier * scaleW * this.speed;
+            this.x += (speedModifier * scaleH * this.speed) - (speedModifier * scaleH * this.speed) * slows;
         }
         else if (this.direction == "S") {
-            this.y += speedModifier * scaleH * this.speed;
-            this.distance += speedModifier * scaleH * this.speed;
+            this.y += (speedModifier * scaleH * this.speed) - (speedModifier * scaleH * this.speed) * slows;
         }
         else if (this.direction == "W") {
-            this.x -= speedModifier * scaleW * this.speed;
-            this.distance += speedModifier * scaleW * this.speed;
+            this.x -= (speedModifier * scaleH * this.speed) - (speedModifier * scaleH * this.speed) * slows;
         }
+        this.distance += (speedModifier * scaleH * this.speed) - (speedModifier * scaleH * this.speed) * slows;
         this.draw();
     };
     return Enemy;
@@ -222,6 +227,10 @@ var Tower = /** @class */ (function () {
             this.income = 50;
             this.range = 10000;
         }
+        else if (this.type == "ice") {
+            this.range = 120;
+            this.slow = 20;
+        }
         this.draw();
     }
     // draws the tower
@@ -261,6 +270,10 @@ var Tower = /** @class */ (function () {
         else if (this.type == "farm") {
             //@ts-ignore
             c.fillStyle = "yellow";
+        }
+        else if (this.type == "ice") {
+            //@ts-ignore
+            c.fillStyle = "white";
         }
         //@ts-ignore
         c.beginPath();
@@ -583,6 +596,30 @@ var Tower = /** @class */ (function () {
                 this.income = 770;
             }
         }
+        else if (this.type == "ice") {
+            if (this.level == 1) {
+                this.slow = 20;
+            }
+            else if (this.level == 2) {
+                this.slow = 30;
+            }
+            else if (this.level == 3) {
+                this.slow = 40;
+            }
+            else if (this.level == 4) {
+                this.slow = 50;
+            }
+            else if (this.level == 5) {
+                this.slow = 60;
+            }
+            else if (this.level == 6) {
+                this.slow = 60;
+                this.range = 200;
+            }
+            else if (this.level == 7) {
+                this.slow = 80;
+            }
+        }
     };
     return Tower;
 }());
@@ -750,9 +787,10 @@ function spawnWave(numenemies, density, health, speed, size, color, Emoney, armo
         }
     }, density / speedModifier);
 }
-function targetinellipse(towerX, towerY, towerRange, targetX, targetY) {
-    var fun = (((targetX - towerX) * (targetX - towerX)) / ((towerRange * scaleW) * (towerRange * scaleW))) + (((targetY - towerY) * (targetY - towerY)) / ((towerRange * scaleH) * (towerRange * scaleH)));
-    if (fun <= 1) {
+function targetinellipse(towerX, towerY, towerRange, targetX, targetY, target) {
+    // var fun = (((targetX-towerX)*(targetX-towerX))/((towerRange*scaleW)*(towerRange*scaleW)))+(((targetY-towerY)*(targetY-towerY))/((towerRange*scaleH)*(towerRange*scaleH)));
+    var fun = Math.sqrt((targetX - towerX) * (targetX - towerX) + (targetY - towerY) * (targetY - towerY));
+    if (fun <= target.radius + towerRange - 15) { //fun <= 1 for top function, fun <= target.radius+towerRange
         return 1;
     }
     else {
@@ -774,14 +812,14 @@ function towershoot(tower) {
     var firefunction = setInterval(function () {
         var inrange = 0;
         for (var i = 0; i < enemies.length; i++) { //find fist and last enemies in range
-            if (targetinellipse(tower.x, tower.y, tower.range, enemies[i].x, enemies[i].y) == 1 && inrange == 0) {
+            if (targetinellipse(tower.x, tower.y, tower.range, enemies[i].x, enemies[i].y, enemies[i]) == 1 && inrange == 0) {
                 lastenemy = enemies[i];
                 firstenemy = enemies[i];
                 strongenemy = enemies[i];
                 weakenemy = enemies[i];
                 inrange = 1;
             }
-            else if (targetinellipse(tower.x, tower.y, tower.range, enemies[i].x, enemies[i].y) == 1) {
+            else if (targetinellipse(tower.x, tower.y, tower.range, enemies[i].x, enemies[i].y, enemies[i]) == 1) {
                 if (lastenemy.distance > enemies[i].distance) {
                     lastenemy = enemies[i];
                 }
@@ -926,18 +964,18 @@ function towershoot(tower) {
             if (inrange == 1) {
                 var found = 0;
                 for (var i = 0; i < enemies.length; i++) {
-                    if (targetinellipse(tower.x, tower.y, tower.range, enemies[i].x, enemies[i].y) == 1 && enemies[i] == target) {
+                    if (targetinellipse(tower.x, tower.y, tower.range, enemies[i].x, enemies[i].y, enemies[i]) == 1 && enemies[i] == target) {
                         found = 1;
                     }
                 }
                 if (found == 0 || newtarget == 1) {
                     inrange = 0;
                     for (var i = 0; i < enemies.length; i++) { //find enemies in range
-                        if (targetinellipse(tower.x, tower.y, tower.range, enemies[i].x, enemies[i].y) == 1 && inrange == 0 && alreadyTargeted(tower, enemies[i]) == 0) {
+                        if (targetinellipse(tower.x, tower.y, tower.range, enemies[i].x, enemies[i].y, enemies[i]) == 1 && inrange == 0 && alreadyTargeted(tower, enemies[i]) == 0) {
                             target = enemies[i];
                             inrange = 1;
                         }
-                        else if (targetinellipse(tower.x, tower.y, tower.range, enemies[i].x, enemies[i].y) == 1 && alreadyTargeted(tower, enemies[i]) == 0) {
+                        else if (targetinellipse(tower.x, tower.y, tower.range, enemies[i].x, enemies[i].y, enemies[i]) == 1 && alreadyTargeted(tower, enemies[i]) == 0) {
                             switch (tower.target) {
                                 case "last": {
                                     if (target.distance > enemies[i].distance) {
@@ -1023,7 +1061,7 @@ function towershoot(tower) {
                 if (inrange == 1) {
                     var found = 0;
                     for (var i = 0; i < enemies.length; i++) {
-                        if (targetinellipse(tower.x, tower.y, tower.range, enemies[i].x, enemies[i].y) == 1 && enemies[i] == target) {
+                        if (targetinellipse(tower.x, tower.y, tower.range, enemies[i].x, enemies[i].y, enemies[i]) == 1 && enemies[i] == target) {
                             found = 1;
                             if (tower.level == 6) {
                                 tower.teslatargets.push(target);
@@ -1033,11 +1071,11 @@ function towershoot(tower) {
                     if (found == 0) {
                         inrange = 0;
                         for (var i = 0; i < enemies.length; i++) { //find enemies in range
-                            if (targetinellipse(tower.x, tower.y, tower.range, enemies[i].x, enemies[i].y) == 1 && inrange == 0 && alreadyTargeted(tower, enemies[i]) == 0) {
+                            if (targetinellipse(tower.x, tower.y, tower.range, enemies[i].x, enemies[i].y, enemies[i]) == 1 && inrange == 0 && alreadyTargeted(tower, enemies[i]) == 0) {
                                 target = enemies[i];
                                 inrange = 1;
                             }
-                            else if (targetinellipse(tower.x, tower.y, tower.range, enemies[i].x, enemies[i].y) == 1 && alreadyTargeted(tower, enemies[i]) == 0) {
+                            else if (targetinellipse(tower.x, tower.y, tower.range, enemies[i].x, enemies[i].y, enemies[i]) == 1 && alreadyTargeted(tower, enemies[i]) == 0) {
                                 switch (tower.target) {
                                     case "last": {
                                         if (target.distance > enemies[i].distance) {
@@ -1153,6 +1191,10 @@ function animate() {
                 selectedTower = "farm";
                 draggingTower = 1;
             }
+            else if (mouseover == "ice" && selectedTower == "none" && totalmoney >= 200) {
+                selectedTower = "ice";
+                draggingTower = 1;
+            }
         }
         if (!mouseDown && draggingTower) {
             if (selectedTower == "sniper" && freespace() == 1) {
@@ -1183,6 +1225,12 @@ function animate() {
                 selectedTower = "none";
                 totalmoney -= 300;
                 towers.push(new Tower(mouseX, mouseY, "farm", 1, 0));
+                towershoot(towers[towers.length - 1]);
+            }
+            else if (selectedTower == "ice" && freespace() == 1) {
+                selectedTower = "none";
+                totalmoney -= 200;
+                towers.push(new Tower(mouseX, mouseY, "ice", 1, 0));
                 towershoot(towers[towers.length - 1]);
             }
             else {
@@ -1375,12 +1423,14 @@ function animate() {
         //remove enemy and lower lives if enemy makes it to the end
         if (paths[paths.length - 1][0] == 0) { // left exit
             if (enemy.x <= -10) {
+                totalmoney += enemies[i].enemymoney;
                 enemies.splice(index, 1);
                 lives -= 1;
             }
         }
         else if (paths[paths.length - 1][1] == 0) { // top exit
             if (enemy.y <= -10) {
+                totalmoney += enemies[i].enemymoney;
                 enemies.splice(index, 1);
                 lives -= 1;
             }
@@ -1388,6 +1438,7 @@ function animate() {
         else if (paths[paths.length - 1][1] == 100) { // bottom exit
             //@ts-ignore
             if (enemy.y >= canvas.height + 10) {
+                totalmoney += enemies[i].enemymoney;
                 enemies.splice(index, 1);
                 lives -= 1;
             }
@@ -1395,6 +1446,7 @@ function animate() {
         else { //right exit 
             //@ts-ignore
             if (enemy.x >= canvas.width + 10) {
+                totalmoney += enemies[i].enemymoney;
                 enemies.splice(index, 1);
                 lives -= 1;
             }
@@ -1408,7 +1460,7 @@ function animate() {
     for (var i = lasers.length - 1; i >= 0; i--) {
         //check if still in range
         // var dist = Math.sqrt((lasers[i].target.x - lasers[i].tower.x)*(lasers[i].target.x - lasers[i].tower.x)+(lasers[i].target.y - lasers[i].tower.y)*(lasers[i].target.y - lasers[i].tower.y));
-        if (targetinellipse(lasers[i].tower.x, lasers[i].tower.y, lasers[i].tower.range, lasers[i].target.x, lasers[i].target.y) == 0) {
+        if (targetinellipse(lasers[i].tower.x, lasers[i].tower.y, lasers[i].tower.range, lasers[i].target.x, lasers[i].target.y, lasers[i].target) == 0) {
             lasers[i].update();
             lasers.splice(i, 1);
         }
@@ -1443,6 +1495,10 @@ function animate() {
     }
     else if (menutype == 0 && mouseX > canvas.width - canvas.width / 7.5 && mouseX < canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2 && mouseY > canvas.height / (numboxes / 2) * (4 / 2) && mouseY < canvas.height / (numboxes / 2) * (4 / 2) + canvas.height / (numboxes / 2)) {
         mouseover = "farm";
+        //@ts-ignore
+    }
+    else if (menutype == 0 && mouseX > canvas.width - canvas.width / 7.5 && mouseX < canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2 && mouseY > canvas.height / (numboxes / 2) * (6 / 2) && mouseY < canvas.height / (numboxes / 2) * (6 / 2) + canvas.height / (numboxes / 2)) {
+        mouseover = "ice";
         //@ts-ignore
     }
     else if (menutype == 0 && mouseX > canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2 && mouseX < canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2 + (canvas.width / 7.5) / 2 && mouseY > canvas.height / (numboxes / 2) * ((5 - 1) / 2) && mouseY < canvas.height / (numboxes / 2) * ((5 - 1) / 2) + canvas.height / (numboxes / 2)) {
@@ -1526,6 +1582,9 @@ addEventListener("click", function () {
     else if (mouseover == "farm" && selectedTower == "none" && totalmoney >= 300) {
         selectedTower = "farm";
     }
+    else if (mouseover == "ice" && selectedTower == "none" && totalmoney >= 200) {
+        selectedTower = "ice";
+    }
     else if (selectedTower == "sniper" && freespace() == 1) {
         selectedTower = "none";
         totalmoney -= 100;
@@ -1554,6 +1613,12 @@ addEventListener("click", function () {
         selectedTower = "none";
         totalmoney -= 300;
         towers.push(new Tower(mouseX, mouseY, "farm", 1, 0));
+        towershoot(towers[towers.length - 1]);
+    }
+    else if (selectedTower == "ice" && freespace() == 1) {
+        selectedTower = "none";
+        totalmoney -= 200;
+        towers.push(new Tower(mouseX, mouseY, "ice", 1, 0));
         towershoot(towers[towers.length - 1]);
     }
     else if (mouseover == "upgrade" || mouseover == "level6" || mouseover == "level7") {
@@ -1788,6 +1853,48 @@ addEventListener("click", function () {
                     towers[i].update();
                     totalmoney -= 900;
                 }
+                else if (towers[i].type == "ice" && totalmoney >= 120 && towers[i].level == 1) {
+                    //upgrades tower
+                    towers[i].level = 2;
+                    towers[i].selected = 1;
+                    towers[i].update();
+                    totalmoney -= 120;
+                }
+                else if (towers[i].type == "ice" && totalmoney >= 150 && towers[i].level == 2) {
+                    //upgrades tower
+                    towers[i].level = 3;
+                    towers[i].selected = 1;
+                    towers[i].update();
+                    totalmoney -= 150;
+                }
+                else if (towers[i].type == "ice" && totalmoney >= 180 && towers[i].level == 3) {
+                    //upgrades tower
+                    towers[i].level = 4;
+                    towers[i].selected = 1;
+                    towers[i].update();
+                    totalmoney -= 180;
+                }
+                else if (towers[i].type == "ice" && totalmoney >= 220 && towers[i].level == 4) {
+                    //upgrades tower
+                    towers[i].level = 5;
+                    towers[i].selected = 1;
+                    towers[i].update();
+                    totalmoney -= 220;
+                }
+                else if (towers[i].type == "ice" && totalmoney >= 500 && towers[i].level == 5 && mouseover == "level6") {
+                    //upgrades tower
+                    towers[i].level = 6;
+                    towers[i].selected = 1;
+                    towers[i].update();
+                    totalmoney -= 500;
+                }
+                else if (towers[i].type == "ice" && totalmoney >= 600 && towers[i].level == 5 && mouseover == "level7") {
+                    //upgrades tower
+                    towers[i].level = 7;
+                    towers[i].selected = 1;
+                    towers[i].update();
+                    totalmoney -= 600;
+                }
             }
         }
     }
@@ -1916,6 +2023,31 @@ addEventListener("click", function () {
                             break;
                         case 7:
                             totalmoney += 2800;
+                            break;
+                    }
+                }
+                else if (towers[i].type == "ice") {
+                    switch (towers[i].level) {
+                        case 1:
+                            totalmoney += 140;
+                            break;
+                        case 2:
+                            totalmoney += 220;
+                            break;
+                        case 3:
+                            totalmoney += 320;
+                            break;
+                        case 4:
+                            totalmoney += 440;
+                            break;
+                        case 5:
+                            totalmoney += 580;
+                            break;
+                        case 6:
+                            totalmoney += 920;
+                            break;
+                        case 7:
+                            totalmoney += 980;
                             break;
                     }
                 }
@@ -2173,8 +2305,8 @@ function nextWave() {
         case 6: //money 150
             spawnWave(20, 1100 * den, Math.floor(65 * hp), 3 * spd, 35, "green", 7.5, 0); //basic
             break;
-        case 7: //money 160
-            spawnWave(2, 6000 * den, Math.floor(200 * hp), 3, 50, "red", 80, 3); //boss / armored
+        case 7: //money 300
+            spawnWave(2, 6000 * den, Math.floor(200 * hp), 3, 50, "red", 150, 3); //boss / armored
             break;
         case 8: //money 170
             spawnWave(15, 1500 * den, Math.floor(20 * hp), 6 * spd, 30, "yellow", 6, 0); //fast + 
@@ -2201,8 +2333,8 @@ function nextWave() {
         case 14: // money 260
             spawnWave(25, 800 * den, Math.floor(50 * hp), 2 * spd, 40, "red", 10.4, 5); //armored / multiple
             break;
-        case 15: // money 280ish
-            var boss = new Enemy(spawnPoint()[0], spawnPoint()[1], Math.floor(10000 * hp), 0.4 * spd, spawnDirection(), 30, "boss", 1000, 0);
+        case 15: // money 280 + 1200
+            var boss = new Enemy(spawnPoint()[0], spawnPoint()[1], Math.floor(10000 * hp), 0.4 * spd, spawnDirection(), 30, "boss", 1200, 0);
             enemies.push(boss);
             spawnWave(10, 500 * den, Math.floor(5 * hp), 3 * spd, 25, "pink", 2, 0, boss); //minions
             break;
@@ -2250,8 +2382,8 @@ function nextWave() {
             spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 30, "pink", 1, 0);
             spawnWave(10, 2800 * den, Math.floor(25 * hp), 3 * spd, 30, "pink", 1, 0);
             break;
-        case 23: // super armored 400
-            spawnWave(10, 7000 * den, Math.floor(2000 * hp), 1 * spd, 40, "red", 40, 30);
+        case 23: // super armored 500
+            spawnWave(10, 7000 * den, Math.floor(2000 * hp), 1 * spd, 40, "red", 50, 30);
             break;
         case 24: // everything again 450
             spawnWave(25, 1900 * den, Math.floor(40 * hp), 2.5 * spd, 40, "red", 2, 5); //armored + 
