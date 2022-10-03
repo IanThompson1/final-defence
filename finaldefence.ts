@@ -27,7 +27,6 @@ const startingRound = document.querySelector('#startRound');
 /*
 subclasses for towers and like everything else
 new tower ideas: cannon, some really strong but expensive tower, buffing tower.
-visual representation of tower fitting
 */
 //global variables and inital state
 //@ts-ignore
@@ -290,14 +289,14 @@ class Enemy {
         enemyImg.update();
 
         //test draw hitbox
-        //@ts-ignore
-        c.fillStyle = "black";
-        //@ts-ignore
-        c.beginPath();
-        //@ts-ignore
-        c.arc(this.x, this.y, scaleH * this.radius, 0, Math.PI * 2);
-        //@ts-ignore
-        c.stroke();
+        // //@ts-ignore
+        // c.fillStyle = "black";
+        // //@ts-ignore
+        // c.beginPath();
+        // //@ts-ignore
+        // c.arc(this.x, this.y, scaleH * this.radius, 0, Math.PI * 2);
+        // //@ts-ignore
+        // c.stroke();
 
         //health bar
         //@ts-ignore
