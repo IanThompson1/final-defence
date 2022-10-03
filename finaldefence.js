@@ -26,13 +26,8 @@ var startingRound = document.querySelector('#startRound');
 // to do 
 /*
 subclasses for towers and like everything else
-skip waves option.
-new tower ideas: area slow(big range vs small), cannon, some really strong but expensive tower, buffing tower.
-max towers more expensive. round 6 easier
-set round
-higher level higher start round
-
-minigun cheaper, mega damage sniper $800
+new tower ideas: cannon, some really strong but expensive tower, buffing tower.
+visual representation of tower fitting
 */
 //global variables and inital state
 //@ts-ignore
@@ -80,58 +75,212 @@ var Enemy = /** @class */ (function () {
     }
     //draws the Enemy
     Enemy.prototype.draw = function () {
+        var centerX = this.x;
+        var centerY = this.y;
+        var size = 1;
         var enemySrc = "./img/GreenRight.png";
         switch (this.color) {
             case "green":
                 enemySrc = "./img/Green";
+                switch (this.direction) {
+                    case "N":
+                        enemySrc += "Up.png";
+                        centerX += 7;
+                        centerY += 0;
+                        break;
+                    case "E":
+                        enemySrc += "Right.png";
+                        centerX += 23;
+                        centerY += 6.5;
+                        break;
+                    case "S":
+                        enemySrc += "Down.png";
+                        centerX += 8;
+                        centerY += 20;
+                        break;
+                    case "W":
+                        enemySrc += "Left.png";
+                        centerX += 0;
+                        centerY += 5;
+                        break;
+                }
                 break;
             case "yellow":
                 enemySrc = "./img/Yellow";
+                switch (this.direction) {
+                    case "N":
+                        enemySrc += "Up.png";
+                        centerX += 7;
+                        centerY += 0;
+                        break;
+                    case "E":
+                        enemySrc += "Right.png";
+                        centerX += 23;
+                        centerY += 6.5;
+                        break;
+                    case "S":
+                        enemySrc += "Down.png";
+                        centerX += 8;
+                        centerY += 20;
+                        break;
+                    case "W":
+                        enemySrc += "Left.png";
+                        centerX += 0;
+                        centerY += 5;
+                        break;
+                }
                 break;
             case "pink":
                 enemySrc = "./img/Swamp";
+                size = 0.8;
+                switch (this.direction) {
+                    case "N":
+                        enemySrc += "Up.png";
+                        centerX += 7;
+                        centerY += 0;
+                        break;
+                    case "E":
+                        enemySrc += "Right.png";
+                        centerX += 23;
+                        centerY += 6.5;
+                        break;
+                    case "S":
+                        enemySrc += "Down.png";
+                        centerX += 8;
+                        centerY += 20;
+                        break;
+                    case "W":
+                        enemySrc += "Left.png";
+                        centerX += 0;
+                        centerY += 5;
+                        break;
+                }
                 break;
             case "red":
                 enemySrc = "./img/Red";
+                size = 1.2;
+                switch (this.direction) {
+                    case "N":
+                        enemySrc += "Up.png";
+                        centerX += 7;
+                        centerY += 0;
+                        break;
+                    case "E":
+                        enemySrc += "Right.png";
+                        centerX += 23;
+                        centerY += 6.5;
+                        break;
+                    case "S":
+                        enemySrc += "Down.png";
+                        centerX += 8;
+                        centerY += 20;
+                        break;
+                    case "W":
+                        enemySrc += "Left.png";
+                        centerX += 0;
+                        centerY += 5;
+                        break;
+                }
                 break;
             case "black":
                 enemySrc = "./img/Black";
+                switch (this.direction) {
+                    case "N":
+                        enemySrc += "Up.png";
+                        centerX += 7;
+                        centerY += 0;
+                        break;
+                    case "E":
+                        enemySrc += "Right.png";
+                        centerX += 23;
+                        centerY += 6.5;
+                        break;
+                    case "S":
+                        enemySrc += "Down.png";
+                        centerX += 8;
+                        centerY += 20;
+                        break;
+                    case "W":
+                        enemySrc += "Left.png";
+                        centerX += 0;
+                        centerY += 5;
+                        break;
+                }
                 break;
             case "boss":
                 if (this.armor > 0) {
                     enemySrc = "./img/ABoss";
+                    switch (this.direction) {
+                        case "N":
+                            enemySrc += "Up.png";
+                            centerX += 11;
+                            centerY += 4;
+                            break;
+                        case "E":
+                            enemySrc += "Right.png";
+                            centerX += 33;
+                            centerY += 11.5;
+                            break;
+                        case "S":
+                            enemySrc += "Down.png";
+                            centerX += 12;
+                            centerY += 29;
+                            break;
+                        case "W":
+                            enemySrc += "Left.png";
+                            centerX += 5;
+                            centerY += 11;
+                            break;
+                    }
                 }
                 else {
                     enemySrc = "./img/Boss";
+                    switch (this.direction) {
+                        case "N":
+                            enemySrc += "Up.png";
+                            centerX += 11;
+                            centerY += 4;
+                            break;
+                        case "E":
+                            enemySrc += "Right.png";
+                            centerX += 33;
+                            centerY += 11.5;
+                            break;
+                        case "S":
+                            enemySrc += "Down.png";
+                            centerX += 12;
+                            centerY += 29;
+                            break;
+                        case "W":
+                            enemySrc += "Left.png";
+                            centerX += 5;
+                            centerY += 11;
+                            break;
+                    }
                 }
                 break;
             default:
                 console.log("invalid enemy color!");
                 break;
         }
-        switch (this.direction) {
-            case "N":
-                enemySrc += "Up.png";
-                break;
-            case "E":
-                enemySrc += "Right.png";
-                break;
-            case "S":
-                enemySrc += "Down.png";
-                break;
-            case "W":
-                enemySrc += "Left.png";
-                break;
-        }
         var enemyImg = new Sprite({
             position: {
-                x: this.x,
-                y: this.y
+                x: centerX,
+                y: centerY
             },
             imageSrc: enemySrc,
-            scale: this.radius / 40
+            scale: size * (scaleH / scaleW)
         });
         enemyImg.update();
+        //test draw hitbox
+        //@ts-ignore
+        c.fillStyle = "black";
+        //@ts-ignore
+        c.beginPath();
+        //@ts-ignore
+        c.arc(this.x, this.y, scaleH * this.radius, 0, Math.PI * 2);
+        //@ts-ignore
+        c.stroke();
         //health bar
         //@ts-ignore
         c.fillStyle = "white";
@@ -153,14 +302,15 @@ var Enemy = /** @class */ (function () {
     Enemy.prototype.update = function () {
         //calculate slow
         var slows = 1;
-        for (var i = 0; i < towers.length; i++) {
-            if (towers[i].type == "ice" && towers[i].slow > slows) {
-                if (targetinellipse(towers[i].x, towers[i].y, towers[i].range, this.x, this.y, this) == 1) {
-                    slows = towers[i].slow;
+        if (this.color != "boss") {
+            for (var i = 0; i < towers.length; i++) {
+                if (towers[i].type == "ice" && towers[i].slow > slows) {
+                    if (targetinellipse(towers[i].x, towers[i].y, towers[i].range, this.x, this.y, this) == 1) {
+                        slows = towers[i].slow;
+                    }
                 }
             }
         }
-        console.log(slows);
         slows = slows / 100;
         if (this.direction == "N") {
             this.y -= (speedModifier * scaleH * this.speed) - (speedModifier * scaleH * this.speed) * slows;
@@ -236,7 +386,11 @@ var Tower = /** @class */ (function () {
     // draws the tower
     Tower.prototype.draw = function () {
         //base
-        if (this.level > 5) {
+        if (this.level == -1) { //temp tower
+            //@ts-ignore
+            c.fillStyle = "red";
+        }
+        else if (this.level > 5) {
             //@ts-ignore
             c.fillStyle = "#CCBA1F";
         }
@@ -448,7 +602,7 @@ var Tower = /** @class */ (function () {
             else if (this.level == 2) {
                 this.reload = 10;
                 this.range = 180;
-                this.lasermax = 15;
+                this.lasermax = 20;
                 this.lasermin = 1;
                 this.lasertime = 7;
                 this.heatup = 0.8;
@@ -456,7 +610,7 @@ var Tower = /** @class */ (function () {
             else if (this.level == 3) {
                 this.reload = 10;
                 this.range = 190;
-                this.lasermax = 20;
+                this.lasermax = 30;
                 this.lasermin = 1;
                 this.lasertime = 7;
                 this.heatup = 1;
@@ -464,7 +618,7 @@ var Tower = /** @class */ (function () {
             else if (this.level == 4) {
                 this.reload = 10;
                 this.range = 200;
-                this.lasermax = 30;
+                this.lasermax = 40;
                 this.lasermin = 1;
                 this.lasertime = 7;
                 this.heatup = 1.2;
@@ -472,7 +626,7 @@ var Tower = /** @class */ (function () {
             else if (this.level == 5) {
                 this.reload = 10;
                 this.range = 210;
-                this.lasermax = 40;
+                this.lasermax = 50;
                 this.lasermin = 1;
                 this.lasertime = 7;
                 this.heatup = 1.4;
@@ -488,7 +642,7 @@ var Tower = /** @class */ (function () {
             else if (this.level == 7) {
                 this.reload = 10;
                 this.range = 210;
-                this.lasermax = 50;
+                this.lasermax = 70;
                 this.lasermin = 5;
                 this.lasertime = 5;
                 this.heatup = 2;
@@ -788,9 +942,10 @@ function spawnWave(numenemies, density, health, speed, size, color, Emoney, armo
     }, density / speedModifier);
 }
 function targetinellipse(towerX, towerY, towerRange, targetX, targetY, target) {
-    // var fun = (((targetX-towerX)*(targetX-towerX))/((towerRange*scaleW)*(towerRange*scaleW)))+(((targetY-towerY)*(targetY-towerY))/((towerRange*scaleH)*(towerRange*scaleH)));
-    var fun = Math.sqrt((targetX - towerX) * (targetX - towerX) + (targetY - towerY) * (targetY - towerY));
-    if (fun <= target.radius + towerRange - 15) { //fun <= 1 for top function, fun <= target.radius+towerRange
+    towerRange += target.radius; //gives towers extra range
+    var fun = (((targetX - towerX) * (targetX - towerX)) / ((towerRange * scaleW) * (towerRange * scaleW))) + (((targetY - towerY) * (targetY - towerY)) / ((towerRange * scaleH) * (towerRange * scaleH)));
+    // var fun = Math.sqrt((targetX-towerX)*(targetX-towerX)+(targetY-towerY)*(targetY-towerY));
+    if (fun <= 1) { //fun <= 1 for top function, fun <= target.radius+towerRange
         return 1;
     }
     else {
@@ -878,7 +1033,7 @@ function towershoot(tower) {
                     lifespan = 35;
                 }
                 else {
-                    lifespan = 18;
+                    lifespan = 21;
                 }
                 if (tower.type == "machinegun" && tower.level == 6) { // double shot
                     switch (tower.target) {
@@ -1175,7 +1330,7 @@ function animate() {
                 selectedTower = "sniper";
                 draggingTower = 1;
             }
-            else if (mouseover == "machinegun" && selectedTower == "none" && totalmoney >= 120) {
+            else if (mouseover == "machinegun" && selectedTower == "none" && totalmoney >= 80) {
                 selectedTower = "machinegun";
                 draggingTower = 1;
             }
@@ -1205,7 +1360,7 @@ function animate() {
             }
             else if (selectedTower == "machinegun" && freespace() == 1) {
                 selectedTower = "none";
-                totalmoney -= 120;
+                totalmoney -= 80;
                 towers.push(new Tower(mouseX, mouseY, "machinegun", 1, 0));
                 towershoot(towers[towers.length - 1]);
             }
@@ -1276,6 +1431,9 @@ function animate() {
     //drawing selected tower
     if (selectedTower != "none") {
         var tempTower = new Tower(mouseX, mouseY, selectedTower, 1, 1);
+        if (freespace() == 0) {
+            tempTower = new Tower(mouseX, mouseY, selectedTower, -1, 1);
+        }
         tempTower.draw();
     }
     //handles projectiles
@@ -1423,14 +1581,14 @@ function animate() {
         //remove enemy and lower lives if enemy makes it to the end
         if (paths[paths.length - 1][0] == 0) { // left exit
             if (enemy.x <= -10) {
-                totalmoney += enemies[i].enemymoney;
+                totalmoney += enemy.enemymoney;
                 enemies.splice(index, 1);
                 lives -= 1;
             }
         }
         else if (paths[paths.length - 1][1] == 0) { // top exit
             if (enemy.y <= -10) {
-                totalmoney += enemies[i].enemymoney;
+                totalmoney += enemy.enemymoney;
                 enemies.splice(index, 1);
                 lives -= 1;
             }
@@ -1438,7 +1596,7 @@ function animate() {
         else if (paths[paths.length - 1][1] == 100) { // bottom exit
             //@ts-ignore
             if (enemy.y >= canvas.height + 10) {
-                totalmoney += enemies[i].enemymoney;
+                totalmoney += enemy.enemymoney;
                 enemies.splice(index, 1);
                 lives -= 1;
             }
@@ -1446,7 +1604,7 @@ function animate() {
         else { //right exit 
             //@ts-ignore
             if (enemy.x >= canvas.width + 10) {
-                totalmoney += enemies[i].enemymoney;
+                totalmoney += enemy.enemymoney;
                 enemies.splice(index, 1);
                 lives -= 1;
             }
@@ -1570,7 +1728,7 @@ addEventListener("click", function () {
     if (mouseover == "sniper" && selectedTower == "none" && totalmoney >= 100) {
         selectedTower = "sniper";
     }
-    else if (mouseover == "machinegun" && selectedTower == "none" && totalmoney >= 120) {
+    else if (mouseover == "machinegun" && selectedTower == "none" && totalmoney >= 80) {
         selectedTower = "machinegun";
     }
     else if (mouseover == "laser" && selectedTower == "none" && totalmoney >= 150) {
@@ -1593,7 +1751,7 @@ addEventListener("click", function () {
     }
     else if (selectedTower == "machinegun" && freespace() == 1) {
         selectedTower = "none";
-        totalmoney -= 120;
+        totalmoney -= 80;
         towers.push(new Tower(mouseX, mouseY, "machinegun", 1, 0));
         towershoot(towers[towers.length - 1]);
     }
@@ -1659,54 +1817,54 @@ addEventListener("click", function () {
                     towers[i].update();
                     totalmoney -= 400;
                 }
-                else if (towers[i].type == "sniper" && totalmoney >= 600 && towers[i].level == 5 && mouseover == "level7") {
+                else if (towers[i].type == "sniper" && totalmoney >= 800 && towers[i].level == 5 && mouseover == "level7") {
                     //upgrades tower
                     towers[i].level = 7;
                     towers[i].selected = 1;
                     towers[i].update();
-                    totalmoney -= 600;
+                    totalmoney -= 800;
                 }
-                else if (towers[i].type == "machinegun" && totalmoney >= 150 && towers[i].level == 1) {
+                else if (towers[i].type == "machinegun" && totalmoney >= 100 && towers[i].level == 1) {
                     //upgrades tower
                     towers[i].level = 2;
                     towers[i].selected = 1;
                     towers[i].update();
-                    totalmoney -= 150;
+                    totalmoney -= 100;
                 }
-                else if (towers[i].type == "machinegun" && totalmoney >= 200 && towers[i].level == 2) {
+                else if (towers[i].type == "machinegun" && totalmoney >= 120 && towers[i].level == 2) {
                     //upgrades tower
                     towers[i].level = 3;
                     towers[i].selected = 1;
                     towers[i].update();
-                    totalmoney -= 200;
+                    totalmoney -= 120;
                 }
-                else if (towers[i].type == "machinegun" && totalmoney >= 250 && towers[i].level == 3) {
+                else if (towers[i].type == "machinegun" && totalmoney >= 150 && towers[i].level == 3) {
                     //upgrades tower
                     towers[i].level = 4;
                     towers[i].selected = 1;
                     towers[i].update();
-                    totalmoney -= 250;
+                    totalmoney -= 150;
                 }
-                else if (towers[i].type == "machinegun" && totalmoney >= 300 && towers[i].level == 4) {
+                else if (towers[i].type == "machinegun" && totalmoney >= 200 && towers[i].level == 4) {
                     //upgrades tower
                     towers[i].level = 5;
                     towers[i].selected = 1;
                     towers[i].update();
-                    totalmoney -= 300;
+                    totalmoney -= 200;
                 }
-                else if (towers[i].type == "machinegun" && totalmoney >= 600 && towers[i].level == 5 && mouseover == "level6") {
+                else if (towers[i].type == "machinegun" && totalmoney >= 650 && towers[i].level == 5 && mouseover == "level6") {
                     //upgrades tower
                     towers[i].level = 6;
                     towers[i].selected = 1;
                     towers[i].update();
-                    totalmoney -= 600;
+                    totalmoney -= 650;
                 }
-                else if (towers[i].type == "machinegun" && totalmoney >= 600 && towers[i].level == 5 && mouseover == "level7") {
+                else if (towers[i].type == "machinegun" && totalmoney >= 650 && towers[i].level == 5 && mouseover == "level7") {
                     //upgrades tower
                     towers[i].level = 7;
                     towers[i].selected = 1;
                     towers[i].update();
-                    totalmoney -= 600;
+                    totalmoney -= 650;
                 }
                 else if (towers[i].type == "laser" && totalmoney >= 200 && towers[i].level == 1) {
                     //upgrades tower
@@ -1922,32 +2080,32 @@ addEventListener("click", function () {
                             totalmoney += 810;
                             break;
                         case 7:
-                            totalmoney += 940;
+                            totalmoney += 1080;
                             break;
                     }
                 }
                 else if (towers[i].type == "machinegun") {
                     switch (towers[i].level) {
                         case 1:
-                            totalmoney += 80;
+                            totalmoney += 60;
                             break;
                         case 2:
-                            totalmoney += 180;
+                            totalmoney += 120;
                             break;
                         case 3:
-                            totalmoney += 320;
+                            totalmoney += 200;
                             break;
                         case 4:
-                            totalmoney += 480;
+                            totalmoney += 300;
                             break;
                         case 5:
-                            totalmoney += 680;
+                            totalmoney += 440;
                             break;
                         case 6:
-                            totalmoney += 1080;
+                            totalmoney += 870;
                             break;
                         case 7:
-                            totalmoney += 1080;
+                            totalmoney += 870;
                             break;
                     }
                 }
@@ -2288,137 +2446,137 @@ function nextWave() {
     //rounds    
     switch (round) {
         case 1: //money 100
-            spawnWave(10, 1700 * den, Math.floor(15 * hp), 3 * spd, 35, "green", 10, 0); //basic 
+            spawnWave(10, 1700 * den, Math.floor(15 * hp), 3 * spd, 20, "green", 10, 0); //basic 
             break;
         case 2: //money 110
-            spawnWave(11, 1500 * den, Math.floor(25 * hp), 3 * spd, 35, "green", 10, 0); //basic
+            spawnWave(11, 1500 * den, Math.floor(25 * hp), 3 * spd, 20, "green", 10, 0); //basic
             break;
         case 3: //money 120
-            spawnWave(12, 1300 * den, Math.floor(40 * hp), 3 * spd, 35, "green", 10, 0); //basic
+            spawnWave(12, 1300 * den, Math.floor(40 * hp), 3 * spd, 20, "green", 10, 0); //basic
             break;
         case 4: //money 130
-            spawnWave(13, 1500 * den, Math.floor(25 * hp), 6 * spd, 30, "yellow", 10, 0); //fast
+            spawnWave(13, 1500 * den, Math.floor(25 * hp), 6 * spd, 20, "yellow", 10, 0); //fast
             break;
         case 5: //money 140
-            spawnWave(40, 75, 2, 3 * spd, 30, "pink", 3.5, 0); //grouped
+            spawnWave(40, 75, 2, 3 * spd, 15, "pink", 3.5, 0); //grouped
             break;
         case 6: //money 150
-            spawnWave(20, 1100 * den, Math.floor(65 * hp), 3 * spd, 35, "green", 7.5, 0); //basic
+            spawnWave(20, 1100 * den, Math.floor(65 * hp), 3 * spd, 20, "green", 7.5, 0); //basic
             break;
         case 7: //money 300
-            spawnWave(2, 6000 * den, Math.floor(200 * hp), 3, 50, "red", 150, 3); //boss / armored
+            spawnWave(2, 6000 * den, Math.floor(200 * hp), 3, 40, "red", 150, 3); //boss / armored
             break;
         case 8: //money 170
-            spawnWave(15, 1500 * den, Math.floor(20 * hp), 6 * spd, 30, "yellow", 6, 0); //fast + 
-            spawnWave(50, 100, 4, 3 * spd, 30, "pink", 1.6, 0); //grouped
+            spawnWave(15, 1500 * den, Math.floor(20 * hp), 6 * spd, 20, "yellow", 6, 0); //fast + 
+            spawnWave(50, 100, 4, 3 * spd, 15, "pink", 1.6, 0); //grouped
             break;
         case 9: //money 180
-            spawnWave(10, 1700 * den, Math.floor(60 * hp), 3 * spd, 40, "red", 18, 6); //armored 
+            spawnWave(10, 1700 * den, Math.floor(60 * hp), 3 * spd, 35, "red", 18, 6); //armored 
             break;
         case 10: //money 190
-            spawnWave(190, 100, Math.floor(5 * hp), 3 * spd, 30, "pink", 1, 0); //mega grouped
+            spawnWave(190, 100, Math.floor(5 * hp), 3 * spd, 15, "pink", 1, 0); //mega grouped
             break;
         case 11: //money 200
-            spawnWave(10, 2000 * den, Math.floor(15 * hp), 2.5 * spd, 40, "red", 5, 5); //armored + 
-            spawnWave(20, 1000 * den, Math.floor(20 * hp), 6 * spd, 30, "yellow", 2.5, 0); //fast +
-            spawnWave(20, 1000 * den, Math.floor(20 * hp), 3 * spd, 35, "green", 2.5, 0); //basic + 
-            spawnWave(100, 300, Math.floor(5 * hp), 2 * spd, 30, "pink", 0.5, 0); //grouped
+            spawnWave(10, 2000 * den, Math.floor(15 * hp), 2.5 * spd, 35, "red", 2, 5); //armored + 
+            spawnWave(20, 1000 * den, Math.floor(20 * hp), 6 * spd, 20, "yellow", 2, 0); //fast +
+            spawnWave(20, 1000 * den, Math.floor(20 * hp), 3 * spd, 20, "green", 2, 0); //basic + 
+            spawnWave(100, 300, Math.floor(5 * hp), 2 * spd, 15, "pink", 1, 0); //grouped
             break;
         case 12: //money 220
-            spawnWave(20, 1000 * den, Math.floor(50 * hp), 6 * spd, 40, "red", 11, 10); //fast / armored
+            spawnWave(20, 1000 * den, Math.floor(50 * hp), 6 * spd, 35, "red", 11, 10); //fast / armored
             break;
         case 13: //money 240
-            spawnWave(160, 0, 1, 3 * spd, 30, "pink", 1.5, 0); //clump
+            spawnWave(160, 0, 1, 3 * spd, 15, "pink", 1.5, 0); //clump
             break;
         case 14: // money 260
-            spawnWave(25, 800 * den, Math.floor(50 * hp), 2 * spd, 40, "red", 10.4, 5); //armored / multiple
+            spawnWave(25, 800 * den, Math.floor(50 * hp), 2 * spd, 35, "red", 10.4, 5); //armored / multiple
             break;
         case 15: // money 280 + 1200
-            var boss = new Enemy(spawnPoint()[0], spawnPoint()[1], Math.floor(10000 * hp), 0.4 * spd, spawnDirection(), 30, "boss", 1200, 0);
+            var boss = new Enemy(spawnPoint()[0], spawnPoint()[1], Math.floor(10000 * hp), 0.4 * spd, spawnDirection(), 60, "boss", 1200, 0);
             enemies.push(boss);
-            spawnWave(10, 500 * den, Math.floor(5 * hp), 3 * spd, 25, "pink", 2, 0, boss); //minions
+            spawnWave(10, 500 * den, Math.floor(5 * hp), 3 * spd, 15, "pink", 2, 0, boss); //minions
             break;
         case 16: //fast 300
-            spawnWave(50, 400 * den, Math.floor(100 * hp), 8 * spd, 30, "yellow", 8, 0);
+            spawnWave(50, 400 * den, Math.floor(100 * hp), 8 * spd, 20, "yellow", 8, 0);
             break;
         case 17: //grouped 320
-            spawnWave(160, 100 * den, Math.floor(30 * hp), 3 * spd, 30, "pink", 2, 0);
+            spawnWave(160, 100 * den, Math.floor(30 * hp), 3 * spd, 15, "pink", 2, 0);
             break;
         case 18: //tanks 340
-            spawnWave(8, 8000 * den, Math.floor(5000 * hp), 1 * spd, 60, "green", 42.5, 0);
+            spawnWave(8, 8000 * den, Math.floor(5000 * hp), 1 * spd, 20, "green", 42.5, 0);
             break;
         case 19: // armored 360
-            spawnWave(20, 1500 * den, Math.floor(250 * hp), 1.5 * spd, 40, "red", 18, 20);
+            spawnWave(20, 1500 * den, Math.floor(250 * hp), 1.5 * spd, 35, "red", 18, 20);
             break;
         case 20: // fast, grouped, armored, tanks 380
-            spawnWave(10, 250 * den, Math.floor(100 * hp), 4 * spd, 40, "red", 38, 10);
+            spawnWave(10, 250 * den, Math.floor(100 * hp), 4 * spd, 35, "red", 38, 10);
             break;
         case 21: // fast armored on grouped 400
-            spawnWave(50, 300 * den, Math.floor(150 * hp), 2 * spd, 30, "pink", 4, 0);
-            spawnWave(25, 600 * den, Math.floor(50 * hp), 4 * spd, 40, "red", 8, 10);
+            spawnWave(50, 300 * den, Math.floor(150 * hp), 2 * spd, 15, "pink", 4, 0);
+            spawnWave(25, 600 * den, Math.floor(50 * hp), 4 * spd, 35, "red", 8, 10);
             break;
         case 22: // stacks 450
-            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 30, "pink", 1, 0);
-            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 30, "pink", 1, 0);
-            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 30, "pink", 1, 0);
-            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 30, "pink", 1, 0);
-            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 30, "pink", 1, 0);
-            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 30, "pink", 1, 0);
-            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 30, "pink", 1, 0);
-            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 30, "pink", 1, 0);
-            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 30, "pink", 1, 0);
-            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 30, "pink", 1, 0);
-            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 30, "pink", 1, 0);
-            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 30, "pink", 1, 0);
-            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 30, "pink", 1, 0);
-            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 30, "pink", 1, 0);
-            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 30, "pink", 1, 0);
-            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 30, "pink", 1, 0);
-            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 30, "pink", 1, 0);
-            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 30, "pink", 1, 0);
-            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 30, "pink", 1, 0);
-            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 30, "pink", 1, 0);
-            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 30, "pink", 1, 0);
-            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 30, "pink", 1, 0);
-            spawnWave(10, 2800 * den, Math.floor(25 * hp), 3 * spd, 30, "pink", 1, 0);
+            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 15, "pink", 1, 0);
+            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 15, "pink", 1, 0);
+            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 15, "pink", 1, 0);
+            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 15, "pink", 1, 0);
+            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 15, "pink", 1, 0);
+            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 15, "pink", 1, 0);
+            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 15, "pink", 1, 0);
+            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 15, "pink", 1, 0);
+            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 15, "pink", 1, 0);
+            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 15, "pink", 1, 0);
+            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 15, "pink", 1, 0);
+            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 15, "pink", 1, 0);
+            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 15, "pink", 1, 0);
+            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 15, "pink", 1, 0);
+            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 15, "pink", 1, 0);
+            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 15, "pink", 1, 0);
+            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 15, "pink", 1, 0);
+            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 15, "pink", 1, 0);
+            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 15, "pink", 1, 0);
+            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 15, "pink", 1, 0);
+            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 15, "pink", 1, 0);
+            spawnWave(20, 1400 * den, Math.floor(25 * hp), 3 * spd, 15, "pink", 1, 0);
+            spawnWave(10, 2800 * den, Math.floor(25 * hp), 3 * spd, 15, "pink", 1, 0);
             break;
         case 23: // super armored 500
-            spawnWave(10, 7000 * den, Math.floor(2000 * hp), 1 * spd, 40, "red", 50, 30);
+            spawnWave(10, 7000 * den, Math.floor(2000 * hp), 1 * spd, 35, "red", 50, 30);
             break;
-        case 24: // everything again 450
-            spawnWave(25, 1900 * den, Math.floor(40 * hp), 2.5 * spd, 40, "red", 2, 5); //armored + 
-            spawnWave(30, 1500 * den, Math.floor(100 * hp), 6 * spd, 30, "yellow", 2, 0); //fast + 
-            spawnWave(15, 1500 * den, Math.floor(400 * hp), 2.8 * spd, 35, "green", 6, 0); //basic +
-            spawnWave(250, 170 * den, Math.floor(30 * hp), 2 * spd, 30, "pink", 1, 0); //grouped
+        case 24: // everything again 550
+            spawnWave(30, 1900 * den, Math.floor(40 * hp), 2.5 * spd, 35, "red", 3, 5); //armored + 
+            spawnWave(25, 2500 * den, Math.floor(150 * hp), 6 * spd, 20, "yellow", 6, 0); //fast + 
+            spawnWave(20, 1500 * den, Math.floor(400 * hp), 2.8 * spd, 20, "green", 3, 0); //basic +
+            spawnWave(250, 170 * den, Math.floor(30 * hp), 2 * spd, 15, "pink", 1, 0); //grouped
             break;
-        case 25: // armored boss 500+2000
-            var fboss = new Enemy(spawnPoint()[0], spawnPoint()[1], Math.floor(20000 * hp), 0.3 * spd, spawnDirection(), 33, "boss", 2000, 50);
+        case 25: // armored boss 600+2000
+            var fboss = new Enemy(spawnPoint()[0], spawnPoint()[1], Math.floor(20000 * hp), 0.3 * spd, spawnDirection(), 60, "boss", 2000, 50);
             enemies.push(fboss);
-            spawnWave(10, 5000 * den, Math.floor(500 * hp), 1.5 * spd, 40, "red", 10, 10, fboss); //minions
+            spawnWave(10, 5000 * den, Math.floor(500 * hp), 1.5 * spd, 35, "red", 10, 10, fboss); //minions
             break;
-        case 26: // 550 grouping light armored
-            spawnWave(100, 100 * den, Math.floor(25 * hp), 3 * spd, 40, "red", 5.5, 1);
+        case 26: // 650 grouping light armored
+            spawnWave(100, 100 * den, Math.floor(25 * hp), 3 * spd, 35, "red", 6.5, 1);
             break;
-        case 27: // 600 super speed
-            spawnWave(30, 1000 * den, Math.floor(150 * hp), 12 * spd, 35, "yellow", 20, 0);
+        case 27: // 700 super speed
+            spawnWave(35, 1000 * den, Math.floor(150 * hp), 12 * spd, 20, "yellow", 20, 0);
             break;
-        case 28: // 650 max armored
-            spawnWave(10, 10000 * den, Math.floor(5000 * hp), 0.5 * spd, 55, "red", 65, 75);
+        case 28: // 750 max armored
+            spawnWave(10, 10000 * den, Math.floor(5000 * hp), 0.5 * spd, 40, "red", 75, 75);
             break;
-        case 29: // 700 mega grouped 2
-            spawnWave(350, 100 * den, Math.floor(70 * hp), 4 * spd, 30, "pink", 2, 0);
+        case 29: // 800 mega grouped 2
+            spawnWave(400, 70 * den, Math.floor(50 * hp), 4 * spd, 15, "pink", 2, 0);
             break;
-        case 30: // 750 matryoshka
-            spawnWave(10, 5000 * den, Math.floor(1500 * hp), 2.5 * spd, 50, "green", 40, 0);
-            spawnWave(10, 5000 * den, Math.floor(1000 * hp), 2.5 * spd, 40, "green", 40, 0);
-            spawnWave(10, 5000 * den, Math.floor(900 * hp), 2.5 * spd, 30, "green", 40, 0);
-            spawnWave(10, 5000 * den, Math.floor(700 * hp), 2.5 * spd, 20, "green", 40, 0);
-            spawnWave(10, 5000 * den, Math.floor(500 * hp), 2.5 * spd, 10, "green", 40, 0);
+        case 30: // 850 matryoshka
+            spawnWave(10, 5000 * den, Math.floor(1500 * hp), 2.5 * spd, 50, "green", 17, 0);
+            spawnWave(10, 5000 * den, Math.floor(1000 * hp), 2.5 * spd, 40, "green", 17, 0);
+            spawnWave(10, 5000 * den, Math.floor(900 * hp), 2.5 * spd, 30, "green", 17, 0);
+            spawnWave(10, 5000 * den, Math.floor(700 * hp), 2.5 * spd, 20, "green", 17, 0);
+            spawnWave(10, 5000 * den, Math.floor(500 * hp), 2.5 * spd, 10, "green", 17, 0);
             break;
-        case 31: // 800+3000 doomboss
-            var doomBoss = new Enemy(spawnPoint()[0], spawnPoint()[1], Math.floor(5000 * hp), 2 * spd, spawnDirection(), 25, "boss", 3000, 0);
+        case 31: // 900+3000 doomboss
+            var doomBoss = new Enemy(spawnPoint()[0], spawnPoint()[1], Math.floor(5000 * hp), 2 * spd, spawnDirection(), 45, "boss", 3000, 0);
             enemies.push(doomBoss);
-            spawnWave(300, 500, 500, 3, 25, "green", 20, 0, doomBoss);
+            spawnWave(300, 500, 500, 3, 20, "green", 20, 0, doomBoss);
             break;
         // case 32: // 850
         //     spawnWave(10, 7000, 1500, 0.5, 25, "green", 40, 30);
@@ -2432,8 +2590,8 @@ function nextWave() {
         // case 33: // 1000
         //     spawnWave(10, 7000, 1500, 0.5, 25, "green", 40, 30);
         //     break;
-        default:
-            spawnWave(25, (750 - round * 10) * den, Math.floor((round * 20 - 150) * hp), (3.5 + round / 20) * spd, 35, "black", 10, 0); //endless
+        default: // 0 money
+            spawnWave(25, (750 - round * 10) * den, Math.floor((round * 20 - 150) * hp), (3.5 + round / 20) * spd, 35, "black", 0, 0); //endless
             break;
     }
 }

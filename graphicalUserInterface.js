@@ -12,7 +12,7 @@ function drawLayout() {
         background.src = "./img/stillbackground.png";
         var scal = 1;
     }
-    c.drawImage(background, 0, 0, background.width*scal, background.height*scal);
+    c.drawImage(background, 0, 0, background.width*scal*scaleW, background.height*scal*scaleH);
 
     //@ts-ignore
     mainMenu.style.display = "none";
@@ -185,7 +185,7 @@ function drawLayout() {
     //towers
     if(menutype == 0){
         addDoubleText("Sniper", "Cost: 100", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, canAfford(100));
-        addDoubleText("MiniGun", "Cost: 120", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, canAfford(120));
+        addDoubleText("MiniGun", "Cost: 80", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, canAfford(80));
         addDoubleText("Farm", "Cost: 300", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (4 / 2), "black", numboxes, canAfford(300));
         addDoubleText("laser", "Cost: 150", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (4 / 2), "black", numboxes, canAfford(150));
         addDoubleText("Slow", "Cost: 200", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (6 / 2), "black", numboxes, canAfford(200));
@@ -268,7 +268,7 @@ function drawLayout() {
                 addDoubleText("Armor", "Piercing", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (8 / 2), "#8A1212", numboxes);
                 addDoubleText("Mega", "Damage", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "#8A1212", numboxes);
                 addDoubleText("Upgrade", "Cost: 400", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes, canAfford(400));
-                addDoubleText("Upgrade", "Cost: 600", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes, canAfford(600));
+                addDoubleText("Upgrade", "Cost: 800", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes, canAfford(800));
                 addText("sell:540", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "yellow", numboxes);
                 addText("MaxBasic", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "#8A1212", numboxes);
             }
@@ -290,7 +290,7 @@ function drawLayout() {
                 addDoubleText("Speed", "100", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (4 / 2), "black", numboxes);
                 addDoubleText("Range", "50", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (6 / 2), "black", numboxes);
 
-                addText("sell:940", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "yellow", numboxes);
+                addText("sell:1080", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "yellow", numboxes);
                 addText("MaxSniper", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "#8A1212", numboxes);
             }
             else if (towers[i].type == "machinegun" && towers[i].level == 1) { //level 1 minigun
@@ -304,8 +304,8 @@ function drawLayout() {
                 addDoubleText("Damage", "1->(1-2)", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
                 addDoubleText("Speed", "20->15", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
                 addDoubleText("Range", "13->14", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("sell:80", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "yellow", numboxes);
-                addDoubleText("upgrade", "Cost: 150", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes, canAfford(150));
+                addText("sell:60", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "yellow", numboxes);
+                addDoubleText("upgrade", "Cost: 100", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes, canAfford(100));
             }
             else if (towers[i].type == "machinegun" && towers[i].level == 2) { //level 2 minigun
                 addDoubleText("MiniGun", "level:2", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes);
@@ -318,8 +318,8 @@ function drawLayout() {
                 addDoubleText("Damage", "(1-2)->2", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
                 addDoubleText("Speed", "15->10", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
                 addDoubleText("Range", "14->15", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("sell:180", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "yellow", numboxes);
-                addDoubleText("upgrade", "Cost: 200", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes, canAfford(200));
+                addText("sell:120", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "yellow", numboxes);
+                addDoubleText("upgrade", "Cost: 120", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes, canAfford(120));
             }
             else if (towers[i].type == "machinegun" && towers[i].level == 3) { //level 3 minigun
                 addDoubleText("MiniGun", "level:3", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes);
@@ -332,8 +332,8 @@ function drawLayout() {
                 addDoubleText("Damage", "2->3", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
                 addDoubleText("Speed", "10->9", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
                 addDoubleText("Range", "15->16", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("sell:320", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "yellow", numboxes);
-                addDoubleText("upgrade", "Cost: 250", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes, canAfford(250));
+                addText("sell:200", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "yellow", numboxes);
+                addDoubleText("upgrade", "Cost: 150", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes, canAfford(150));
             }
             else if (towers[i].type == "machinegun" && towers[i].level == 4) { //level 4 minigun
                 addDoubleText("MiniGun", "level:4", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes);
@@ -346,8 +346,8 @@ function drawLayout() {
                 addDoubleText("Damage", "3->4", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
                 addDoubleText("Speed", "9->8", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
                 addDoubleText("Range", "16->17", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes);
-                addText("sell:480", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "yellow", numboxes);
-                addDoubleText("upgrade", "Cost: 300", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes, canAfford(300));
+                addText("sell:300", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "yellow", numboxes);
+                addDoubleText("upgrade", "Cost: 200", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes, canAfford(200));
             }
             else if (towers[i].type == "machinegun" && towers[i].level == 5) { //level 5 minigun
                 addDoubleText("MiniGun", "level:5", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes);
@@ -358,9 +358,9 @@ function drawLayout() {
 
                 addDoubleText("Double", "Shot", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (8 / 2), "#8A1212", numboxes);
                 addDoubleText("High", "Damage", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "#8A1212", numboxes);
-                addDoubleText("Upgrade", "Cost: 600", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes, canAfford(600));
-                addDoubleText("Upgrade", "Cost: 600", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes, canAfford(600));
-                addText("sell:680", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "yellow", numboxes);
+                addDoubleText("Upgrade", "Cost: 650", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes, canAfford(650));
+                addDoubleText("Upgrade", "Cost: 650", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes, canAfford(650));
+                addText("sell:440", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "yellow", numboxes);
                 addText("MaxBasic", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "#8A1212", numboxes);
             }
             else if (towers[i].type == "machinegun" && towers[i].level == 6) { //level 6 minigun
@@ -370,7 +370,7 @@ function drawLayout() {
                 addDoubleText("Speed", "6", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (4 / 2), "black", numboxes);
                 addDoubleText("Range", "18", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (6 / 2), "black", numboxes);
 
-                addText("sell:1080", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "yellow", numboxes);
+                addText("sell:870", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "yellow", numboxes);
                 addText("MaxMiniGun", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "#8A1212", numboxes);
             }
             else if (towers[i].type == "machinegun" && towers[i].level == 7) { //level 7 minigun
@@ -380,7 +380,7 @@ function drawLayout() {
                 addDoubleText("Speed", "6", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (4 / 2), "black", numboxes);
                 addDoubleText("Range", "18", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (6 / 2), "black", numboxes);
 
-                addText("sell:1080", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "yellow", numboxes);
+                addText("sell:870", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "yellow", numboxes);
                 addText("MaxMiniGun", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "#8A1212", numboxes);
             }
             else if (towers[i].type == "laser" && towers[i].level == 1) { //level 1 laser
@@ -466,7 +466,7 @@ function drawLayout() {
             else if (towers[i].type == "laser" && towers[i].level == 7) { //level 7 laser
                 addDoubleText("Laser", "level:Max", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes);
                 addDoubleText("Target", towers[i].target, canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes);
-                addDoubleText("Damage", "5->75", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (4 / 2), "black", numboxes);
+                addDoubleText("Damage", "5->70", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (4 / 2), "black", numboxes);
                 addDoubleText("HeatUp", "2", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (4 / 2), "black", numboxes);
                 addDoubleText("Range", "21", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (6 / 2), "black", numboxes);
 
@@ -797,7 +797,7 @@ function drawLayout() {
                     break;
                 case "laser": 
                     addText("Single Target Beast",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
-                    addText("MaxDamage:75",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
+                    addText("MaxDamage:70",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
                     break;
                 case "tesla": 
                     addText("Always Max Charge",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
