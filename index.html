@@ -1,217 +1,219 @@
 
  <body>
      
-</body>
-<link href="https://unpkg.com/tailwindcss@^2/
-dist/tailwind.min.css" rel="stylesheet">
-<head>
-    
-</head>
-
-<style>
-    body {
-        margin: 0;
-        background: rgb(4, 219, 86);
-    }
-</style>
-<style>
-    .button{
-        background-color: blue;
-        color: white;
-        font-size: x-large;
-    }
-    .buttonRed {background-color: red;}
-    .button1 {width: 100%}
-    .button2 {width: 49%}
-    .button3 {width: 32%}
-    .button4 {width: 24%}
-    .space{
-        color: rgb(4, 219, 86);
-    }
-    .spacesmall {color: rgb(4, 219, 86); height: 5}
-
-    /* background gif */
-    #myvideo {
-        position: fixed;
-        right: 0;
-        bottom: 0;
-        min-width: 100%;
-        min-height: 100%;
-    }
-    .bg-green{
-        background-color:rgb(4, 219, 86);
-    }
-
-    #javascript{
-        position: fixed;
-        
-    }
-    .slider {
-        -webkit-appearance: none;  /* Override default CSS styles */
-        appearance: none;
-        width: 100%; /* Full-width */
-        height: 25px; /* Specified height */
-        background: #d3d3d3; /* Grey background */
-        outline: none; /* Remove outline */
-        opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
-        -webkit-transition: .2s; /* 0.2 seconds transition on hover */
-        transition: opacity .2s;
-    }
-    .slider::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 50px;
-        height: 50px;
-        background: #ff4800;
-        cursor: pointer;
-    }
-    
-</style>
-
-
-<!-- <video autoplay muted loop id="myVideo">
-    <source src="./img/futurewar.mp4" type="video/mp4">
-</video> -->
-
-<canvas id="javascript"></canvas>
-
-<div class="fixed inset-0 flex items-center justify-center select-none" id="mainMen">
-    <div class="bg-green h-2/3 w-full h-full p-6 text-center">
-        <div class="w-full">
-            <h1 class="text-6xl font-bold leading-none">Pick a map</h1>
-            <button
-                class="button button3 buttonRed py-3 
-                rounded-full"
-                id="mapBasic"
-            >
-                Basic(medium)
-            </button>
-            <button
-                class="button button3 py-3 
-                rounded-full"
-                id="mapCastle"
-            >
-                Castle(hard)
-            </button>
-            <button
-                class="button button3 py-3 
-                rounded-full"
-                id="mapDiamond"
-            >
-                Diamond(medium)
-            </button>
-            
-            <p class="spacesmall">.</p>
-            <button
-                class="button button3 py-3 
-                rounded-full"
-                id="mapCircle"
-            >
-                Circle(hard)
-            </button>
-            <button
-                class="button button3 py-3 
-                rounded-full"
-                id="mapCorner"
-            >
-                Corner(extreme)
-            </button>
-            <button
-                class="button button3 py-3 
-                rounded-full"
-                id="mapCross"
-            >
-                Cross(easy)
-            </button>
-            <p class="space">.</p>
-            <h1 class="text-6xl font-bold leading-none">Pick a difficulty</h1>
-            <button
-                class="button button3 py-3 
-                rounded-full"
-                id="difficultyEasy"
-            >
-                Easy
-            </button>
-            <button
-                class="button button3 py-3 
-                rounded-full"
-                id="difficultyMedium"
-            >
-                Medium
-            </button>
-            <button
-                class="button button3 buttonRed py-3 
-                rounded-full"
-                id="difficultyHard"
-            >
-                Hard
-            </button>
-            <p class="spacesmall">.</p>
-            <button
-                class="button button2 py-3 
-                rounded-full"
-                id="difficultyImpossible"
-            >
-                Impossible
-            </button>
-            <button
-                class="button button2 py-3 
-                rounded-full"
-                id="difficultySandbox"
-            >
-                Sandbox
-            </button>
-            <p class="space">.</p>
-            <h1 class="text-6xl font-bold leading-none">Set Wave:<input class="absolute bg-green font-bold text-6xl leading-none" type="text" id="startround" value="1"></h1>
-            
-<div class="slidecontainer py-3 rounded-full">
-    <input type="range" min="1" max="31" value="1" class="slider" id="setRound" oninput="startround.value=setRound.value">
-  </div>
-            <p class="space">.</p>
-            <h1 class="text-6xl font-bold leading-none">Start</h1>
-            <button
-                class="button button3 py-3 
-                rounded-full"
-                id="startGameBtn"
-            >
-                Start Game
-            </button>
-        </div>
-    </div>
-</div>
-<!-- game over UI -->
-<div class="fixed inset-0 flex items-center justify-center select-none" id="gameOver">
-    <div class="bg-white max-w-screen-2xl w-full p-6 text-center">
-        <div class="w-full">
-            <h1 class="text-6xl font-bold leading-none">Game Over!</h1>
-            <button
-                class="button button3 py-3 
-                rounded-full"
-                id="menu"
-            >
-                Main Menu
-            </button>
-            <button
-                class="button button3 py-3 
-                rounded-full"
-                id="startOver"
-            >
-                Restart Game
-            </button>
-            <button
-                class="button button3 py-3 
-                rounded-full"
-                id="retry"
-            >
-                Retry Last Round
-            </button>
-        </div>
-    </div>
-</div>
-
-
-<script src="./sprites.js"></script>
-<script src="./finaldefence.js"></script>
-<script src="./htmlInteractions.js"></script>
-<script src="./graphicalUserInterface.js"></script>
-
+ </body>
+ <link href="https://unpkg.com/tailwindcss@^2/
+ dist/tailwind.min.css" rel="stylesheet">
+ <head>
+     
+ </head>
+ 
+ <style>
+     body {
+         margin: 0;
+         background: rgb(4, 219, 86);
+     }
+ </style>
+ <style>
+     .button{
+         background-color: blue;
+         color: white;
+         font-size: x-large;
+     }
+     .buttonRed {background-color: red;}
+     .button1 {width: 100%}
+     .button2 {width: 49%}
+     .button3 {width: 32%}
+     .button4 {width: 24%}
+     .space{
+         color: rgb(4, 219, 86);
+     }
+     .spacesmall {color: rgb(4, 219, 86); height: 5}
+ 
+     /* background gif */
+     #myvideo {
+         position: fixed;
+         right: 0;
+         bottom: 0;
+         min-width: 100%;
+         min-height: 100%;
+     }
+     .bg-green{
+         background-color:rgb(4, 219, 86);
+     }
+ 
+     #javascript{
+         position: fixed;
+         
+     }
+     .slider {
+         -webkit-appearance: none;  /* Override default CSS styles */
+         appearance: none;
+         width: 100%; /* Full-width */
+         height: 25px; /* Specified height */
+         background: #d3d3d3; /* Grey background */
+         outline: none; /* Remove outline */
+         opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+         -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+         transition: opacity .2s;
+     }
+     .slider::-webkit-slider-thumb {
+         -webkit-appearance: none;
+         appearance: none;
+         width: 50px;
+         height: 50px;
+         background: #ff4800;
+         cursor: pointer;
+     }
+     
+ </style>
+ 
+ 
+ <!-- <video autoplay muted loop id="myVideo">
+     <source src="./img/futurewar.mp4" type="video/mp4">
+ </video> -->
+ 
+ <canvas id="javascript"></canvas>
+ 
+ <div class="fixed inset-0 flex items-center justify-center select-none" id="mainMen">
+     <div class="bg-green h-2/3 w-full h-full p-6 text-center">
+         <div class="w-full">
+             <h1 class="text-6xl font-bold leading-none">Pick a map</h1>
+             <button
+                 class="button button3 buttonRed py-3 
+                 rounded-full"
+                 id="mapBasic"
+             >
+                 Basic(medium)
+             </button>
+             <button
+                 class="button button3 py-3 
+                 rounded-full"
+                 id="mapCastle"
+             >
+                 Castle(hard)
+             </button>
+             <button
+                 class="button button3 py-3 
+                 rounded-full"
+                 id="mapDiamond"
+             >
+                 Diamond(medium)
+             </button>
+             
+             <p class="spacesmall">.</p>
+             <button
+                 class="button button3 py-3 
+                 rounded-full"
+                 id="mapCircle"
+             >
+                 Circle(hard)
+             </button>
+             <button
+                 class="button button3 py-3 
+                 rounded-full"
+                 id="mapCorner"
+             >
+                 Corner(extreme)
+             </button>
+             <button
+                 class="button button3 py-3 
+                 rounded-full"
+                 id="mapCross"
+             >
+                 Cross(easy)
+             </button>
+             <p class="space">.</p>
+             <h1 class="text-6xl font-bold leading-none">Pick a difficulty</h1>
+             <button
+                 class="button button3 py-3 
+                 rounded-full"
+                 id="difficultyEasy"
+             >
+                 Easy
+             </button>
+             <button
+                 class="button button3 py-3 
+                 rounded-full"
+                 id="difficultyMedium"
+             >
+                 Medium
+             </button>
+             <button
+                 class="button button3 buttonRed py-3 
+                 rounded-full"
+                 id="difficultyHard"
+             >
+                 Hard
+             </button>
+             <p class="spacesmall">.</p>
+             <button
+                 class="button button2 py-3 
+                 rounded-full"
+                 id="difficultyImpossible"
+             >
+                 Impossible
+             </button>
+             <button
+                 class="button button2 py-3 
+                 rounded-full"
+                 id="difficultySandbox"
+             >
+                 Sandbox
+             </button>
+             <p class="space">.</p>
+             <h1 class="text-6xl font-bold leading-none">Set Wave:<input class="absolute bg-green font-bold text-6xl leading-none" type="text" id="startround" value="1"></h1>
+             
+ <div class="slidecontainer py-3 rounded-full">
+     <input type="range" min="1" max="35" value="1" class="slider" id="setRound" oninput="startround.value=setRound.value">
+   </div>
+             <p class="space">.</p>
+             <h1 class="text-6xl font-bold leading-none">Start</h1>
+             <button
+                 class="button button3 py-3 
+                 rounded-full"
+                 id="startGameBtn"
+                 onclick="playmusic();"
+             >
+                 Start Game
+             </button>
+         </div>
+     </div>
+ </div>
+ <!-- game over UI -->
+ <div class="fixed inset-0 flex items-center justify-center select-none" id="gameOver">
+     <div class="bg-white max-w-screen-2xl w-full p-6 text-center">
+         <div class="w-full">
+             <h1 class="text-6xl font-bold leading-none">Game Over!</h1>
+             <button
+                 class="button button3 py-3 
+                 rounded-full"
+                 id="menu"
+             >
+                 Main Menu
+             </button>
+             <button
+                 class="button button3 py-3 
+                 rounded-full"
+                 id="startOver"
+             >
+                 Restart Game
+             </button>
+             <button
+                 class="button button3 py-3 
+                 rounded-full"
+                 id="retry"
+             >
+                 Retry Last Round
+             </button>
+         </div>
+     </div>
+ </div>
+ 
+ 
+ <script src="./sprites.js"></script>
+ <script src="./finaldefence.js"></script>
+ <script src="./htmlInteractions.js"></script>
+ <script src="./graphicalUserInterface.js"></script>
+ 
+ 

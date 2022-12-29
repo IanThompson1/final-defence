@@ -3,23 +3,23 @@ startGameButton.addEventListener('click', function () {
     //starts the program by calling the animate function
     switch (difficulty) {
         case 1:
-            totalmoney = 800;
+            totalmoney = 600;
             lives = 40;
             break;
         case 2:
-            totalmoney = 700;
+            totalmoney = 500;
             lives = 25;
             break;
         case 3:
-            totalmoney = 600;
+            totalmoney = 400;
             lives = 10;
             break;
         case 4:
-            totalmoney = 500;
+            totalmoney = 300;
             lives = 1;
             break;
         case 5:
-            totalmoney = 100000;
+            totalmoney = 1000000;
             lives = 10000;
             break;
     }
@@ -222,6 +222,9 @@ retryButton.addEventListener('click', function () {
     for(var i = enemies.length-1; i > -1; i--){
         enemies.splice(i, 1);
     }
+    for(var i= lasers.length-1; i>-1; i--){
+        lasers.splice(i, 1);
+    }
     //reset variables to previous rounds
     gameIsOver = 0;
     autostart = "StartWave";
@@ -233,6 +236,7 @@ retryButton.addEventListener('click', function () {
     for(var i=0; i<tempTowers.length; i++){//replace towers
         towers.push(new Tower(tempTowers[i].x, tempTowers[i].y, tempTowers[i].type, state.levels[i], 0));
         towers[towers.length-1].update();
+        towers[towers.length-1].target = tempTowers[i].target;
         if(towers[i].type == "tesla"){//reset tesla charge
             towers[towers.length-1].charge = tempTowers[i].charge;
         }
@@ -240,7 +244,7 @@ retryButton.addEventListener('click', function () {
             towers[towers.length-1].generated = tempTowers[i].generated;
         }
         towershoot(towers[towers.length-1]);
-        if(tempTowers[i].level =="6" && (tempTowers[i].type == "laser" || tempTowers[i].type == "tesla")){
+        if(tempTowers[i].level =="6" && tempTowers[i].type == "laser"){
             towershoot(towers[towers.length-1]);
             towershoot(towers[towers.length-1]);
             towershoot(towers[towers.length-1]);
