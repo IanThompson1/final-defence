@@ -42,6 +42,7 @@ startGameButton.addEventListener('click', function () {
     if(round > 25){
         totalmoney += 2000;
     }
+    totalmoney += round*100;
     state.update(lives, totalmoney, round, towers);
     animate();
     //@ts-ignore

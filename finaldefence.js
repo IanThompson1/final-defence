@@ -2869,7 +2869,7 @@ function nextWave() {
             spawnWave(10, 1000, 100, 5, 25, "yellow", 500, 0, 0);
             break;
         case 35: // all bosses
-            var doomBoss = new Enemy(spawnPoint()[0], spawnPoint()[1], Math.floor(10000 * hp), 3 * spd, spawnDirection(), 45, "boss", 5000, 50, 500);
+            var doomBoss = new Enemy(spawnPoint()[0], spawnPoint()[1], Math.floor(10000 * hp), 3 * spd, spawnDirection(), 45, "boss", 5000, 50, 200);
             enemies.push(doomBoss);
             var fboss = new Enemy(spawnPoint()[0], spawnPoint()[1], Math.floor(5000 * hp), 0.5 * spd, spawnDirection(), 60, "boss", 5000, 3000, 0);
             enemies.push(fboss);
@@ -2879,7 +2879,7 @@ function nextWave() {
             spawnWave(10, 150 * den, Math.floor(100 * hp), 3 * spd, 15, "pink", 2, 0, 1, boss); //minions
             break;
         default: // 0 money
-            spawnWave(25, (750 - round * 10) * den, Math.floor((round * 20 - 150) * hp), (3.5 + round / 20) * spd, 35, "black", 0, 0, 0); //endless
+            spawnWave(50, (200) * den, Math.floor((round * 100) * hp), (3.5 + round / 10) * spd, 35, "black", 0, 0, 1); //endless
             break;
     }
 }
@@ -3141,7 +3141,7 @@ function lineCrossesCircle(m, slope, h, k, r) {
         return true;
     }
 }
-// function playmusic() {
+// function playmusic(){
 //     var audio = new Audio('disco-groove.mp3');
 //     audio.play();
 // }
