@@ -3037,6 +3037,6 @@ function lineCrossesCircle(m, slope, h, k, r) { //function created by CHATGPT
   
 
 // function playmusic(){
-//     // var audio = new Audio('disco-groove.mp3');
-//     // audio.play();
+//     var audio = new Audio('disco-groove.mp3');
+//     audio.play();
 // }

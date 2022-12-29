@@ -3141,7 +3141,7 @@ function lineCrossesCircle(m, slope, h, k, r) {
         return true;
     }
 }
-function playmusic() {
-    var audio = new Audio('disco-groove.mp3');
-    audio.play();
-}
+// function playmusic() {
+//     var audio = new Audio('disco-groove.mp3');
+//     audio.play();
+// }
