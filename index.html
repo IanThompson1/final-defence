@@ -64,6 +64,11 @@
          background: #ff4800;
          cursor: pointer;
      }
+     .prevent-select {
+         -webkit-user-select: none; /* Safari */
+         -ms-user-select: none; /* IE 10 and IE 11 */
+         user-select: none; /* Standard syntax */
+     }
      
  </style>
  
@@ -75,8 +80,8 @@
  <canvas id="javascript"></canvas>
  
  <div class="fixed inset-0 flex items-center justify-center select-none" id="mainMen">
-     <div class="bg-green h-2/3 w-full h-full p-6 text-center">
-         <div class="w-full">
+     <div class="bg-green h-2/3 w-full h-full p-6 text-center select-none">
+         <div class="w-full select-none">
              <h1 class="text-6xl font-bold leading-none">Pick a map</h1>
              <button
                  class="button button3 buttonRed py-3 
@@ -161,10 +166,10 @@
                  Sandbox
              </button>
              <p class="space">.</p>
-             <h1 class="text-6xl font-bold leading-none">Set Wave:<input class="absolute bg-green font-bold text-6xl leading-none" type="text" id="startround" value="1"></h1>
+             <h1 class="text-6xl font-bold leading-none">Set Wave: <span type="text" class="prevent-select absolute bg-green font-bold text-6xl" id="waveValue" value="1"></span></h1>
              
- <div class="slidecontainer py-3 rounded-full">
-     <input type="range" min="1" max="36" value="1" class="slider" id="setRound" oninput="startround.value=setRound.value">
+ <div class="slidecontainer py-3 rounded-full prevent-select">
+     <input type="range" min="1" max="35" value="1" class="slider" id="setRound">
    </div>
              <p class="space">.</p>
              <h1 class="text-6xl font-bold leading-none">Start</h1>

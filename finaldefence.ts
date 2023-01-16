@@ -27,6 +27,7 @@ const startingRound = document.querySelector('#startRound');
 /*
 subclasses for towers and like everything else
 map with dual lanes
+tesla balancing
 */
 //global variables and inital state
 //@ts-ignore
@@ -56,13 +57,13 @@ var draggingTower :number = 0;
 var placingTowers :string = "Click to Place";
 var speedModifier :number = 1;
 var menutype :number = 0; //0 = main menu 1 = tower menu
-var snipercosts = [100,110,150,200,250,400,800];
+var snipercosts = [120,150,200,250,300,400,800];
 var miniguncosts = [80,100,120,150,200,650,650];
 var teslacosts = [150,200,250,300,350,1000,1100];
 var lasercosts = [150,200,250,300,350,850,900];
 var farmcosts = [250,350,450,550,650,800,1000];
 var icecosts = [200,220,240,260,280,500,700];
-var bombcosts = [100,150,200,250,300,500,600];
+var bombcosts = [100,150,200,250,300,600,600];
 var supercosts = [2000,3000,4000,5000,6000,8000,10000];
 var buffercosts = [400,500,600,800,1000];
 var railguncosts = [600,400,550,700,850,1100,1200];
@@ -431,12 +432,12 @@ class Tower {
         this.shootNow = 10;
         this.buffs = 0;
         if(this.type == "Sniper"){
-            this.reload = 750;
+            this.reload = 600;
             this.damage = 5;
             this.range = 350;
             this.target = "first";
             this.pierce = 1;
-            this.value = 100;
+            this.value = 120;
             this.cost = snipercosts;
         }else if(this.type == "Minigun"){
             this.reload = 100;
@@ -447,15 +448,15 @@ class Tower {
             this.value = 80;
             this.cost = miniguncosts;
         }else if(this.type == "tesla"){
-            this.maxcharge = 300;
+            this.maxcharge = 400;
             this.damage = 2;
             this.range = 190;
             this.ischarging = 1;
             this.target = "first";
-            this.reload = 250;
-            this.charge = 0;
+            this.reload = 200;
+            this.charge = 200;
             this.numTargets = 1;
-            this.chargespd = 1.2;
+            this.chargespd = 2.2;
             this.teslatargets = [];
             this.value = 150;
             this.cost = teslacosts;
@@ -465,7 +466,7 @@ class Tower {
             this.lasermin = 1;
             this.lasermax = 10;
             this.lasertime = 7;
-            this.heatup = 0.5;
+            this.heatup = 0.6;
             this.target = "strong";
             this.value = 150;
             this.cost = lasercosts;
@@ -482,7 +483,7 @@ class Tower {
             this.cost = icecosts;
         }else if (this.type == "bomb") {
             this.damage = 1;
-            this.reload = 750;
+            this.reload = 600;
             this.splash = 25;
             this.range = 150;
             this.pierce = 10;
@@ -614,6 +615,10 @@ class Tower {
                 //@ts-ignore
                 c.fillStyle = "red";
             }
+            if (this.type == "buffer") {
+                //@ts-ignore
+                c.fillStyle = "#FF7173";
+            }
             //@ts-ignore
             c.fillRect(this.x + scaleW * 25, this.y - scaleH * 45, scaleW * 20, scaleH * 10);
         }
@@ -681,74 +686,74 @@ class Tower {
     update(){
         if(this.type == "Sniper"){
             if(this.level == 1){
-                this.reload = 750;
-                this.damage = 5;
-                this.range = 350;
-                this.pierce = 1;
-            }else if(this.level == 2){
-                this.reload = 750;
+                this.reload = 600;
                 this.damage = 10;
                 this.range = 350;
                 this.pierce = 1;
-            }else if(this.level == 3){
-                this.reload = 750;
+            }else if(this.level == 2){
+                this.reload = 600;
                 this.damage = 20;
                 this.range = 350;
                 this.pierce = 1;
-            }else if(this.level == 4){
-                this.reload = 750;
+            }else if(this.level == 3){
+                this.reload = 600;
                 this.damage = 30;
                 this.range = 350;
                 this.pierce = 1;
-            }else if(this.level == 5){
-                this.reload = 750;
+            }else if(this.level == 4){
+                this.reload = 600;
                 this.damage = 40;
                 this.range = 350;
                 this.pierce = 1;
-            }else if(this.level == 6){
-                this.reload = 750;
+            }else if(this.level == 5){
+                this.reload = 600;
                 this.damage = 50;
                 this.range = 350;
                 this.pierce = 1;
+            }else if(this.level == 6){
+                this.reload = 600;
+                this.damage = 100;
+                this.range = 350;
+                this.pierce = 1;
             }else if(this.level == 7){
-                this.reload = 750;
+                this.reload = 600;
                 this.damage = 200;
                 this.range = 350;
                 this.pierce = 1;
             }
         }else if(this.type == "Minigun"){
             if(this.level == 1){
-                this.reload = 100;
+                this.reload = 80;
                 this.damage = 1;
                 this.range = 150;
                 this.pierce = 1;
             }else if(this.level == 2){
-                this.reload = 100;
+                this.reload = 80;
                 this.damage = 2;
                 this.range = 150;
                 this.pierce = 1;
             }else if(this.level == 3){
-                this.reload = 100;
+                this.reload = 80;
                 this.damage = 3;
                 this.range = 150;
                 this.pierce = 1;
             }else if(this.level == 4){
-                this.reload = 100;
+                this.reload = 80;
                 this.damage = 4;
                 this.range = 150;
                 this.pierce = 1;
             }else if(this.level == 5){
-                this.reload = 100;
+                this.reload = 80;
                 this.damage = 5;
                 this.range = 150;
                 this.pierce = 1;
             }else if(this.level == 6){
-                this.reload = 50;
+                this.reload = 40;
                 this.damage = 5;
                 this.range = 150;
                 this.pierce = 1;
             }else if(this.level == 7){
-                this.reload = 50;
+                this.reload = 40;
                 this.damage = 15;
                 this.range = 150;
                 this.pierce = 1;
@@ -788,7 +793,7 @@ class Tower {
                 this.lasermax = 50;
                 this.lasermin = 1;
                 this.lasertime = 7;
-                this.heatup = 1.4;
+                this.heatup = 1.5;
             }else if(this.level == 6){
                 this.reload = 10;
                 this.range = 190;
@@ -802,78 +807,84 @@ class Tower {
                 this.lasermax = 70;
                 this.lasermin = 5;
                 this.lasertime = 5;
-                this.heatup = 2;
+                this.heatup = 3;
             }
         }else if(this.type == "tesla"){
             if (this.level == 1) {
-                this.maxcharge = 300;
+                this.maxcharge = 400;
                 this.damage = 2;
                 this.range = 190;
                 this.ischarging = 1;
-                this.reload = 250;
-                this.charge = 0;
+                this.reload = 200;
+                this.charge = 200;
                 this.numTargets = 1;
-                this.chargespd = 1.2;
+                this.chargespd = 2.2;
                 this.teslatargets = [];
-            }else if (this.level == 2) {
-                this.maxcharge = 300;
+            }
+            else if (this.level == 2) {
+                this.maxcharge = 400;
                 this.damage = 4;
                 this.range = 190;
                 this.ischarging = 1;
-                this.reload = 250;
-                this.charge = 0;
-                this.numTargets = 2;
-                this.chargespd = 1.2;
+                this.reload = 200;
+                this.charge = 200;
+                this.numTargets = 1;
+                this.chargespd = 2.2;
                 this.teslatargets = [];
-            }else if (this.level == 3) {
-                this.maxcharge = 300;
-                this.damage = 6;
-                this.range = 190;
-                this.ischarging = 1;
-                this.reload = 250;
-                this.charge = 0;
-                this.numTargets = 3;
-                this.chargespd = 1.2;
-                this.teslatargets = [];
-            }else if (this.level == 4) {
-                this.maxcharge = 300;
+            }
+            else if (this.level == 3) {
+                this.maxcharge = 400;
                 this.damage = 8;
                 this.range = 190;
                 this.ischarging = 1;
-                this.reload = 250;
-                this.charge = 0;
-                this.numTargets = 4;
-                this.chargespd = 1.2;
+                this.reload = 200;
+                this.charge = 200;
+                this.numTargets = 1;
+                this.chargespd = 2.2;
                 this.teslatargets = [];
-            }else if (this.level == 5) {
-                this.maxcharge = 300;
-                this.damage = 10;
+            }
+            else if (this.level == 4) {
+                this.maxcharge = 400;
+                this.damage = 16;
                 this.range = 190;
                 this.ischarging = 1;
-                this.reload = 250;
-                this.charge = 0;
-                this.numTargets = 5;
-                this.chargespd = 1.2;
+                this.reload = 200;
+                this.charge = 200;
+                this.numTargets = 1;
+                this.chargespd = 2.2;
                 this.teslatargets = [];
-            }else if (this.level == 6) { //multi target
-                this.maxcharge = 300;
-                this.damage = 20;
+            }
+            else if (this.level == 5) {
+                this.maxcharge = 400;
+                this.damage = 32;
                 this.range = 190;
                 this.ischarging = 1;
-                this.reload = 250;
-                this.charge = 0;
-                this.numTargets = 10;
-                this.chargespd = 1.2;
+                this.reload = 200;
+                this.charge = 200;
+                this.numTargets = 1;
+                this.chargespd = 2.2;
                 this.teslatargets = [];
-            }else if (this.level == 7) { //no charge / ultimate tesla
-                this.maxcharge = 300;
-                this.damage = 20;
+            }
+            else if (this.level == 6) { //multi target
+                this.maxcharge = 400;
+                this.damage = 32;
                 this.range = 190;
                 this.ischarging = 1;
-                this.reload = 50;
+                this.reload = 200;
+                this.charge = 200;
+                this.numTargets = 2;
+                this.chargespd = 2.2;
+                this.teslatargets = [];
+            }
+            else if (this.level == 7) { //no charge / ultimate tesla
+                this.maxcharge = 400;
+                this.damage = 32;
+                this.range = 190;
+                this.ischarging = 1;
+                this.reload = 200;
                 this.charge = this.maxcharge;
                 this.numTargets = 1;
-                this.chargespd = 1.2;
+                this.chargespd = 2;
                 this.teslatargets = [];
             }
         }else if(this.type == "farm"){
@@ -918,70 +929,70 @@ class Tower {
         }else if(this.type == "bomb"){
             if (this.level == 1) {
                 this.damage = 1;
-                this.reload = 750;
+                this.reload = 600;
                 this.splash = 50;
                 this.range = 150;
                 this.pierce = 10;
             }else if (this.level == 2) {
                 this.damage = 2;
-                this.reload = 750;
+                this.reload = 600;
                 this.splash = 50;
                 this.range = 150;
                 this.pierce = 15;
             }else if (this.level == 3) {
                 this.damage = 4;
-                this.reload = 750;
+                this.reload = 600;
                 this.splash = 50;
                 this.range = 150;
                 this.pierce = 20;
             }else if (this.level == 4) {
                 this.damage = 8;
-                this.reload = 750;
+                this.reload = 600;
                 this.splash = 50;
                 this.range = 150;
                 this.pierce = 25;
             }else if (this.level == 5) {
                 this.damage = 16;
-                this.reload = 750;
+                this.reload = 600;
                 this.splash = 50;
                 this.range = 150;
                 this.pierce = 30;
             }else if (this.level == 6) {
                 this.damage = 20;
-                this.reload = 750;
+                this.reload = 600;
                 this.splash = 100;
                 this.range = 150;
                 this.pierce = 40;
             }else if (this.level == 7) {
                 this.damage = 50;
-                this.reload = 750;
+                this.reload = 600;
                 this.splash = 50;
                 this.range = 150;
                 this.pierce = 40;
             }
         }else if(this.type == "super"){ //super strong but expensive 
             if(this.level == 1){
-                this.reload = 50;
+                this.reload = 80;
                 this.damage = 10;
                 this.range = 400;
                 this.pierce = 1;
             }else if(this.level == 2){
-                this.reload = 50;
+                this.reload = 80;
                 this.damage = 50;
                 this.range = 400;
                 this.pierce = 1;
             }else if(this.level == 3){
-                this.reload = 50;
+                this.reload = 80;
                 this.damage = 100;
                 this.range = 400;
                 this.pierce = 1;
             }else if(this.level == 4){
-                this.reload = 25;
+                this.reload = 40;
                 this.damage = 100;
                 this.range = 400;
                 this.pierce = 1;
             }else if(this.level == 5){
-                this.reload = 25;
+                this.reload = 40;
                 this.damage = 200;
                 this.range = 400;
                 this.pierce = 1;
@@ -1059,7 +1070,25 @@ class Tower {
         if(this.level == 7){
             tempValue -= this.cost[5];
         }
-        this.value = Math.floor(tempValue*(8/10));//80%
+        var sellpercent = 8;
+        switch (difficulty) {
+            case 1:
+                sellpercent = 10;
+                break;
+            case 2:
+                sellpercent = 9;
+                break;
+            case 3:
+                sellpercent = 8;
+                break;
+            case 4:
+                sellpercent = 7;
+                break;
+            case 5:
+                sellpercent = 10;
+                break;
+        }
+        this.value = Math.floor(tempValue*(sellpercent/10));//80%
         //tower buffs
         if(this.buffs > 0){//1=range, 2=atk spd, 3=damage, 4=peirce, 5=damage2
             this.range = this.range*1.2;
@@ -1069,8 +1098,13 @@ class Tower {
         }
         if(this.buffs > 2){
             this.damage += 5;
-            this.lasermin += 1;
-            this.lasermax += 5;
+            if(this.type == "laser" && this.level == 6){
+                this.lasermin += 5;
+                this.lasermax += 5;
+            }else{
+                this.lasermin += 1;
+                this.lasermax += 5;
+            }
         }
         if(this.buffs > 3){
             if(this.pierce == 1){
@@ -1078,11 +1112,23 @@ class Tower {
             }else{
                 this.pierce = Math.floor(this.pierce*1.2);
             }
+            if(this.type == "tesla"){
+                if(this.level == 6){
+                    this.numTargets = 10;
+                }else{
+                    this.numTargets = 2;
+                }
+            }
         }
         if(this.buffs > 4){
             this.damage = Math.floor(this.damage*1.2);
-            this.lasermin = Math.floor(this.lasermin*1.2);
-            this.lasermax = Math.floor(this.lasermax*1.2);
+            if(this.type == "laser" && this.level == 6){
+                this.lasermin = Math.floor(this.lasermin*1.2);
+                this.lasermax = Math.floor(this.lasermax*1.2);
+            }else{
+                this.lasermin = Math.floor(this.lasermin*1.2);
+                this.lasermax = Math.floor(this.lasermax*1.2);
+            }
         }
     }
 }
@@ -1299,7 +1345,6 @@ function towershoot(tower :Tower) :void {
     //global variables
     var lasercounter = 0;
     var shieldcounter = 0;
-    var laserdamage = tower.damage;
     var lastenemy;
     var firstenemy;
     var strongenemy;
@@ -1307,6 +1352,7 @@ function towershoot(tower :Tower) :void {
     var target;
     var newtarget;
     var lifespan;
+    var size;
     var firefunction = setInterval(function () {
         var inrange = 0;
         for (var i = 0; i < enemies.length; i++) { //find fist and last enemies in range
@@ -1380,10 +1426,6 @@ function towershoot(tower :Tower) :void {
                     speed = 15;
                 }
                 var damage = tower.damage;
-                if (tower.type == "Minigun" && tower.level == 2) {
-                    //half of the time damage is 1 other half damage is 2
-                    damage = Math.floor(Math.random() * 2) + 1;
-                }
                 if(tower.type == "Sniper"){
                     lifespan = 35;
                 }else if(tower.type == "bomb"){
@@ -1691,42 +1733,44 @@ function towershoot(tower :Tower) :void {
                     }
                     if(inrange == 1){
                         newtarget = 0;
-                        
-                        laserdamage = tower.lasermin;
-                        var size = tower.level;
-                        if (tower.level == 7) {
-                            size = 10;
+                        tower.damage = tower.lasermin;
+                        if(tower.level == 6){
+                            var thickness = 5;
+                            lasers.push(new Laser(thickness, "red", target, tower));
                         }
-                        lasers.push(new Laser(size, "red", target, tower));
                     }
                 }
                 //do damage here instead
                 if(inrange == 1){
                     if (lasercounter > tower.lasertime * 2) {
+                        if(tower.level != 6){
+                            var thickness = Math.floor(tower.damage/10)+1;
+                            lasers.push(new Laser(thickness, "red", target, tower));
+                        }
                         if (found == 1) { //heat up
-                            if (laserdamage >= tower.lasermax) {
-                                laserdamage = tower.lasermax;
+                            if (tower.damage >= tower.lasermax) {
+                                tower.damage = tower.lasermax;
                             }
                             else {
-                                laserdamage = laserdamage + tower.heatup;
+                                tower.damage = tower.damage + tower.heatup;
                             }
                         }
                         if(target.shield <= 0){
                             //ignores armor
-                            // if(target.health <= Math.floor(laserdamage)){
+                            // if(target.health <= Math.floor(tower.damage)){
                             //     target.health = 0;
                             // }else{
-                            //     target.health -= Math.floor(laserdamage);
+                            //     target.health -= Math.floor(tower.damage);
                             // }
                             //hits armor
-                            if (Math.floor(laserdamage) <= target.armor) { //low damage against armored
+                            if (Math.floor(tower.damage) <= target.armor) { //low damage against armored
                                 target.health -= 1;
                             }
-                            else if (target.health + target.armor <= Math.floor(laserdamage)) { //enough damage to kill
+                            else if (target.health + target.armor <= Math.floor(tower.damage)) { //enough damage to kill
                                 target.health = 0;
                             }
                             else { //deals damage
-                                target.health -= Math.floor(laserdamage) - target.armor;
+                                target.health -= Math.floor(tower.damage) - target.armor;
                             }
                             lasercounter = 0;
                         }else { //shield
@@ -1736,6 +1780,7 @@ function towershoot(tower :Tower) :void {
                             }else{
                                 shieldcounter++;
                             }
+                            tower.damage = tower.lasermin;
                         }
                     }
                     else {
@@ -1743,7 +1788,7 @@ function towershoot(tower :Tower) :void {
                     }
                 }
             }else{
-                laserdamage = tower.lasermin;
+                tower.damage = tower.lasermin;
                 newtarget = 1;
             }
             if (tower.sold == 1 || gameIsOver == 1) {
@@ -1752,22 +1797,19 @@ function towershoot(tower :Tower) :void {
         }else if(tower.type == "tesla"){
             var timeToCharge = 1;
             //charging 
-            if (tower.ischarging == 1 && tower.charge < tower.maxcharge) {
+            if(tower.charge < tower.maxcharge){
                 tower.charge += speedModifier * tower.chargespd;
-                //reset targets
-                for (var i = tower.teslatargets.length - 1; i >= 0; i--) {
-                    tower.teslatargets.splice(i, 1);
-                }
-            }else {
+            }
+            if(tower.charge >= 50) {
                 tower.ischarging = 0;
-                for(var nextTarget=0; nextTarget<tower.numTargets; nextTarget++){//loops for multi target
-                    inrange=0;
+                for (var nextTarget = 0; nextTarget < tower.numTargets; nextTarget++) { //loops for multi target
+                    inrange = 0;
                     for (var i = 0; i < enemies.length; i++) { //find if there is a new enemy in range
                         if (targetinellipse(tower.x, tower.y, tower.range, enemies[i].x, enemies[i].y, enemies[i]) == 1) {
                             timeToCharge = 0;
                         }
                         if (targetinellipse(tower.x, tower.y, tower.range, enemies[i].x, enemies[i].y, enemies[i]) == 1 && alreadyTargeted(tower, enemies[i]) == 0) {
-                            inrange=1;
+                            inrange = 1;
                             break;
                         }
                     }
@@ -1779,8 +1821,9 @@ function towershoot(tower :Tower) :void {
                                 firstenemy = enemies[i];
                                 strongenemy = enemies[i];
                                 weakenemy = enemies[i];
-                                inrange=1;
-                            }else{
+                                inrange = 1;
+                            }
+                            else {
                                 if (targetinellipse(tower.x, tower.y, tower.range, enemies[i].x, enemies[i].y, enemies[i]) == 1 && alreadyTargeted(tower, enemies[i]) == 0) {
                                     if (lastenemy.distance > enemies[i].distance) {
                                         lastenemy = enemies[i];
@@ -1817,13 +1860,14 @@ function towershoot(tower :Tower) :void {
                         }
                     }
                 }
-                if(tower.shootNow >= (tower.reload/speedModifier)/15){
-                    tower.shootNow=0;
+                if (tower.shootNow >= (tower.reload / speedModifier) / 15) {
+                    tower.shootNow = 0;
                     if (tower.level != 7 && tower.teslatargets.length > 0) { //reduces charge
-                        tower.charge -= 10;
+                        tower.charge -= 50;
                     }
                     //attack with all of tesla targets[]
-                    tower.teslatargets.forEach(target => {
+                    tower.teslatargets.forEach(function (target) {
+                        lasers.push(new Laser(tower.level + 4, "yellow", target, tower));
                         if (target.shield <= 0) {
                             if (tower.damage <= target.armor) { //low damage against armored
                                 target.health -= 1;
@@ -1834,14 +1878,14 @@ function towershoot(tower :Tower) :void {
                             else { //deals damage
                                 target.health -= tower.damage - target.armor;
                             }
-                            lasers.push(new Laser(tower.level + 4, "yellow", target, tower));
                             lasercounter = 0;
                         }
                         else { //shield damage
                             target.shield--;
                         }
                     });
-                }else{
+                }
+                else {
                     tower.shootNow++;
                 }
                 //reset targets
@@ -1985,6 +2029,14 @@ function animate(){
         }
     }
 
+    //draws lasers 
+    for (var i = lasers.length - 1; i >= 0; i--) {
+        lasers[i].update();
+        if(lasers[i].tower.type == "tesla"){
+            lasers.splice(i,  1);
+        }
+    }
+
     //handles enemy interactions 
     enemies.forEach(function (enemy, index) {
         enemy.update();
@@ -2088,14 +2140,14 @@ function animate(){
                         });
                     }else{ //armor piercing
                         if(enemy.shield <= 0){
-                            if(enemy.armor == 1){
+                            if(enemy.armor >= 1){
                                 if(enemy.health <= shot.damage*2){
                                     enemy.health = 0;
                                 }else{
                                     enemy.health -= shot.damage*2;
                                 }
                             }else{
-                                if(enemy.health <= shot.damage*2){
+                                if(enemy.health <= shot.damage){
                                     enemy.health = 0;
                                 }else{
                                     enemy.health -= shot.damage;
@@ -2169,12 +2221,18 @@ function animate(){
             if (enemy.x <= -10) {
                 totalmoney += enemy.enemymoney;
                 enemies.splice(index, 1);
+                if(enemy.color == "boss"){
+                    lives -= 99;
+                }
                 lives -= 1;
             }
         }else if(paths[paths.length-1][1] == 0){// top exit
             if (enemy.y <= -10) {
                 totalmoney += enemy.enemymoney;
                 enemies.splice(index, 1);
+                if(enemy.color == "boss"){
+                    lives -= 99;
+                }
                 lives -= 1;
             }
         }else if(paths[paths.length-1][1] == 100){// bottom exit
@@ -2182,6 +2240,9 @@ function animate(){
             if (enemy.y >= canvas.height + 10) {
                 totalmoney += enemy.enemymoney;
                 enemies.splice(index, 1);
+                if(enemy.color == "boss"){
+                    lives -= 99;
+                }
                 lives -= 1;
             }
         }else{ //right exit 
@@ -2189,6 +2250,9 @@ function animate(){
             if (enemy.x >= canvas.width + 10) {
                 totalmoney += enemy.enemymoney;
                 enemies.splice(index, 1);
+                if(enemy.color == "boss"){
+                    lives -= 99;
+                }
                 lives -= 1;
             }
         }
@@ -2206,7 +2270,6 @@ function animate(){
             lasers[i].update();
             lasers.splice(i, 1);
         }else if (lasers[i].tower.type == "tesla"){
-            lasers[i].update();
             lasers.splice(i,  1);
         }else{
             lasers[i].update();
@@ -2591,7 +2654,7 @@ function nextWave(){
     switch(difficulty){
         case 1:
             hp = 0.7;
-            den = 1.5;
+            den = 1.4;
             spd = 0.7;
             break;
         case 2:
@@ -2605,9 +2668,9 @@ function nextWave(){
             spd = 1;
             break;
         case 4:
-            hp = 1.3;
-            den = 0.7;
-            spd = 1.3;
+            hp = 1.2;
+            den = 0.9;
+            spd = 1.2;
             break;
     }
     //rounds    
@@ -2631,14 +2694,14 @@ function nextWave(){
             spawnWave(20, 1100 * den, Math.floor(50 * hp), 3 * spd, 20, "green", 7.5, 0, 1); //shielded
             break;
         case 7: //money 300
-            spawnWave(2, 6000 * den, Math.floor(200 * hp), 3, 40, "red", 200, 3, 0); //boss / armored
+            spawnWave(10, 1700 * den, Math.floor(50 * hp), 3 * spd, 35, "red", 18, 2, 0); //armored
             break;
         case 8: //money 170
             spawnWave(15, 1500 * den, Math.floor(20 * hp), 6 * spd, 20, "yellow", 6, 0, 1); //fast + 
             spawnWave(50, 100, 4, 3 * spd, 15, "pink", 1.6, 0, 0); //grouped
             break;
-        case 9: //money 180
-            spawnWave(10, 1700 * den, Math.floor(60 * hp), 3 * spd, 35, "red", 18, 6, 0); //armored 
+        case 9: //money 180 
+            spawnWave(2, 5000 * den, Math.floor(250 * hp), 2.5, 40, "red", 200, 6, 0); //armored
             break;
         case 10: //money 190
             spawnWave(190, 100, Math.floor(5 * hp), 3 * spd, 15, "pink", 1, 0, 0); //mega grouped
@@ -2731,7 +2794,7 @@ function nextWave(){
             spawnWave(10, 6000 * den, Math.floor(1500 * hp), 0.5 * spd, 40, "red", 75, 70, 1);
             break;
         case 29: // 800 mega grouped 2
-            spawnWave(400, 70 * den, Math.floor(50 * hp), 4 * spd, 15, "pink", 2, 0, 10);
+            spawnWave(400, 70 * den, Math.floor(100 * hp), 4 * spd, 15, "pink", 2, 0, 1);
             break;
         case 30: // 850 matryoshka
             spawnWave(10, 5000 * den, Math.floor(3000 * hp), 2.5 * spd, 50, "green", 17, 0, 1);
@@ -2755,8 +2818,8 @@ function nextWave(){
         case 34: // 5000 cash in preparation
             spawnWave(10, 1000, 100, 5, 25, "yellow", 500, 0, 0);
             break;
-            case 35: // all bosses
-            var doomBoss = new Enemy(spawnPoint()[0], spawnPoint()[1], Math.floor(10000 * hp), 3 * spd, spawnDirection(), 45, "boss", 5000, 50, 500);
+        case 35: // all bosses
+            var doomBoss = new Enemy(spawnPoint()[0], spawnPoint()[1], Math.floor(10000 * hp), 3 * spd, spawnDirection(), 45, "boss", 5000, 50, 200);
             enemies.push(doomBoss);
             var fboss = new Enemy(spawnPoint()[0], spawnPoint()[1], Math.floor(5000 * hp), 0.5 * spd, spawnDirection(), 60, "boss", 5000, 3000, 0);
             enemies.push(fboss);
@@ -2766,7 +2829,7 @@ function nextWave(){
             spawnWave(10, 150 * den, Math.floor(100 * hp), 3 * spd, 15, "pink", 2, 0, 1, boss); //minions
             break;
         default: // 0 money
-            spawnWave(25, (750 - round * 10) * den, Math.floor((round * 20 - 150) * hp), (3.5 + round / 20) * spd, 35, "black", 0, 0, 0); //endless
+            spawnWave(50, (200) * den, Math.floor((round * 100) * hp), (3.5 + round / 10) * spd, 35, "black", 0, 0, 1); //endless
             break;
     }
 }

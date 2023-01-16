@@ -1,4 +1,11 @@
 //html stuff 
+var slider = document.getElementById("setRound");
+var output = document.getElementById("waveValue");
+output.innerHTML = slider.value;
+
+slider.oninput = function() {
+    output.innerHTML = this.value;
+}
 startGameButton.addEventListener('click', function () {
     //starts the program by calling the animate function
     switch (difficulty) {
@@ -23,7 +30,7 @@ startGameButton.addEventListener('click', function () {
             lives = 10000;
             break;
     }
-    round = startingRound.value-1;
+    round = output.innerHTML-1;
     //calculate round money
     if(round != 0){
         for(var i=0; i<round; i++){
@@ -180,27 +187,27 @@ restartButton.addEventListener('click', function () {
     //restart level
     switch (difficulty) {
         case 1:
-            totalmoney = 1000;
+            totalmoney = 600;
             lives = 100;
             round = 0;
             break;
         case 2:
-            totalmoney = 750;
+            totalmoney = 500;
             lives = 50;
             round = 0;
             break;
         case 3:
-            totalmoney = 500;
+            totalmoney = 400;
             lives = 10;
             round = 0;
             break;
         case 4:
-            totalmoney = 400;
+            totalmoney = 300;
             lives = 1;
             round = 0;
             break;
         case 5:
-            totalmoney = 50000;
+            totalmoney = 100000;
             lives = 9999;
             round = 0;
             break;
@@ -252,6 +259,7 @@ retryButton.addEventListener('click', function () {
             towershoot(towers[towers.length-1]);
         }
     }
+    TowerPlaced();
     lives = state.lives;
     totalmoney = state.totalmoney;
     retried = 1;
