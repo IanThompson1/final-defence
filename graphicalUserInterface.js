@@ -5,11 +5,15 @@ function drawLayout() {
     // c.fillRect(0, 0, canvas.width, canvas.height);
     //background
     var background = new Image();
-    if(difficulty < 3){
-        background.src = "./img/battleground.png";
-        var scal = 3;
-    }else{
+    // if(difficulty < 3){
+    //     background.src = "./img/battleground.png";
+    //     var scal = 3;
+    // }else 
+    if(paths[0][1]!=40 || paths[2][1]!=80){
         background.src = "./img/stillbackground.png";
+        var scal = 1;
+    }else if(paths[0][1]==40 && paths[2][1] == 80){
+        background.src = "./img/basicMap.png";
         var scal = 1;
     }
     c.drawImage(background, 0, 0, background.width*scal*scaleW, background.height*scal*scaleH);
@@ -18,23 +22,24 @@ function drawLayout() {
     mainMenu.style.display = "none";
     //path
     c.fillStyle = "#808080";
-    
-    for (var i = 0; i < paths.length - 1; i++) {
-        if (paths[i][0] == paths[i + 1][0] && paths[i][1] > paths[i + 1][1]) { // up 
-            pathRubble((canvas.width / 100) * paths[i][0], (canvas.height / 100) * paths[i + 1][1], scaleW*75, (canvas.height / 100) * (paths[i][1] - paths[i + 1][1]) + scaleH*75);
-            // c.fillRect((canvas.width / 100) * paths[i][0], (canvas.height / 100) * paths[i + 1][1], scaleW*75, (canvas.height / 100) * (paths[i][1] - paths[i + 1][1]) + scaleH*75);
-        }
-        else if (paths[i][0] == paths[i + 1][0] && paths[i][1] < paths[i + 1][1]) { // down
-            pathRubble((canvas.width / 100) * paths[i][0], (canvas.height / 100) * paths[i][1], scaleW*75, (canvas.height / 100) * (paths[i + 1][1] - paths[i][1]) + scaleH*75);
-            // c.fillRect((canvas.width / 100) * paths[i][0], (canvas.height / 100) * paths[i][1], scaleW*75, (canvas.height / 100) * (paths[i + 1][1] - paths[i][1]) + scaleH*75);
-        }
-        else if (paths[i][1] == paths[i + 1][1] && paths[i][0] > paths[i + 1][0]) { // left
-            pathRubble((canvas.width / 100) * paths[i + 1][0], (canvas.height / 100) * paths[i][1], (canvas.width / 100) * (paths[i][0] - paths[i + 1][0]), scaleH*75);
-            // c.fillRect((canvas.width / 100) * paths[i + 1][0], (canvas.height / 100) * paths[i][1], (canvas.width / 100) * (paths[i][0] - paths[i + 1][0]), scaleH*75);
-        }
-        else if (paths[i][1] == paths[i + 1][1] && paths[i][0] < paths[i + 1][0]) { // right
-            pathRubble((canvas.width / 100) * paths[i][0], (canvas.height / 100) * paths[i][1], (canvas.width / 100) * (paths[i + 1][0] - paths[i][0]), scaleH*75);
-            // c.fillRect((canvas.width / 100) * paths[i][0], (canvas.height / 100) * paths[i][1], (canvas.width / 100) * (paths[i + 1][0] - paths[i][0]), scaleH*75);
+    if(paths[0][1]!=40 || paths[2][1]!=80){
+        for (var i = 0; i < paths.length - 1; i++) {
+            if (paths[i][0] == paths[i + 1][0] && paths[i][1] > paths[i + 1][1]) { // up 
+                // pathRubble((canvas.width / 100) * paths[i][0], (canvas.height / 100) * paths[i + 1][1], scaleW*75, (canvas.height / 100) * (paths[i][1] - paths[i + 1][1]) + scaleH*75);
+                c.fillRect((canvas.width / 100) * paths[i][0], (canvas.height / 100) * paths[i + 1][1], scaleW*75, (canvas.height / 100) * (paths[i][1] - paths[i + 1][1]) + scaleH*75);
+            }
+            else if (paths[i][0] == paths[i + 1][0] && paths[i][1] < paths[i + 1][1]) { // down
+                // pathRubble((canvas.width / 100) * paths[i][0], (canvas.height / 100) * paths[i][1], scaleW*75, (canvas.height / 100) * (paths[i + 1][1] - paths[i][1]) + scaleH*75);
+                c.fillRect((canvas.width / 100) * paths[i][0], (canvas.height / 100) * paths[i][1], scaleW*75, (canvas.height / 100) * (paths[i + 1][1] - paths[i][1]) + scaleH*75);
+            }
+            else if (paths[i][1] == paths[i + 1][1] && paths[i][0] > paths[i + 1][0]) { // left
+                // pathRubble((canvas.width / 100) * paths[i + 1][0], (canvas.height / 100) * paths[i][1], (canvas.width / 100) * (paths[i][0] - paths[i + 1][0]), scaleH*75);
+                c.fillRect((canvas.width / 100) * paths[i + 1][0], (canvas.height / 100) * paths[i][1], (canvas.width / 100) * (paths[i][0] - paths[i + 1][0]), scaleH*75);
+            }
+            else if (paths[i][1] == paths[i + 1][1] && paths[i][0] < paths[i + 1][0]) { // right
+                // pathRubble((canvas.width / 100) * paths[i][0], (canvas.height / 100) * paths[i][1], (canvas.width / 100) * (paths[i + 1][0] - paths[i][0]), scaleH*75);
+                c.fillRect((canvas.width / 100) * paths[i][0], (canvas.height / 100) * paths[i][1], (canvas.width / 100) * (paths[i + 1][0] - paths[i][0]), scaleH*75);
+            }
         }
     }
     //wave entrance arrow 
@@ -213,15 +218,15 @@ function drawLayout() {
     
     //towers
     if(menutype == 0){
-        addDoubleText("Sniper", "Cost: 120", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, canAfford(120));
-        addDoubleText("MiniGun", "Cost: 80", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, canAfford(80));
-        addDoubleText("Farm", "Cost: 250", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (4 / 2), "black", numboxes, canAfford(250));
+        addDoubleText("Sniper", "Cost: 150", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, canAfford(150));
+        addDoubleText("MiniGun", "Cost: 100", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, canAfford(100));
+        addDoubleText("Farm", "Cost: 300", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (4 / 2), "black", numboxes, canAfford(300));
         addDoubleText("laser", "Cost: 150", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (4 / 2), "black", numboxes, canAfford(150));
         addDoubleText("Slow", "Cost: 200", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (6 / 2), "black", numboxes, canAfford(200));
         addDoubleText("Tesla", "Cost: 150", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (6 / 2), "black", numboxes, canAfford(150));
         addDoubleText("Bomb", "Cost: 100", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes, canAfford(100));
-        addDoubleText("Super", "Cost: 2000", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes, canAfford(2000));
-        addDoubleText("Buffer", "Cost: 400", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes, canAfford(400));
+        addDoubleText("Super", "Cost: 3000", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes, canAfford(3000));
+        addDoubleText("Buffer", "Cost: 800", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes, canAfford(800));
         addDoubleText("Railgun", "Cost: 600", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes, canAfford(600));
     }
     function canAfford(cost) {
@@ -763,7 +768,7 @@ function drawLayout() {
             switch(temptowertype){
                 case "Sniper": 
                     addText("Double damage to armored",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
-                    addText("Damage:50",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
+                    addText("Damage:100",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
                     break;
                 case "Minigun": 
                     addText("2 Cannons, VeryFast",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
@@ -807,7 +812,7 @@ function drawLayout() {
                     break;
                 case "laser": 
                     addText("Single Target Beast",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
-                    addText("MaxDamage:70",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
+                    addText("MaxDamage:100",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
                     break;
                 case "tesla": 
                     addText("No Charge",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);

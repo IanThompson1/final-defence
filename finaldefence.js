@@ -27,7 +27,7 @@ var startingRound = document.querySelector('#startRound');
 /*
 subclasses for towers and like everything else
 map with dual lanes
-tesla balancing
+balance strong towers
 */
 //global variables and inital state
 //@ts-ignore
@@ -57,16 +57,28 @@ var draggingTower = 0;
 var placingTowers = "Click to Place";
 var speedModifier = 1;
 var menutype = 0; //0 = main menu 1 = tower menu
-var snipercosts = [120, 150, 200, 250, 300, 400, 800];
-var miniguncosts = [80, 100, 120, 150, 200, 650, 650];
-var teslacosts = [150, 200, 250, 300, 350, 1000, 1100];
-var lasercosts = [150, 200, 250, 300, 350, 850, 900];
-var farmcosts = [250, 350, 450, 550, 650, 800, 1000];
-var icecosts = [200, 220, 240, 260, 280, 500, 700];
-var bombcosts = [100, 150, 200, 250, 300, 600, 600];
-var supercosts = [2000, 3000, 4000, 5000, 6000, 8000, 10000];
-var buffercosts = [400, 500, 600, 800, 1000];
-var railguncosts = [600, 400, 550, 700, 850, 1100, 1200];
+// var snipercosts = [200,300,400,500,600,800,1500];
+// var miniguncosts = [150,250,350,450,600,900,900];
+// var teslacosts = [250,350,450,550,650,1800,2000];
+// var lasercosts = [250,350,450,550,650,1500,2000];
+// var farmcosts = [300,400,500,600,700,800,1000];
+// var icecosts = [200,250,300,350,400,800,1200];
+// var bombcosts = [100,200,300,400,500,1000,1300];
+// var supercosts = [2000,3000,4000,5000,6000,8000,10000];
+// var buffercosts = [500,600,700,1200,1400];
+// var railguncosts = [700,500,700,900,1100,3000,3000];
+//old version prices 
+var snipercosts = [150, 200, 250, 300, 350, 1000, 1400];
+var miniguncosts = [100, 150, 200, 250, 300, 1000, 1000];
+var teslacosts = [150, 200, 250, 300, 350, 1500, 1500];
+var lasercosts = [150, 200, 250, 300, 350, 1000, 2000];
+var farmcosts = [300, 400, 500, 600, 700, 1000, 1500];
+var icecosts = [200, 250, 300, 350, 400, 1000, 1200];
+var bombcosts = [100, 150, 200, 250, 300, 1000, 1000];
+var supercosts = [3000, 4000, 5000, 6000, 7000, 10000, 15000];
+var buffercosts = [800, 1200, 1600, 2500, 4000];
+var railguncosts = [600, 400, 550, 700, 850, 1500, 1500];
+var towerFootPrint = 95;
 //@ts-ignore
 gameOverMenu.style.display = "none";
 //enemy class
@@ -378,7 +390,7 @@ var Tower = /** @class */ (function () {
         this.shootNow = 10;
         this.buffs = 0;
         if (this.type == "Sniper") {
-            this.reload = 600;
+            this.reload = 750;
             this.damage = 5;
             this.range = 350;
             this.target = "first";
@@ -387,7 +399,7 @@ var Tower = /** @class */ (function () {
             this.cost = snipercosts;
         }
         else if (this.type == "Minigun") {
-            this.reload = 100;
+            this.reload = 120;
             this.damage = 1;
             this.range = 150;
             this.target = "first";
@@ -412,10 +424,10 @@ var Tower = /** @class */ (function () {
         else if (this.type == "laser") {
             this.reload = 10;
             this.range = 190;
-            this.lasermin = 1;
             this.lasermax = 10;
-            this.lasertime = 7;
-            this.heatup = 0.6;
+            this.lasermin = 1;
+            this.lasertime = 5;
+            this.heatup = 4;
             this.target = "strong";
             this.value = 150;
             this.cost = lasercosts;
@@ -435,7 +447,7 @@ var Tower = /** @class */ (function () {
         }
         else if (this.type == "bomb") {
             this.damage = 1;
-            this.reload = 600;
+            this.reload = 750;
             this.splash = 25;
             this.range = 150;
             this.pierce = 10;
@@ -447,14 +459,14 @@ var Tower = /** @class */ (function () {
         else if (this.type == "super") {
             this.reload = 50;
             this.damage = 10;
-            this.range = 400;
+            this.range = 350;
             this.target = "first";
             this.pierce = 1;
             this.value = 2000;
             this.cost = supercosts;
         }
         else if (this.type == "buffer") { //1=range, 2=atk spd, 3=damage, 4=peirce, 5=damage2
-            this.range = 160;
+            this.range = 145;
             this.buff = 1;
             this.value = 400;
             this.cost = buffercosts;
@@ -486,11 +498,11 @@ var Tower = /** @class */ (function () {
             c.fillStyle = "black";
         }
         //@ts-ignore
-        c.fillRect(this.x - scaleW * 50, this.y - scaleH * 50, scaleW * 100, scaleH * 100);
+        c.fillRect(this.x - scaleW * towerFootPrint / 2, this.y - scaleH * towerFootPrint / 2, scaleW * towerFootPrint, scaleH * towerFootPrint);
         //@ts-ignore
         c.fillStyle = "black";
         //@ts-ignore
-        c.fillRect(this.x - scaleW * 45, this.y - scaleH * 45, scaleW * 90, scaleH * 90);
+        c.fillRect(this.x - scaleW * (towerFootPrint / 2 - 5), this.y - scaleH * (towerFootPrint / 2 - 5), scaleW * (towerFootPrint - 10), scaleH * (towerFootPrint - 10));
         //head
         if (this.type == "Sniper") {
             //@ts-ignore
@@ -582,30 +594,30 @@ var Tower = /** @class */ (function () {
                 c.fillStyle = "#FF7173";
             }
             //@ts-ignore
-            c.fillRect(this.x + scaleW * 25, this.y - scaleH * 45, scaleW * 20, scaleH * 10);
+            c.fillRect(this.x - scaleW * (towerFootPrint / 2 - 5) + scaleW * (towerFootPrint - 10) - scaleW * 20, this.y - scaleH * (towerFootPrint / 2 - 5), scaleW * 20, scaleH * 10);
         }
         if (this.level >= 2) {
             //@ts-ignore
-            c.fillRect(this.x + scaleW * 25, this.y - scaleH * 30, scaleW * 20, scaleH * 10);
+            c.fillRect(this.x - scaleW * (towerFootPrint / 2 - 5) + scaleW * (towerFootPrint - 10) - scaleW * 20, this.y - scaleH * (towerFootPrint / 2 - 20), scaleW * 20, scaleH * 10);
         }
         if (this.level >= 3) {
             //@ts-ignore
-            c.fillRect(this.x + scaleW * 25, this.y - scaleH * 15, scaleW * 20, scaleH * 10);
+            c.fillRect(this.x - scaleW * (towerFootPrint / 2 - 5) + scaleW * (towerFootPrint - 10) - scaleW * 20, this.y - scaleH * (towerFootPrint / 2 - 35), scaleW * 20, scaleH * 10);
         }
         if (this.level >= 4) {
             //@ts-ignore
-            c.fillRect(this.x + scaleW * 25, this.y, scaleW * 20, scaleH * 10);
+            c.fillRect(this.x - scaleW * (towerFootPrint / 2 - 5) + scaleW * (towerFootPrint - 10) - scaleW * 20, this.y - scaleH * (towerFootPrint / 2 - 50), scaleW * 20, scaleH * 10);
         }
         if (this.level >= 5) {
             //@ts-ignore
-            c.fillRect(this.x + scaleW * 25, this.y + scaleH * 15, scaleW * 20, scaleH * 10);
+            c.fillRect(this.x - scaleW * (towerFootPrint / 2 - 5) + scaleW * (towerFootPrint - 10) - scaleW * 20, this.y - scaleH * (towerFootPrint / 2 - 65), scaleW * 20, scaleH * 10);
         }
         //buffs 
         if (this.buffs >= 1) {
             //@ts-ignore
             c.fillStyle = "#FF7173";
             //@ts-ignore
-            c.fillRect(this.x + scaleW * -25, this.y - scaleH * 45, scaleW * 20, scaleH * 10);
+            c.fillRect(this.x + scaleW * -25, this.y - scaleH * (towerFootPrint / 2 - 5), scaleW * 20, scaleH * 10);
         }
         //range
         if (this.selected == 1) {
@@ -623,11 +635,11 @@ var Tower = /** @class */ (function () {
             //@ts-ignore
             c.fillStyle = "blue";
             //@ts-ignore
-            c.fillRect(this.x - scaleW * 45, this.y + scaleH * 45, scaleW * 10, -scaleH * 90);
+            c.fillRect(this.x - scaleW * (towerFootPrint / 2 - 5), this.y - scaleH * (towerFootPrint / 2 - 5) + scaleH * (towerFootPrint - 10), scaleW * 10, -scaleH * (towerFootPrint - 10));
             //@ts-ignore
             c.fillStyle = "yellow";
             //@ts-ignore
-            c.fillRect(this.x - scaleW * 45, this.y + scaleH * 45, scaleW * 10, -(this.charge / this.maxcharge) * scaleH * 90);
+            c.fillRect(this.x - scaleW * (towerFootPrint / 2 - 5), this.y - scaleH * (towerFootPrint / 2 - 5) + scaleH * (towerFootPrint - 10), scaleW * 10, -(this.charge / this.maxcharge) * scaleH * (towerFootPrint - 10));
         }
         //farm money symbol
         if (this.type == "farm") {
@@ -647,43 +659,43 @@ var Tower = /** @class */ (function () {
     Tower.prototype.update = function () {
         if (this.type == "Sniper") {
             if (this.level == 1) {
-                this.reload = 600;
+                this.reload = 750;
                 this.damage = 10;
                 this.range = 350;
                 this.pierce = 1;
             }
             else if (this.level == 2) {
-                this.reload = 600;
+                this.reload = 750;
                 this.damage = 20;
                 this.range = 350;
                 this.pierce = 1;
             }
             else if (this.level == 3) {
-                this.reload = 600;
+                this.reload = 750;
                 this.damage = 30;
                 this.range = 350;
                 this.pierce = 1;
             }
             else if (this.level == 4) {
-                this.reload = 600;
+                this.reload = 750;
                 this.damage = 40;
                 this.range = 350;
                 this.pierce = 1;
             }
             else if (this.level == 5) {
-                this.reload = 600;
+                this.reload = 750;
                 this.damage = 50;
                 this.range = 350;
                 this.pierce = 1;
             }
             else if (this.level == 6) {
-                this.reload = 600;
+                this.reload = 750;
                 this.damage = 100;
                 this.range = 350;
                 this.pierce = 1;
             }
             else if (this.level == 7) {
-                this.reload = 600;
+                this.reload = 750;
                 this.damage = 200;
                 this.range = 350;
                 this.pierce = 1;
@@ -691,43 +703,43 @@ var Tower = /** @class */ (function () {
         }
         else if (this.type == "Minigun") {
             if (this.level == 1) {
-                this.reload = 80;
+                this.reload = 120;
                 this.damage = 1;
                 this.range = 150;
                 this.pierce = 1;
             }
             else if (this.level == 2) {
-                this.reload = 80;
+                this.reload = 120;
                 this.damage = 2;
                 this.range = 150;
                 this.pierce = 1;
             }
             else if (this.level == 3) {
-                this.reload = 80;
+                this.reload = 120;
                 this.damage = 3;
                 this.range = 150;
                 this.pierce = 1;
             }
             else if (this.level == 4) {
-                this.reload = 80;
+                this.reload = 120;
                 this.damage = 4;
                 this.range = 150;
                 this.pierce = 1;
             }
             else if (this.level == 5) {
-                this.reload = 80;
+                this.reload = 120;
                 this.damage = 5;
                 this.range = 150;
                 this.pierce = 1;
             }
             else if (this.level == 6) {
-                this.reload = 40;
+                this.reload = 60;
                 this.damage = 5;
                 this.range = 150;
                 this.pierce = 1;
             }
             else if (this.level == 7) {
-                this.reload = 40;
+                this.reload = 60;
                 this.damage = 15;
                 this.range = 150;
                 this.pierce = 1;
@@ -739,56 +751,56 @@ var Tower = /** @class */ (function () {
                 this.range = 190;
                 this.lasermax = 10;
                 this.lasermin = 1;
-                this.lasertime = 7;
-                this.heatup = 0.6;
+                this.lasertime = 5;
+                this.heatup = 4;
             }
             else if (this.level == 2) {
                 this.reload = 10;
                 this.range = 190;
                 this.lasermax = 20;
                 this.lasermin = 1;
-                this.lasertime = 7;
-                this.heatup = 0.8;
+                this.lasertime = 5;
+                this.heatup = 8;
             }
             else if (this.level == 3) {
                 this.reload = 10;
                 this.range = 190;
                 this.lasermax = 30;
                 this.lasermin = 1;
-                this.lasertime = 7;
-                this.heatup = 1;
+                this.lasertime = 5;
+                this.heatup = 12;
             }
             else if (this.level == 4) {
                 this.reload = 10;
                 this.range = 190;
                 this.lasermax = 40;
                 this.lasermin = 1;
-                this.lasertime = 7;
-                this.heatup = 1.2;
+                this.lasertime = 5;
+                this.heatup = 16;
             }
             else if (this.level == 5) {
                 this.reload = 10;
                 this.range = 190;
                 this.lasermax = 50;
                 this.lasermin = 1;
-                this.lasertime = 7;
-                this.heatup = 1.5;
+                this.lasertime = 5;
+                this.heatup = 20;
             }
             else if (this.level == 6) {
                 this.reload = 10;
                 this.range = 190;
                 this.lasermax = 10;
                 this.lasermin = 10;
-                this.lasertime = 7;
+                this.lasertime = 10;
                 this.heatup = 0;
             }
             else if (this.level == 7) {
                 this.reload = 10;
                 this.range = 190;
-                this.lasermax = 70;
+                this.lasermax = 100;
                 this.lasermin = 5;
                 this.lasertime = 5;
-                this.heatup = 3;
+                this.heatup = 20;
             }
         }
         else if (this.type == "tesla") {
@@ -875,22 +887,22 @@ var Tower = /** @class */ (function () {
                 this.income = 50;
             }
             else if (this.level == 2) {
-                this.income = 120;
+                this.income = 110;
             }
             else if (this.level == 3) {
-                this.income = 210;
+                this.income = 180;
             }
             else if (this.level == 4) {
-                this.income = 320;
+                this.income = 260;
             }
             else if (this.level == 5) {
-                this.income = 450;
+                this.income = 350;
             }
             else if (this.level == 6) {
-                this.income = 600;
+                this.income = 450;
             }
             else if (this.level == 7) {
-                this.income = 770;
+                this.income = 600;
             }
         }
         else if (this.type == "ice") {
@@ -926,49 +938,49 @@ var Tower = /** @class */ (function () {
         else if (this.type == "bomb") {
             if (this.level == 1) {
                 this.damage = 1;
-                this.reload = 600;
+                this.reload = 750;
                 this.splash = 50;
                 this.range = 150;
                 this.pierce = 10;
             }
             else if (this.level == 2) {
                 this.damage = 2;
-                this.reload = 600;
+                this.reload = 750;
                 this.splash = 50;
                 this.range = 150;
                 this.pierce = 15;
             }
             else if (this.level == 3) {
                 this.damage = 4;
-                this.reload = 600;
+                this.reload = 750;
                 this.splash = 50;
                 this.range = 150;
                 this.pierce = 20;
             }
             else if (this.level == 4) {
                 this.damage = 8;
-                this.reload = 600;
+                this.reload = 750;
                 this.splash = 50;
                 this.range = 150;
                 this.pierce = 25;
             }
             else if (this.level == 5) {
                 this.damage = 16;
-                this.reload = 600;
+                this.reload = 750;
                 this.splash = 50;
                 this.range = 150;
                 this.pierce = 30;
             }
             else if (this.level == 6) {
                 this.damage = 20;
-                this.reload = 600;
+                this.reload = 750;
                 this.splash = 100;
                 this.range = 150;
                 this.pierce = 40;
             }
             else if (this.level == 7) {
                 this.damage = 50;
-                this.reload = 600;
+                this.reload = 750;
                 this.splash = 50;
                 this.range = 150;
                 this.pierce = 40;
@@ -978,65 +990,65 @@ var Tower = /** @class */ (function () {
             if (this.level == 1) {
                 this.reload = 80;
                 this.damage = 10;
-                this.range = 400;
+                this.range = 350;
                 this.pierce = 1;
             }
             else if (this.level == 2) {
                 this.reload = 80;
                 this.damage = 50;
-                this.range = 400;
+                this.range = 350;
                 this.pierce = 1;
             }
             else if (this.level == 3) {
                 this.reload = 80;
                 this.damage = 100;
-                this.range = 400;
+                this.range = 350;
                 this.pierce = 1;
             }
             else if (this.level == 4) {
                 this.reload = 40;
                 this.damage = 100;
-                this.range = 400;
+                this.range = 350;
                 this.pierce = 1;
             }
             else if (this.level == 5) {
                 this.reload = 40;
                 this.damage = 200;
-                this.range = 400;
+                this.range = 350;
                 this.pierce = 1;
             }
             else if (this.level == 6) { //seeking bullets 
                 this.reload = 20;
                 this.damage = 400;
-                this.range = 400;
+                this.range = 350;
                 this.pierce = 1;
             }
             else if (this.level == 7) { //1000 damage
                 this.reload = 20;
                 this.damage = 1000;
-                this.range = 400;
+                this.range = 350;
                 this.pierce = 1;
             }
         }
         else if (this.type == "buffer") { //0=range, 1=atk spd, 2=damage, 3=peirce, 4=damage2
             if (this.level == 1) {
-                this.range = 160;
+                this.range = 145;
                 this.buff = 1;
             }
             else if (this.level == 2) {
-                this.range = 160;
+                this.range = 145;
                 this.buff = 2;
             }
             else if (this.level == 3) {
-                this.range = 160;
+                this.range = 145;
                 this.buff = 3;
             }
             else if (this.level == 4) {
-                this.range = 160;
+                this.range = 145;
                 this.buff = 4;
             }
             else if (this.level == 5) {
-                this.range = 160;
+                this.range = 145;
                 this.buff = 5;
             }
         }
@@ -1344,6 +1356,7 @@ function targetinellipse(towerX, towerY, towerRange, targetX, targetY, target) {
 function towershoot(tower) {
     //global variables
     var lasercounter = 0;
+    var laserheatcounter = 0;
     var shieldcounter = 0;
     var lastenemy;
     var firstenemy;
@@ -1428,7 +1441,7 @@ function towershoot(tower) {
                     speed = 15;
                 }
                 if (tower.type == "bomb") {
-                    speed = 7;
+                    speed = 10;
                 }
                 if (tower.type == "super") {
                     speed = 15;
@@ -1438,7 +1451,7 @@ function towershoot(tower) {
                     lifespan = 35;
                 }
                 else if (tower.type == "bomb") {
-                    lifespan = 30;
+                    lifespan = 35;
                 }
                 else if (tower.type == "super") {
                     lifespan = 40;
@@ -1544,18 +1557,18 @@ function towershoot(tower) {
                             var xdiff = Math.abs(tower.x - firstenemy.x);
                             var ydiff = Math.abs(tower.y - firstenemy.y);
                             var angle = (Math.atan(ydiff / xdiff));
-                            var tempEnemy = new Enemy(0, 0, 1000, 0, "N", 0, "red", 0, 0, 0);
+                            var tempEnemy = new Enemy(0, 0, 100, 0, "N", 0, "red", 0, 0, 0);
                             if (tower.x > firstenemy.x) {
-                                tempEnemy.x = firstenemy.x - 1000 * Math.cos(angle);
+                                tempEnemy.x = firstenemy.x - 2000 * Math.cos(angle);
                             }
                             else {
-                                tempEnemy.x = firstenemy.x + 1000 * Math.cos(angle);
+                                tempEnemy.x = firstenemy.x + 2000 * Math.cos(angle);
                             }
                             if (tower.y > firstenemy.y) {
-                                tempEnemy.y = firstenemy.y - 1000 * Math.sin(angle);
+                                tempEnemy.y = firstenemy.y - 2000 * Math.sin(angle);
                             }
                             else {
-                                tempEnemy.y = firstenemy.y + 1000 * Math.sin(angle);
+                                tempEnemy.y = firstenemy.y + 2000 * Math.sin(angle);
                             }
                             firstenemy = tempEnemy;
                             break;
@@ -1564,18 +1577,18 @@ function towershoot(tower) {
                             var xdiff = Math.abs(tower.x - lastenemy.x);
                             var ydiff = Math.abs(tower.y - lastenemy.y);
                             var angle = (Math.atan(ydiff / xdiff));
-                            var tempEnemy = new Enemy(0, 0, 1000, 0, "N", 0, "red", 0, 0, 0);
+                            var tempEnemy = new Enemy(0, 0, 100, 0, "N", 0, "red", 0, 0, 0);
                             if (tower.x > lastenemy.x) {
-                                tempEnemy.x = lastenemy.x - 1000 * Math.cos(angle);
+                                tempEnemy.x = lastenemy.x - 2000 * Math.cos(angle);
                             }
                             else {
-                                tempEnemy.x = lastenemy.x + 1000 * Math.cos(angle);
+                                tempEnemy.x = lastenemy.x + 2000 * Math.cos(angle);
                             }
                             if (tower.y > lastenemy.y) {
-                                tempEnemy.y = lastenemy.y - 1000 * Math.sin(angle);
+                                tempEnemy.y = lastenemy.y - 2000 * Math.sin(angle);
                             }
                             else {
-                                tempEnemy.y = lastenemy.y + 1000 * Math.sin(angle);
+                                tempEnemy.y = lastenemy.y + 2000 * Math.sin(angle);
                             }
                             lastenemy = tempEnemy;
                             break;
@@ -1584,18 +1597,18 @@ function towershoot(tower) {
                             var xdiff = Math.abs(tower.x - strongenemy.x);
                             var ydiff = Math.abs(tower.y - strongenemy.y);
                             var angle = (Math.atan(ydiff / xdiff));
-                            var tempEnemy = new Enemy(0, 0, 1000, 0, "N", 0, "red", 0, 0, 0);
+                            var tempEnemy = new Enemy(0, 0, 100, 0, "N", 0, "red", 0, 0, 0);
                             if (tower.x > strongenemy.x) {
-                                tempEnemy.x = strongenemy.x - 1000 * Math.cos(angle);
+                                tempEnemy.x = strongenemy.x - 2000 * Math.cos(angle);
                             }
                             else {
-                                tempEnemy.x = strongenemy.x + 1000 * Math.cos(angle);
+                                tempEnemy.x = strongenemy.x + 2000 * Math.cos(angle);
                             }
                             if (tower.y > strongenemy.y) {
-                                tempEnemy.y = strongenemy.y - 1000 * Math.sin(angle);
+                                tempEnemy.y = strongenemy.y - 2000 * Math.sin(angle);
                             }
                             else {
-                                tempEnemy.y = strongenemy.y + 1000 * Math.sin(angle);
+                                tempEnemy.y = strongenemy.y + 2000 * Math.sin(angle);
                             }
                             strongenemy = tempEnemy;
                             break;
@@ -1604,18 +1617,18 @@ function towershoot(tower) {
                             var xdiff = Math.abs(tower.x - weakenemy.x);
                             var ydiff = Math.abs(tower.y - weakenemy.y);
                             var angle = (Math.atan(ydiff / xdiff));
-                            var tempEnemy = new Enemy(0, 0, 1000, 0, "N", 0, "red", 0, 0, 0);
+                            var tempEnemy = new Enemy(0, 0, 100, 0, "N", 0, "red", 0, 0, 0);
                             if (tower.x > weakenemy.x) {
-                                tempEnemy.x = weakenemy.x - 1000 * Math.cos(angle);
+                                tempEnemy.x = weakenemy.x - 2000 * Math.cos(angle);
                             }
                             else {
-                                tempEnemy.x = weakenemy.x + 1000 * Math.cos(angle);
+                                tempEnemy.x = weakenemy.x + 2000 * Math.cos(angle);
                             }
                             if (tower.y > weakenemy.y) {
-                                tempEnemy.y = weakenemy.y - 1000 * Math.sin(angle);
+                                tempEnemy.y = weakenemy.y - 2000 * Math.sin(angle);
                             }
                             else {
-                                tempEnemy.y = weakenemy.y + 1000 * Math.sin(angle);
+                                tempEnemy.y = weakenemy.y + 2000 * Math.sin(angle);
                             }
                             weakenemy = tempEnemy;
                             break;
@@ -1736,6 +1749,9 @@ function towershoot(tower) {
                     }
                 }
                 if (found == 0 || newtarget == 1) {
+                    //reset variables
+                    lasercounter = 0;
+                    laserheatcounter = 0;
                     inrange = 0;
                     for (var i = 0; i < enemies.length; i++) { //find enemies in range
                         if (targetinellipse(tower.x, tower.y, tower.range, enemies[i].x, enemies[i].y, enemies[i]) == 1 && inrange == 0 && alreadyTargeted(tower, enemies[i]) == 0) {
@@ -1782,17 +1798,21 @@ function towershoot(tower) {
                 }
                 //do damage here instead
                 if (inrange == 1) {
-                    if (lasercounter > tower.lasertime * 2) {
+                    if (lasercounter > tower.reload) { //shoots every tower.reload 
                         if (tower.level != 6) {
                             var thickness = Math.floor(tower.damage / 10) + 1;
                             lasers.push(new Laser(thickness, "red", target, tower));
                         }
                         if (found == 1) { //heat up
-                            if (tower.damage >= tower.lasermax) {
-                                tower.damage = tower.lasermax;
+                            if (laserheatcounter > tower.lasertime) { //heat up every lasertime shots
+                                laserheatcounter = 0;
+                                tower.damage = tower.damage + tower.heatup; //heat up by tower heatup 
+                                if (tower.damage >= tower.lasermax) {
+                                    tower.damage = tower.lasermax;
+                                }
                             }
                             else {
-                                tower.damage = tower.damage + tower.heatup;
+                                laserheatcounter++;
                             }
                         }
                         if (target.shield <= 0) {
@@ -1815,7 +1835,7 @@ function towershoot(tower) {
                             lasercounter = 0;
                         }
                         else { //shield
-                            if (shieldcounter >= 100) {
+                            if (shieldcounter >= 50) { //breaks the shield every 50 hits
                                 target.shield--;
                                 shieldcounter = 0;
                             }
@@ -2034,6 +2054,7 @@ function animate() {
         else {
             //calculate end of round cash
             totalmoney += 100;
+            console.log(100);
             for (var i = 0; i < towers.length; i++) { //farm income
                 if (towers[i].type == "farm") {
                     totalmoney += towers[i].income;
@@ -2496,6 +2517,7 @@ addEventListener("click", function () {
     else if (mouseover == "upgrade" || mouseover == "level6" || mouseover == "level7") {
         for (var i = 0; i < towers.length; i++) {
             if (towers[i].selected == 1) {
+                console.log(towers[i].cost[towers[i].level]);
                 if (towers[i].type == "laser" && totalmoney >= towers[i].cost[towers[i].level] && towers[i].level == 5 && mouseover == "level6") {
                     //upgrades tower
                     totalmoney -= towers[i].cost[towers[i].level];
@@ -2522,7 +2544,7 @@ addEventListener("click", function () {
                         TowerPlaced();
                     }
                 }
-                else if (totalmoney >= towers[i].cost[towers[i].level] && towers[i].level == 5 && towers[i].type != "farm") {
+                else if (((totalmoney >= towers[i].cost[towers[i].level] && mouseover == "level6") || (totalmoney >= towers[i].cost[6] && mouseover == "level7")) && towers[i].level == 5 && towers[i].type != "farm") {
                     //upgrades tower to max
                     if (mouseover == "level6") {
                         totalmoney -= towers[i].cost[5];
@@ -2713,7 +2735,7 @@ function freespace() {
     }
     //check against other towers
     for (var i = 0; i < towers.length; i++) {
-        if (mouseX > towers[i].x - scaleW * 100 && mouseX < towers[i].x + scaleW * 100 && mouseY > towers[i].y - scaleH * 100 && mouseY < towers[i].y + scaleH * 100) {
+        if (mouseX > towers[i].x - scaleW * towerFootPrint && mouseX < towers[i].x + scaleW * towerFootPrint && mouseY > towers[i].y - scaleH * towerFootPrint && mouseY < towers[i].y + scaleH * towerFootPrint) {
             return 0;
         }
     }
@@ -2721,25 +2743,25 @@ function freespace() {
     for (var i = 0; i < paths.length - 1; i++) {
         if (paths[i][0] == paths[i + 1][0] && paths[i][1] > paths[i + 1][1]) { // up 
             //@ts-ignore
-            if (mouseX > (canvas.width / 100) * paths[i][0] - scaleW * 50 && mouseX < (canvas.width / 100) * paths[i][0] + scaleW * 125 && mouseY > (canvas.height / 100) * paths[i + 1][1] - scaleH * 50 && mouseY < (canvas.height / 100) * paths[i + 1][1] + (canvas.height / 100) * (paths[i][1] - paths[i + 1][1]) + scaleH * 125) {
+            if (mouseX > (canvas.width / 100) * paths[i][0] - scaleW * towerFootPrint / 2 && mouseX < (canvas.width / 100) * paths[i][0] + scaleW * (towerFootPrint / 2 + 75) && mouseY > (canvas.height / 100) * paths[i + 1][1] - scaleH * towerFootPrint / 2 && mouseY < (canvas.height / 100) * paths[i + 1][1] + (canvas.height / 100) * (paths[i][1] - paths[i + 1][1]) + scaleH * (towerFootPrint / 2 + 75)) {
                 return 0;
             }
         }
         else if (paths[i][0] == paths[i + 1][0] && paths[i][1] < paths[i + 1][1]) { // down
             //@ts-ignore
-            if (mouseX > (canvas.width / 100) * paths[i][0] - scaleW * 50 && mouseX < (canvas.width / 100) * paths[i][0] + scaleW * 125 && mouseY > (canvas.height / 100) * paths[i][1] - scaleH * 50 && mouseY < (canvas.height / 100) * paths[i][1] + (canvas.height / 100) * (paths[i + 1][1] - paths[i][1]) + scaleH * 125) {
+            if (mouseX > (canvas.width / 100) * paths[i][0] - scaleW * towerFootPrint / 2 && mouseX < (canvas.width / 100) * paths[i][0] + scaleW * (towerFootPrint / 2 + 75) && mouseY > (canvas.height / 100) * paths[i][1] - scaleH * towerFootPrint / 2 && mouseY < (canvas.height / 100) * paths[i][1] + (canvas.height / 100) * (paths[i + 1][1] - paths[i][1]) + scaleH * (towerFootPrint / 2 + 75)) {
                 return 0;
             }
         }
         else if (paths[i][1] == paths[i + 1][1] && paths[i][0] > paths[i + 1][0]) { // left
             //@ts-ignore
-            if (mouseX > (canvas.width / 100) * paths[i + 1][0] - scaleW * 50 && mouseX < (canvas.width / 100) * paths[i + 1][0] + (canvas.width / 100) * (paths[i][0] - paths[i + 1][0]) + scaleW * 75 && mouseY > (canvas.height / 100) * paths[i][1] - scaleH * 50 && mouseY < (canvas.height / 100) * paths[i][1] + scaleH * 125) {
+            if (mouseX > (canvas.width / 100) * paths[i + 1][0] - scaleW * towerFootPrint / 2 && mouseX < (canvas.width / 100) * paths[i + 1][0] + (canvas.width / 100) * (paths[i][0] - paths[i + 1][0]) + scaleW * (towerFootPrint - 25) && mouseY > (canvas.height / 100) * paths[i][1] - scaleH * towerFootPrint / 2 && mouseY < (canvas.height / 100) * paths[i][1] + scaleH * (towerFootPrint / 2 + 75)) {
                 return 0;
             }
         }
         else if (paths[i][1] == paths[i + 1][1] && paths[i][0] < paths[i + 1][0]) { // right
             //@ts-ignore
-            if (mouseX > (canvas.width / 100) * paths[i][0] - scaleW * 50 && mouseX < (canvas.width / 100) * paths[i][0] + (canvas.width / 100) * (paths[i + 1][0] - paths[i][0]) + scaleW * 75 && mouseY > (canvas.height / 100) * paths[i][1] - scaleH * 50 && mouseY < (canvas.height / 100) * paths[i][1] + scaleH * 125) {
+            if (mouseX > (canvas.width / 100) * paths[i][0] - scaleW * towerFootPrint / 2 && mouseX < (canvas.width / 100) * paths[i][0] + (canvas.width / 100) * (paths[i + 1][0] - paths[i][0]) + scaleW * (towerFootPrint - 25) && mouseY > (canvas.height / 100) * paths[i][1] - scaleH * towerFootPrint / 2 && mouseY < (canvas.height / 100) * paths[i][1] + scaleH * (towerFootPrint / 2 + 75)) {
                 return 0;
             }
         }
@@ -2831,7 +2853,7 @@ function nextWave() {
         case 15: // money 280 + 1200
             var boss = new Enemy(spawnPoint()[0], spawnPoint()[1], Math.floor(10000 * hp), 0.4 * spd, spawnDirection(), 60, "boss", 1200, 0, 0);
             enemies.push(boss);
-            spawnWave(10, 250 * den, Math.floor(10 * hp), 3 * spd, 15, "pink", 2, 0, 0, boss); //minions
+            spawnWave(10, 500 * den, Math.floor(10 * hp), 3 * spd, 15, "pink", 2, 0, 0, boss); //minions
             break;
         case 16: //fast 300
             spawnWave(50, 400 * den, Math.floor(50 * hp), 8 * spd, 20, "yellow", 8, 0, 0);
@@ -2889,7 +2911,7 @@ function nextWave() {
         case 25: // armored boss 600+2000
             var fboss = new Enemy(spawnPoint()[0], spawnPoint()[1], Math.floor(22000 * hp), 0.3 * spd, spawnDirection(), 60, "boss", 2000, 50, 50 * hp);
             enemies.push(fboss);
-            spawnWave(10, 8000 * den, Math.floor(250 * hp), 1.5 * spd, 35, "red", 10, 10, 0, fboss); //minions
+            spawnWave(10, 15000 * den, Math.floor(3000 * hp), 2 * spd, 35, "red", 20, 25, 0, fboss); //minions
             break;
         case 26: // 650 grouping light armored
             spawnWave(100, 100 * den, Math.floor(250 * hp), 3 * spd, 35, "red", 6.5, 1, 0);
@@ -2900,8 +2922,8 @@ function nextWave() {
         case 28: // 750 max armored
             spawnWave(10, 6000 * den, Math.floor(1500 * hp), 0.5 * spd, 40, "red", 75, 70, 1);
             break;
-        case 29: // 800 mega grouped 2
-            spawnWave(400, 70 * den, Math.floor(100 * hp), 4 * spd, 15, "pink", 2, 0, 1);
+        case 29: // 800 grouped shields
+            spawnWave(400, 100 * den, Math.floor(1 * hp), 4 * spd, 15, "pink", 2, 0, 5);
             break;
         case 30: // 850 matryoshka
             spawnWave(10, 5000 * den, Math.floor(3000 * hp), 2.5 * spd, 50, "green", 17, 0, 1);
@@ -2916,14 +2938,14 @@ function nextWave() {
             spawnWave(300, 500, 500, 3, 20, "green", 20, 0, 0, doomBoss);
             break;
         case 32: // 1000 fast, armored, shielded
-            spawnWave(5, 3000, 5000, 3, 25, "red", 200, 50, 1);
+            spawnWave(5, 3000 * den, 5000 * hp, 3 * spd, 25, "red", 200, 50, 1);
             break;
         case 33: // 1100 shielded then that 1 fast one
-            spawnWave(10, 1000, 5000, 2, 35, "green", 100, 0, 50);
-            spawnWave(1, 15000, 5000, 12, 20, "yellow", 100, 0, 50);
+            spawnWave(10, 1000 * den, 5000 * hp, 2 * spd, 35, "green", 100, 0, 50);
+            spawnWave(1, 15000 * den, 5000 * hp, 12 * spd, 20, "yellow", 100, 0, 50);
             break;
         case 34: // 5000 cash in preparation
-            spawnWave(10, 1000, 100, 5, 25, "yellow", 500, 0, 0);
+            spawnWave(10, 1000 * den, 100 * hp, 5 * spd, 25, "yellow", 500, 0, 0);
             break;
         case 35: // all bosses
             var doomBoss = new Enemy(spawnPoint()[0], spawnPoint()[1], Math.floor(10000 * hp), 3 * spd, spawnDirection(), 45, "boss", 5000, 50, 200);
@@ -3124,7 +3146,7 @@ function choosepath(i) {
         case 5:
             //cross path
             //@ts-ignore
-            paths = [[50, 0], [50, 80], [10, 80], [10, 50], [70, 50], [70, 20], [30, 20], [30, 100]];
+            paths = [[50, 0], [50, 81], [10, 81], [10, 50], [70, 50], [70, 19], [30, 19], [30, 100]];
     }
     return paths;
 }

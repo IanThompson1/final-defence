@@ -10,11 +10,11 @@ startGameButton.addEventListener('click', function () {
     //starts the program by calling the animate function
     switch (difficulty) {
         case 1:
-            totalmoney = 600;
+            totalmoney = 700;
             lives = 40;
             break;
         case 2:
-            totalmoney = 500;
+            totalmoney = 600;
             lives = 25;
             break;
         case 3:
