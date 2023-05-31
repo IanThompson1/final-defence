@@ -1,5 +1,5 @@
 
-<body>
+ <body>
      
 </body>
 <link href="https://www.unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
@@ -88,21 +88,21 @@
                 rounded-full"
                 id="mapBasic"
             >
-                Basic(medium)
+                Basic(Easy)
             </button>
             <button
                 class="button button3 py-3 
                 rounded-full"
-                id="mapCastle"
+                id="mapCross"
             >
-                Castle(hard)
+                Cross(Easy)
             </button>
             <button
                 class="button button3 py-3 
                 rounded-full"
                 id="mapDiamond"
             >
-                Diamond(medium)
+                Symmetry(Medium)
             </button>
             
             <p class="spacesmall">.</p>
@@ -111,21 +111,21 @@
                 rounded-full"
                 id="mapCircle"
             >
-                Circle(hard)
+                Basic2.0(Medium)
+            </button>
+            <button
+                class="button button3 py-3 
+                rounded-full"
+                id="mapCastle"
+            >
+                Castle(Hard)
             </button>
             <button
                 class="button button3 py-3 
                 rounded-full"
                 id="mapCorner"
             >
-                Corner(extreme)
-            </button>
-            <button
-                class="button button3 py-3 
-                rounded-full"
-                id="mapCross"
-            >
-                Cross(easy)
+                Tripple(Hard)
             </button>
             <p class="space">.</p>
             <h1 class="text-6xl font-bold leading-none">Pick a difficulty</h1>
@@ -169,7 +169,7 @@
             <h1 class="text-6xl font-bold leading-none">Set Wave: <span type="text" class="prevent-select absolute bg-green font-bold text-6xl" id="waveValue" value="1"></span></h1>
             
 <div class="slidecontainer py-3 rounded-full prevent-select">
-    <input type="range" min="1" max="35" value="1" class="slider" id="setRound">
+    <input type="range" min="1" max="60" value="1" class="slider" id="setRound">
   </div>
             <p class="space">.</p>
             <h1 class="text-6xl font-bold leading-none">Start</h1>
@@ -215,6 +215,7 @@
 
 
 <script src="./sprites.js"></script>
+<script src="./paths.js"></script>
 <script src="./finaldefence.js"></script>
 <script src="./htmlInteractions.js"></script>
 <script src="./graphicalUserInterface.js"></script>

@@ -34,21 +34,21 @@ startGameButton.addEventListener('click', function () {
     //calculate round money
     if(round != 0){
         for(var i=0; i<round; i++){
-            if(i < 10){
+            // if(i < 30){
                 totalmoney += 100+i*10;
-            }else if(i < 20){
-                totalmoney += 200+(i-10)*20;
-            }else{
-                totalmoney += 400+(i-20)*50;
-            }
+            // }else if(i < 20){
+            //     totalmoney += 200+(i-10)*20;
+            // }else{
+            //     totalmoney += 400+(i-20)*50;
+            // }
         }
     }
-    if(round > 15){//extra boss money
-        totalmoney += 1000;
-    }
-    if(round > 25){
-        totalmoney += 2000;
-    }
+    // if(round > 15){//extra boss money
+    //     totalmoney += 1000;
+    // }
+    // if(round > 25){
+    //     totalmoney += 2000;
+    // }
     totalmoney += round*100;
     state.update(lives, totalmoney, round, towers);
     animate();

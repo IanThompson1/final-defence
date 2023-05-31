@@ -1,3 +1,127 @@
+function drawPath(path, canvas){
+    for (var i = 0; i < path.length - 1; i++) {
+        if (path[i][0] == path[i + 1][0] && path[i][1] > path[i + 1][1]) { // up 
+            // pathRubble((canvas.width / 100) * path[i][0], (canvas.height / 100) * path[i + 1][1], scaleW*75, (canvas.height / 100) * (path[i][1] - path[i + 1][1]) + scaleH*75);
+            c.fillRect((canvas.width / 100) * path[i][0], (canvas.height / 100) * path[i + 1][1], scaleW*75, (canvas.height / 100) * (path[i][1] - path[i + 1][1]) + scaleH*75);
+        }
+        else if (path[i][0] == path[i + 1][0] && path[i][1] < path[i + 1][1]) { // down
+            // pathRubble((canvas.width / 100) * path[i][0], (canvas.height / 100) * path[i][1], scaleW*75, (canvas.height / 100) * (path[i + 1][1] - path[i][1]) + scaleH*75);
+            c.fillRect((canvas.width / 100) * path[i][0], (canvas.height / 100) * path[i][1], scaleW*75, (canvas.height / 100) * (path[i + 1][1] - path[i][1]) + scaleH*75);
+        }
+        else if (path[i][1] == path[i + 1][1] && path[i][0] > path[i + 1][0]) { // left
+            // pathRubble((canvas.width / 100) * path[i + 1][0], (canvas.height / 100) * path[i][1], (canvas.width / 100) * (path[i][0] - path[i + 1][0]), scaleH*75);
+            c.fillRect((canvas.width / 100) * path[i + 1][0], (canvas.height / 100) * path[i][1], (canvas.width / 100) * (path[i][0] - path[i + 1][0]), scaleH*75);
+        }
+        else if (path[i][1] == path[i + 1][1] && path[i][0] < path[i + 1][0]) { // right
+            // pathRubble((canvas.width / 100) * path[i][0], (canvas.height / 100) * path[i][1], (canvas.width / 100) * (path[i + 1][0] - path[i][0]), scaleH*75);
+            c.fillRect((canvas.width / 100) * path[i][0], (canvas.height / 100) * path[i][1], (canvas.width / 100) * (path[i + 1][0] - path[i][0]), scaleH*75);
+        }
+    }
+    //arrows 
+    if(round == 0){
+        if(path[path.length-1][0] == 0){// left exit
+            //arrow sprite
+            var arrowImg = new Sprite({
+                position: {
+                    x: 90*scaleW,
+                    y: path[path.length-1][1]*scaleH*(canvas.height/100) +123
+                },
+                imageSrc: "./img/redArrowLeft.png",
+                scale: 0.49 * (scaleH / scaleW)
+            });
+            arrowImg.update();
+        }else if(path[path.length-1][1] == 0){// top exit
+            //arrow sprite
+            var tripple=0;
+            if(pathNum == 2){
+                tripple=70;
+            }
+            var arrowImg = new Sprite({
+                position: {
+                    x: path[path.length-1][0]*scaleW*canvas.width/100 +150+tripple,
+                    y: 85*scaleH
+                },
+                imageSrc: "./img/redArrowUp.png",
+                scale: 0.49 * (scaleH / scaleW)
+            });
+            arrowImg.update();
+        }else if(path[path.length-1][1] == 100){// bottom exit
+            //arrow sprite
+            var tripple=0;
+            if(pathNum == 2 || pathNum == 3){
+                tripple=90;
+            }
+            var arrowImg = new Sprite({
+                position: {
+                    x: path[path.length-1][0]*scaleW*canvas.width/100 +130+tripple,
+                    y: canvas.height-50*scaleH
+                },
+                imageSrc: "./img/redArrowDown.png",
+                scale: 0.49 * (scaleH / scaleW)
+            });
+            arrowImg.update();
+        }else{ //right exit 
+            //arrow sprite
+            var arrowImg = new Sprite({
+                position: {
+                    x: canvas.width -300*scaleW,
+                    y: path[path.length-1][1]*scaleH*(canvas.height/100) +123
+                },
+                imageSrc: "./img/redArrowRight.png",
+                scale: 0.49 * (scaleH / scaleW)
+            });
+            arrowImg.update();
+        }
+        //entrance arrow
+        if(path[0][0] == 0){// left entrance
+            //arrow sprite
+            var arrowImg = new Sprite({
+                position: {
+                    x: 90*scaleW,
+                    y: path[0][1]*scaleH*(canvas.height/100) +100
+                },
+                imageSrc: "./img/greenArrowRight.png",
+                scale: 0.43 * (scaleH / scaleW)
+            });
+            arrowImg.update();
+        }else if(path[0][1] == 0){// top entrance
+            //arrow sprite
+            var tripple=0;
+            if(pathNum == 2){
+                tripple=70;
+            }
+            var arrowImg = new Sprite({
+                position: {
+                    x: path[0][0]*scaleW*canvas.width/100 +230+tripple,
+                    y: 85*scaleH
+                },
+                imageSrc: "./img/greenArrowDown.png",
+                scale: 0.43 * (scaleH / scaleW)
+            })
+            arrowImg.update();
+        }else if(path[0][1] == 100){// bottom entrance
+            //arrow sprite
+            var tripple=0;
+            if(pathNum == 2){
+                tripple=-100;
+            }
+            var arrowImg = new Sprite({
+                position: {
+                    x: path[0][0]*scaleW*canvas.width/100 +180+tripple,
+                    y: canvas.height-50*scaleH
+                },
+                imageSrc: "./img/greenArrowUp.png",
+                scale: 0.43 * (scaleH / scaleW)
+            });
+            arrowImg.update();
+        }else{ //right entrance 
+            
+        }
+    }
+}
+
+
+
 //entire gui
 function drawLayout() {
     //redraws the background
@@ -9,39 +133,59 @@ function drawLayout() {
     //     background.src = "./img/battleground.png";
     //     var scal = 3;
     // }else 
-    if(paths[0][1]!=40 || paths[2][1]!=80){
-        background.src = "./img/stillbackground.png";
-        var scal = 1;
-    }else if(paths[0][1]==40 && paths[2][1] == 80){
-        background.src = "./img/basicMap.png";
-        var scal = 1;
+    //stillbackground.png";
+    var scal = 1;
+    switch(pathNum){
+        case 0: //basic
+            background.src = "./img/basicMap.png";
+            c.fillStyle = "#8F6443";
+            break;
+        case 1: //castle
+            background.src = "./img/blockMap.png";
+            c.fillStyle = "#8F6443";
+            break;
+        case 2: //tripple
+            background.src = "./img/tripple.png";
+            c.fillStyle = "#808080";
+            break;
+        case 3: //symmetry
+            background.src = "./img/blockMap.png";
+            c.fillStyle = "#8F6443";
+            break;
+        case 4: //basic 2.0
+            background.src = "./img/blockMap.png";
+            c.fillStyle = "#8F6443";
+            break;
+        case 5: //cross
+            background.src = "./img/blockMap.png";
+            c.fillStyle = "#8F6443";
+            break;
+        default: // N/A
+            console.log("default");
+            background.src = "./img/stillbackground.png";
+            c.fillStyle = "#808080";
     }
     c.drawImage(background, 0, 0, background.width*scal*scaleW, background.height*scal*scaleH);
 
     //@ts-ignore
     mainMenu.style.display = "none";
     //path
-    c.fillStyle = "#808080";
-    if(paths[0][1]!=40 || paths[2][1]!=80){
-        for (var i = 0; i < paths.length - 1; i++) {
-            if (paths[i][0] == paths[i + 1][0] && paths[i][1] > paths[i + 1][1]) { // up 
-                // pathRubble((canvas.width / 100) * paths[i][0], (canvas.height / 100) * paths[i + 1][1], scaleW*75, (canvas.height / 100) * (paths[i][1] - paths[i + 1][1]) + scaleH*75);
-                c.fillRect((canvas.width / 100) * paths[i][0], (canvas.height / 100) * paths[i + 1][1], scaleW*75, (canvas.height / 100) * (paths[i][1] - paths[i + 1][1]) + scaleH*75);
-            }
-            else if (paths[i][0] == paths[i + 1][0] && paths[i][1] < paths[i + 1][1]) { // down
-                // pathRubble((canvas.width / 100) * paths[i][0], (canvas.height / 100) * paths[i][1], scaleW*75, (canvas.height / 100) * (paths[i + 1][1] - paths[i][1]) + scaleH*75);
-                c.fillRect((canvas.width / 100) * paths[i][0], (canvas.height / 100) * paths[i][1], scaleW*75, (canvas.height / 100) * (paths[i + 1][1] - paths[i][1]) + scaleH*75);
-            }
-            else if (paths[i][1] == paths[i + 1][1] && paths[i][0] > paths[i + 1][0]) { // left
-                // pathRubble((canvas.width / 100) * paths[i + 1][0], (canvas.height / 100) * paths[i][1], (canvas.width / 100) * (paths[i][0] - paths[i + 1][0]), scaleH*75);
-                c.fillRect((canvas.width / 100) * paths[i + 1][0], (canvas.height / 100) * paths[i][1], (canvas.width / 100) * (paths[i][0] - paths[i + 1][0]), scaleH*75);
-            }
-            else if (paths[i][1] == paths[i + 1][1] && paths[i][0] < paths[i + 1][0]) { // right
-                // pathRubble((canvas.width / 100) * paths[i][0], (canvas.height / 100) * paths[i][1], (canvas.width / 100) * (paths[i + 1][0] - paths[i][0]), scaleH*75);
-                c.fillRect((canvas.width / 100) * paths[i][0], (canvas.height / 100) * paths[i][1], (canvas.width / 100) * (paths[i + 1][0] - paths[i][0]), scaleH*75);
-            }
+    if(pathNum != 0){ //basic map
+        drawPath(paths, canvas);
+        if(paths2[0][0] != -1){
+            drawPath(paths2, canvas);
+        }
+        if(paths3[0][0] != -1){
+            drawPath(paths3, canvas);
         }
     }
+
+    // temp for testing walls
+    c.fillStyle="green";
+    for(var i=0; i<walls.length; i++){
+        c.fillRect(walls[i][0]*scaleW, walls[i][1]*scaleH, walls[i][2]*scaleW, walls[i][3]*scaleH);
+    }
+
     //wave entrance arrow 
     // if(round == 0){
     //     c.fillStyle = "green";
@@ -77,7 +221,7 @@ function drawLayout() {
     //speed button
     addText("Speed:"+speedModifier, canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (14 / 2),"yellow",numboxes);
     //wave hints
-    if (round == 14 || round == 24 || round == 30) {
+    if (round == 18 || round == 44 || round == 30) {
         c.fillStyle = "red";
     }
     else {
@@ -88,116 +232,179 @@ function drawLayout() {
     switch (round) {
         case 0:
             hint = "easy";
-            bonusHint = "you get 100 bonus cash at the end of each round";
+            // bonusHint = "you get 100 bonus cash at the end of each round";
             break;
         case 1:
             hint = "basic";
             break;
         case 2:
-            hint = "basic again";
+            hint = "basic";
             break;
         case 3:
-            hint = "fast";
+            hint = "basic";
             break;
         case 4:
-            hint = "grouped enemies";
+            hint = "basic";
             break;
         case 5:
-            hint = "shielded";
+            hint = "fast";
             break;
         case 6:
-            hint = "armored";
-            bonusHint = "Shields take a certain # of hits to destroy. STRONG AGAINST LASERS";
+            hint = "fast";
             break;
         case 7:
-            hint = "fast on grouped";
-            bonusHint = "Enemies with "+"\uD83D\uDEE1\uFE0F"+" take "+"\uD83D\uDEE1\uFE0F"+" less damage from your attacks";
+            hint = "fast";
             break;
         case 8:
-            hint = "high health armored";
-            break;
-        case 9:
-            hint = "mega grouped";
-            break;
-        case 10:
-            hint = "everything";
-            break;
-        case 11:
-            hint = "fast-armored";
-            break;
-        case 12:
-            hint = "the clump";
-            break;
-        case 13:
-            hint = "grouped-armored";
-            break;
-        case 14:
-            hint = "spawner boss";
-            break;
-        case 15:
-            hint = "fast";
-            bonusHint = "Bosses are immune to slows and take 100 lives";
-            break;
-        case 16:
             hint = "grouped";
             break;
+        case 9:
+            hint = "grouped";
+            break;
+        case 10:
+            hint = "grouped";
+            break;
+        case 11:
+            hint = "shielded enemies";            
+            break;
+        case 12:
+            hint = "shields";
+            bonusHint = "Shields take a certain # of hits to destroy. STRONG AGAINST LASERS";            
+            break;
+        case 13:
+            hint = "shields";
+            bonusHint = "Tesla does 2x damage to shields using 0 charge";            
+            break;
+        case 14:
+            hint = "armored";
+            break;
+        case 15:
+            hint = "armored";
+            bonusHint = "Enemies with "+"\uD83D\uDEE1\uFE0F"+" take "+"\uD83D\uDEE1\uFE0F"+" less damage from your attacks";
+            break;
+        case 16:
+            hint = "armored";
+            break;
         case 17:
-            hint = "tanks";
+            hint = "grouped-fast";
             break;
         case 18:
-            hint = "armored";
+            hint = "grouped-fast";
             break;
         case 19:
-            hint = "fast-armored-grouped-tanks";
+            hint = "grouped-fast";
             break;
         case 20:
-            hint = "fast-armored on grouped-tanks";
+            hint = "mini-boss";
             break;
         case 21:
-            hint = "stacks";
+            hint = "back to basics";
             break;
         case 22:
-            hint = "super shielded";
+            hint = "basic";
             break;
         case 23:
-            hint = "everything again";
-            bonusHint = "these shields take 100 hits to destroy";
+            hint = "basic";
             break;
         case 24:
-            hint = "armored boss";
+            hint = "spawner boss";
             break;
         case 25:
-            hint = "light armor grouped";
+            hint = "very fast";
+            bonusHint = "Bosses are immune to slows and take 100 lives";
             break;
         case 26:
-            hint = "super speed";
+            hint = "very fast";
             break;
         case 27:
-            hint = "max armored";
+            hint = "very fast";
             break;
         case 28:
-            hint = "mega grouped revenge";
+            hint = "grouped";
             break;
         case 29:
-            hint = "matryoshka";
+            hint = "grouped";
             break;
         case 30:
-            hint = "doomboss";
+            hint = "grouped";
             break;
         case 31:
-            hint = "armored";
+            hint = "heavy";
             break;
         case 32:
-            hint = "the one that got away";
+            hint = "heavy";
             break;
         case 33:
-            hint = "free cash!";
+            hint = "heavy";
             break;
         case 34:
-            hint = "ALL OF THE BOSSES AT ONCE";
+            hint = "high armor";
+            break;
+        case 35:
+            hint = "high armor";
+            break;
+        case 36:
+            hint = "high armor";
+            break;
+        case 37:
+            hint = "10 shields";
+            break;
+        case 38:
+            hint = "20 shields";
+            break;
+        case 39:
+            hint = "30 shields";
+            break;
+        case 40:
+            hint = "mini-bosses on fast";
+            break;
+        case 41:
+            hint = "everything but shielded";
+            break;
+        case 42:
+            hint = "52 on top of eachother";
+            break;
+        case 43:
+            hint = "speedy grouped";
+            break;
+        case 44:
+            hint = "armored boss";
+            break;
+        case 45:
+            hint = "multi wave";
+            break;
+        case 46:
+            hint = "long mixed";
+            break;
+        case 47:
+            hint = "matryoshka";
+            break;
+        case 48:
+            hint = "grouped with 5 shield";
+            break;
+        case 49:
+            hint = "speed boss";
+            break;
+        case 50:
+            hint = "ramp attack";
+            break;
+        case 51:
+            hint = "fat";
+            break;
+        case 52:
+            hint = "the one that got away!";
+            break;
+        case 53:
+            hint = "free 5k cash";
+            break;
+        case 54:
+            hint = "all of the bosses :P";
+            break;
+        case 55:
+            hint = "mega ramp";
             break;
         default:
-            hint = "endless good luck";
+            hint = "endless try to make it as far as you can";
             break;
     }
     c.font = "40px serif";
@@ -205,7 +412,7 @@ function drawLayout() {
     c.fillText("Next wave: " + hint, 0, 100);
     c.stroke();
     //current wave 
-    if (round == 15 || round == 25 || round == 31) {
+    if (round == 12 || round == 15 || round == 25) {
         c.fillStyle = "red";
     }
     else {
@@ -220,14 +427,14 @@ function drawLayout() {
     if(menutype == 0){
         addDoubleText("Sniper", "Cost: 150", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, canAfford(150));
         addDoubleText("MiniGun", "Cost: 100", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, canAfford(100));
-        addDoubleText("Farm", "Cost: 300", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (4 / 2), "black", numboxes, canAfford(300));
+        addDoubleText("Farm", "Cost: 1000", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (4 / 2), "black", numboxes, canAfford(1000));
         addDoubleText("laser", "Cost: 150", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (4 / 2), "black", numboxes, canAfford(150));
         addDoubleText("Slow", "Cost: 200", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (6 / 2), "black", numboxes, canAfford(200));
         addDoubleText("Tesla", "Cost: 150", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (6 / 2), "black", numboxes, canAfford(150));
         addDoubleText("Bomb", "Cost: 100", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes, canAfford(100));
         addDoubleText("Super", "Cost: 3000", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes, canAfford(3000));
         addDoubleText("Buffer", "Cost: 800", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes, canAfford(800));
-        addDoubleText("Railgun", "Cost: 600", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes, canAfford(600));
+        addDoubleText("Railgun", "Cost: 400", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes, canAfford(400));
     }
     function canAfford(cost) {
         if (cost <= totalmoney) {
@@ -729,12 +936,12 @@ function drawLayout() {
             addText("Weak against shields",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
             break;
         case "tesla":
-            addText("Medium Damage, has to charge",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
-            addText("Damage:2, Speed:Fast",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
+            addText("2x shield, has to charge",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
+            addText("Damage:5, Speed:Fast",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
             break;
         case "farm":
             addText("Generates money at the end",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
-            addText("of each round. Income:50",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
+            addText("of each round. Income:100",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
             break;
         case "ice":
             addText("Slows enemies in range",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
@@ -742,11 +949,11 @@ function drawLayout() {
             break;
         case "bomb":
             addText("Splash damage",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
-            addText("Pierce:10 Damage:1",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
+            addText("Pierce:25 Damage:2",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
             break;
         case "super":
             addText("High damage, Fast attack",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
-            addText("Damage:10",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
+            addText("Damage:50",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
             break;
         case "buffer":
             addText("Gives buffs to",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
@@ -754,7 +961,7 @@ function drawLayout() {
             break;
         case "railgun":
             addText("Slow line attack",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
-            addText("Pierce:10 Damage:50",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
+            addText("Pierce:30 Damage:10",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
             break;
         case "towerPlacement":
             addText("toggles how you",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
@@ -779,8 +986,8 @@ function drawLayout() {
                     addText("Only deals 10 Damage",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
                     break;
                 case "tesla": 
-                    addText("Up to 5 Targets",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
-                    addText("Damage:32",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
+                    addText("Double Shot",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
+                    addText("Damage:30",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
                     break;
                 case "ice":
                     addText("large Range",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
@@ -788,15 +995,15 @@ function drawLayout() {
                     break;
                 case "bomb":
                     addText("Bigger Splash",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
-                    addText("Pierce:50, Damage:20",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
+                    addText("Pierce:30, Damage:15",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
                     break;
                 case "super":
                     addText("Attack seek enemies",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
-                    addText("Damage:400",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
+                    addText("Damage:300",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
                     break;
                 case "railgun":
-                    addText("Speed Slow",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
-                    addText("Damage:1000",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
+                    addText("Double Speed",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
+                    addText("Damage:60",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
                     break;
             }
             break;
@@ -816,7 +1023,7 @@ function drawLayout() {
                     break;
                 case "tesla": 
                     addText("No Charge",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
-                    addText("Damage:32",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
+                    addText("Damage:50",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
                     break;
                 case "ice":
                     addText("Max Slow",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
@@ -824,15 +1031,15 @@ function drawLayout() {
                     break;
                 case "bomb":
                     addText("Max Damage",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
-                    addText("Pierce:50, Damage:50",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
+                    addText("Pierce:30, Damage:30",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
                     break;
                 case "super":
                     addText("Max Damage",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
-                    addText("Damage:1000",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
+                    addText("Damage:500",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
                     break;
                 case "railgun":
-                    addText("Max Damage",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
-                    addText("Damage:2000",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
+                    addText("Ultimate shot",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
+                    addText("Damage:150",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
                     break;
             }
             break;
