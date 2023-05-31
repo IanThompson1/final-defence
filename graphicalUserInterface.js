@@ -181,10 +181,10 @@ function drawLayout() {
     }
 
     // temp for testing walls
-    c.fillStyle="green";
-    for(var i=0; i<walls.length; i++){
-        c.fillRect(walls[i][0]*scaleW, walls[i][1]*scaleH, walls[i][2]*scaleW, walls[i][3]*scaleH);
-    }
+    // c.fillStyle="green";
+    // for(var i=0; i<walls.length; i++){
+    //     c.fillRect(walls[i][0]*scaleW, walls[i][1]*scaleH, walls[i][2]*scaleW, walls[i][3]*scaleH);
+    // }
 
     //wave entrance arrow 
     // if(round == 0){
