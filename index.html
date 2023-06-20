@@ -88,44 +88,44 @@
                 rounded-full"
                 id="mapBasic"
             >
-                Basic(Easy)
+                1 Grassy Plain(Easy)
             </button>
             <button
                 class="button button3 py-3 
                 rounded-full"
                 id="mapCross"
             >
-                Cross(Easy)
+                2 First Challenge(Easy)
             </button>
             <button
                 class="button button3 py-3 
                 rounded-full"
-                id="mapDiamond"
+                id="mapDouble"
             >
-                Symmetry(Medium)
+                3 New Power(Medium) 
             </button>
             
             <p class="spacesmall">.</p>
             <button
                 class="button button3 py-3 
                 rounded-full"
-                id="mapCircle"
+                id="mapSymmetry"
             >
-                Basic2.0(Medium)
+                4 Fast Onslaught(Medium)
             </button>
             <button
                 class="button button3 py-3 
                 rounded-full"
-                id="mapCastle"
+                id="mapBrokenCastle"
             >
-                Castle(Hard)
+                5 Broken Castle(unfinished*)
             </button>
             <button
                 class="button button3 py-3 
                 rounded-full"
-                id="mapCorner"
+                id="mapStoneCliffs"
             >
-                Tripple(Hard)
+                6 Stone Cliffs(unfinished*)
             </button>
             <p class="space">.</p>
             <h1 class="text-6xl font-bold leading-none">Pick a difficulty</h1>
@@ -156,7 +156,7 @@
                 rounded-full"
                 id="difficultyImpossible"
             >
-                Impossible
+                Expert
             </button>
             <button
                 class="button button2 py-3 
@@ -166,7 +166,7 @@
                 Sandbox
             </button>
             <p class="space">.</p>
-            <h1 class="text-6xl font-bold leading-none">Set Wave: <span type="text" class="prevent-select absolute bg-green font-bold text-6xl" id="waveValue" value="1"></span></h1>
+            <h1 class="text-6xl font-bold leading-none">Set Sandbox Wave: <span type="text" class="prevent-select absolute bg-green font-bold text-6xl" id="waveValue" value="1"></span></h1>
             
 <div class="slidecontainer py-3 rounded-full prevent-select">
     <input type="range" min="1" max="60" value="1" class="slider" id="setRound">
@@ -212,9 +212,38 @@
         </div>
     </div>
 </div>
-
+<!-- win UI -->
+<div class="fixed inset-0 flex items-center justify-center select-none" id="youWin">
+    <div class="bg-white max-w-screen-2xl w-full p-6 text-center">
+        <div class="w-full">
+            <h1 class="text-6xl font-bold leading-none">You Win!</h1>
+            <button
+                class="button button3 py-3 
+                rounded-full"
+                id="menu2"
+            >
+                Main Menu
+            </button>
+            <button
+                class="button button3 py-3 
+                rounded-full"
+                id="startOver2"
+            >
+                Restart Level
+            </button>
+            <button
+                class="button button3 py-3 
+                rounded-full"
+                id="nextLevel"
+            >
+                Next Level
+            </button>
+        </div>
+    </div>
+</div>
 
 <script src="./sprites.js"></script>
+<script src="./waves.js"></script>
 <script src="./paths.js"></script>
 <script src="./finaldefence.js"></script>
 <script src="./htmlInteractions.js"></script>
