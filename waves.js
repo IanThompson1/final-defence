@@ -1,4 +1,5 @@
 function nextWave() {
+    waveEnded = 1;
     //multipliers
     var hp = 1; //health
     var den = 1; //density
@@ -144,7 +145,7 @@ function nextWave() {
                 multi.push([10, 600 * den, Math.floor(50 * hp), 3 * spd, 20, "green", 10, 0, 5, 0]); //shielded
                 multi.push([10, 600 * den, Math.floor(50 * hp), 3 * spd, 20, "red", 10, 5, 0, 0]); //armored
                 multi.push([10, 600 * den, Math.floor(50 * hp), 3 * spd, 20, "red", 10, 5, 5, 0]); //both
-                multi.push([1, 5000 * den, Math.floor(700 * hp), 2 * spd, 20, "red", 100, 5, 10, 0]); //mini boss
+                multi.push([3, 5000 * den, Math.floor(700 * hp), 2 * spd, 20, "red", 100, 5, 10, 0]); //mini boss
                 spawnMultiWaves(multi);
                 bonusHint = "final wave";
                 break;
@@ -480,7 +481,7 @@ function nextWave() {
                 bonusHint = "I will Crush You All!!!";
                 break;
             case 36: //money 100
-                spawnWave(10, 1000 * den, Math.floor(10 * hp), 3 * spd, 30, "green", 5, 0, 0, 0); //armored
+                spawnWave(10, 1000 * den, Math.floor(10 * hp), 3 * spd, 30, "green", 5, 0, 0, 0); //basic
                 bonusHint = "I will return just you wait..."
                 break;
             default:
@@ -727,9 +728,193 @@ function nextWave() {
     }else if(pathNum == 4 && difficulty != 5){//castle
         switch(round){
             case 1: //money 100
-                spawnWave(10, 1000 * den, Math.floor(10 * hp), 3 * spd, 20, "green", 10, 0, 0, 0); //basic 
-                hint = "not finished yet";
-                bonusHint = "no waves created for this map yet";
+                spawnWave(20, 700 * den, Math.floor(30 * hp), 3 * spd, 20, "green", 5, 0, 0, 0); //basic 
+                hint = "";
+                break;
+            case 2: //money 150
+                var multi = [];
+                multi.push([10, 700 * den, Math.floor(30 * hp), 3 * spd, 20, "green", 5, 0, 0, 0]); //basic
+                multi.push([10, 400 * den, Math.floor(30 * hp), 3 * spd, 20, "green", 5, 0, 0, 0]); //tighter 
+                multi.push([10, 700 * den, Math.floor(30 * hp), 3 * spd, 20, "green", 5, 0, 0, 0]); //basic
+                spawnMultiWaves(multi);
+                hint = "grouped";
+                bonusHint = "";
+                break;
+            case 3: //money 70
+                spawnWave(35, 120 * den, Math.floor(10 * hp), 3 * spd, 20, "pink", 2, 0, 0, 0); //grouped 
+                hint = "";
+                bonusHint = "";
+                break;
+            case 4: //money 90
+                spawnWave(45, 120 * den, Math.floor(12 * hp), 3 * spd, 20, "pink", 2, 0, 0, 0); //grouped 
+                hint = "";
+                break;
+            case 5: //money 110
+                spawnWave(55, 120 * den, Math.floor(15 * hp), 3 * spd, 20, "pink", 2, 0, 0, 0); //grouped 
+                hint = "shielded";
+                bonusHint = "";
+                break;
+            case 6: //money 200
+                spawnWave(20, 700 * den, Math.floor(60 * hp), 3 * spd, 20, "green", 10, 0, 2, 0); //basic 
+                hint = "";
+                break;
+            case 7: //money 400
+                spawnWave(40, 700 * den, Math.floor(60 * hp), 3 * spd, 20, "green", 10, 0, 3, 0); //basic 
+                hint = "fast";
+                break;
+            case 8: //money 400
+                spawnWave(40, 350 * den, Math.floor(40 * hp), 6 * spd, 20, "yellow", 10, 0, 0, 0); //fast 
+                hint = "";
+                break;
+            case 9: //money 400
+                spawnWave(40, 350 * den, Math.floor(40 * hp), 7 * spd, 20, "yellow", 10, 0, 0, 0); //fast 
+                hint = "";
+                bonusHint = "";
+                break;
+            case 10: //money 500
+                spawnWave(50, 350 * den, Math.floor(40 * hp), 8 * spd, 20, "yellow", 10, 0, 0, 0); //fast 
+                hint = "armored";
+                break;
+            case 11: //money 200
+                spawnWave(10, 1000 * den, Math.floor(100 * hp), 3 * spd, 30, "red", 20, 10, 0, 0); //armored 
+                hint = "stacked";
+                break;
+            case 12: //money 500
+                spawnWave(20, 1000 * den, Math.floor(50 * hp), 3 * spd, 20, "green", 5, 0, 0, 0) //basic
+                spawnWave(20, 1000 * den, Math.floor(50 * hp), 3 * spd, 20, "green", 5, 0, 0, 0) //basic
+                spawnWave(20, 1000 * den, Math.floor(50 * hp), 3 * spd, 20, "green", 5, 0, 0, 0) //basic
+                spawnWave(20, 1000 * den, Math.floor(50 * hp), 3 * spd, 20, "green", 5, 0, 0, 0) //basic
+                spawnWave(20, 1000 * den, Math.floor(50 * hp), 3 * spd, 20, "green", 5, 0, 0, 0) //basic
+                hint = "";
+                break;
+            case 13: //money 800
+                spawnWave(20, 1000 * den, Math.floor(50 * hp), 3 * spd, 20, "green", 5, 0, 0, 0) //basic
+                spawnWave(20, 1000 * den, Math.floor(50 * hp), 3 * spd, 20, "green", 5, 0, 0, 0) //basic
+                spawnWave(20, 1000 * den, Math.floor(50 * hp), 3 * spd, 20, "green", 5, 0, 0, 0) //basic
+                spawnWave(20, 1000 * den, Math.floor(50 * hp), 3 * spd, 20, "green", 5, 0, 0, 0) //basic
+                spawnWave(20, 1000 * den, Math.floor(50 * hp), 3 * spd, 20, "green", 5, 0, 0, 0) //basic
+                spawnWave(20, 1000 * den, Math.floor(50 * hp), 3 * spd, 20, "green", 5, 0, 0, 0) //basic
+                spawnWave(20, 1000 * den, Math.floor(50 * hp), 3 * spd, 20, "green", 5, 0, 0, 0) //basic
+                spawnWave(20, 1000 * den, Math.floor(50 * hp), 3 * spd, 20, "green", 5, 0, 0, 0) //basic
+                hint = "regen";
+                break;
+            case 14: //money 200
+                spawnWave(10, 1000 * den, Math.floor(250 * hp), 2 * spd, 20, "green", 20, 0, 0, 15) //regen
+                hint = "???";
+                break;
+            case 15: //money 500
+                var newBoss = new Enemy(spawnPoint(paths)[0], spawnPoint(paths)[1], Math.floor(200 * hp), 0.7 * spd, spawnDirection(paths), 60, "boss", 500, 100, 10, 0, 1);
+                enemies.push(newBoss);
+                spawnWave(10, 2000, 200, 0.4, 20, "red", 10, 100, 10, 0, 0, newBoss);
+                hint = "grouped + fast";
+                break;
+            case 16: //money 600
+                spawnWave(150, 100 * den, Math.floor(40 * hp), 3 * spd, 20, "pink", 2, 0, 0, 0); //grouped 
+                spawnWave(30, 500 * den, Math.floor(80 * hp), 6 * spd, 20, "yellow", 10, 0, 0, 0); //fast 
+                hint = "fast + armored";
+                break;
+            case 17: //money 550
+                spawnWave(25, 800 * den, Math.floor(50 * hp), 3 * spd, 20, "red", 10, 20, 0, 0); //armored 
+                spawnWave(30, 500 * den, Math.floor(80 * hp), 6 * spd, 20, "yellow", 10, 0, 0, 0); //fast 
+                hint = "armored + regen";
+                break;
+            case 18: //money 550
+                spawnWave(25, 800 * den, Math.floor(50 * hp), 3 * spd, 20, "red", 10, 20, 0, 0); //armored 
+                spawnWave(20, 1000 * den, Math.floor(150 * hp), 2 * spd, 30, "green", 10, 0, 0, 15); //regen
+                hint = "regen + shield";
+                break;
+            case 19: //money 600
+                spawnWave(30, 700 * den, Math.floor(200 * hp), 3 * spd, 20, "green", 10, 0, 10, 0); //shielded
+                spawnWave(20, 1000 * den, Math.floor(150 * hp), 2 * spd, 30, "green", 10, 0, 0, 15); //regen
+                hint = "high health";
+                break;
+            case 20: //money 500
+                spawnWave(50, 1000 * den, Math.floor(500 * hp), 3 * spd, 30, "green", 10, 0, 0, 0); //basic  
+                hint = "everything";
+                break;
+            case 21: //money 1450
+                spawnWave(150, 100 * den, Math.floor(40 * hp), 3 * spd, 20, "pink", 2, 0, 0, 0); //grouped  
+                spawnWave(25, 800 * den, Math.floor(50 * hp), 3 * spd, 20, "red", 10, 20, 0, 0); //armored 
+                spawnWave(30, 500 * den, Math.floor(80 * hp), 6 * spd, 20, "yellow", 10, 0, 0, 0); //fast 
+                spawnWave(30, 700 * den, Math.floor(200 * hp), 3 * spd, 20, "green", 10, 0, 10, 0); //shielded
+                spawnWave(20, 1000 * den, Math.floor(150 * hp), 2 * spd, 30, "green", 10, 0, 0, 15); //regen
+                hint = "heavy tanks";
+                break;
+            case 22: //money 300
+                spawnWave(6, 8000 * den, Math.floor(1000 * hp), 1 * spd, 30, "green", 50, 20, 10, 5); //slow  
+                hint = "2k";
+                break;
+            case 23: //money 500
+                spawnWave(10, 4000 * den, Math.floor(5000 * hp), 2 * spd, 30, "green", 50, 0, 0, 0); //high health 
+                hint = "the clump";
+                break;
+            case 24: //money 500
+                spawnWave(500, 1, 1, 3 * spd, 20, "pink", 1, 0, 0, 0); //clumped 
+                hint = "super shields";
+                break;
+            case 25: //money 400
+                spawnWave(40, 2300, 1, 1, 20, "green", 10, 0, 100, 8, 0); //shielded
+                hint = "Shielded boss";
+                break;
+            case 26: //money 600
+                waveTimeout([0, 0, 1, 1, 1, "clear", 0, 0, 0, 0, 1], 0);
+                var shieldedBoss = new Enemy(spawnPoint(paths)[0], spawnPoint(paths)[1], 1, 1 * spd, spawnDirection(paths), 60, "boss", 600, 0, 1000, 0, 1);
+                bossTimeout(shieldedBoss, 0);
+                hint = "grouped fast";
+                break;
+            case 27: //money 600
+                spawnWave(150, 100 * den, Math.floor(100 * hp), 7 * spd, 20, "yellow", 4, 0, 0, 0); //grouped fast 
+                hint = "fast armored";
+                break;
+            case 28: //money 300
+                spawnWave(30, 600 * den, Math.floor(250 * hp), 7 * spd, 20, "red", 10, 20, 0, 0); //armored fast
+                hint = "armored regen";
+                break;
+            case 29: //money 600
+                spawnWave(30, 1000 * den, Math.floor(400 * hp), 2 * spd, 30, "red", 20, 30, 0, 5); //armored regen
+                hint = "shielded regen";
+                break;
+            case 30: //money 600
+                spawnWave(30, 1000 * den, Math.floor(500 * hp), 2 * spd, 30, "green", 20, 0, 30, 5); //shielded regen
+                hint = "Boss Rush!";
+                break;
+            case 31: //money 500+
+                waveTimeout([0, 0, 1, 1, 1, "clear", 0, 0, 0, 0, 1], 0);
+                var miniBoss = new Enemy(spawnPoint(paths)[0], spawnPoint(paths)[1], Math.floor(10000 * hp), 1 * spd, spawnDirection(paths), 60, "boss", 100, 0, 0, 0, 1);
+                bossTimeout(miniBoss, 0);
+                waveTimeout([150, 200 * den, Math.floor(100 * hp), 3 * spd, 20, "pink", 2, 0, 0, 0, 0, miniBoss], 100); //grouped 
+
+                waveTimeout([0, 0, 1, 1, 1, "clear", 0, 0, 0, 0, 1], 6000);
+                var miniBoss1 = new Enemy(spawnPoint(paths)[0], spawnPoint(paths)[1], Math.floor(10000 * hp), 1 * spd, spawnDirection(paths), 60, "boss", 100, 0, 0, 0, 1);
+                bossTimeout(miniBoss1, 6000);
+                waveTimeout([25, 1000 * den, Math.floor(150 * hp), 3 * spd, 20, "red", 10, 20, 0, 0, 0, miniBoss1], 6100); //armored
+                
+                waveTimeout([0, 0, 1, 1, 1, "clear", 0, 0, 0, 0, 1], 12000);
+                var miniBoss2 = new Enemy(spawnPoint(paths)[0], spawnPoint(paths)[1], Math.floor(10000 * hp), 1 * spd, spawnDirection(paths), 60, "boss", 100, 0, 0, 0, 1);
+                bossTimeout(miniBoss2, 12000);
+                waveTimeout([30, 1500 * den, Math.floor(200 * hp), 8 * spd, 20, "yellow", 10, 0, 0, 0, 0, miniBoss2], 12100); //speed 
+
+                waveTimeout([0, 0, 1, 1, 1, "clear", 0, 0, 0, 0, 1], 18000);
+                var miniBoss3 = new Enemy(spawnPoint(paths)[0], spawnPoint(paths)[1], Math.floor(10000 * hp), 1 * spd, spawnDirection(paths), 60, "boss", 100, 0, 0, 0, 1);
+                bossTimeout(miniBoss3, 18000);
+                waveTimeout([30, 1800 * den, Math.floor(300 * hp), 3 * spd, 20, "green", 10, 0, 20, 0, 0, miniBoss3], 18100); //shielded 
+
+                waveTimeout([0, 0, 1, 1, 1, "clear", 0, 0, 0, 0, 1], 24000);
+                var miniBoss4 = new Enemy(spawnPoint(paths)[0], spawnPoint(paths)[1], Math.floor(10000 * hp), 1 * spd, spawnDirection(paths), 60, "boss", 100, 0, 0, 0, 1);
+                bossTimeout(miniBoss4, 24000);
+                waveTimeout([20, 2500 * den, Math.floor(500 * hp), 2 * spd, 30, "green", 10, 0, 0, 6, 0, miniBoss4], 24100); //regen 
+                hint = "Something is approaching";
+                break;
+            case 32: //money 600
+                spawnWave(20, 500 * den, Math.floor(100 * hp), 15 * spd, 20, "yellow", 30, 0, 0, 0); //fast 
+                hint = "Armored Boss"; 
+                bonusHint = "Return of the armored Bohemoth";
+                break;
+            case 33: //money 1000
+                spawnWave(0, 0, 1, .3, 1, "clear", 0, 0, 0, 0, 1);
+                var armoredBoss = new Enemy(spawnPoint(paths)[0], spawnPoint(paths)[1], Math.floor(20000 * hp), 0.3 * spd, spawnDirection(paths), 60, "boss", 1000, 200, 500, 1, 1);
+                enemies.push(armoredBoss);
+                hint = "Final Wave";
                 break;
             default:
                 //win

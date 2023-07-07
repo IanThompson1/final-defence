@@ -19,6 +19,7 @@ const impossibleDifficulty = document.querySelector('#difficultyImpossible');
 const sandboxDifficulty = document.querySelector('#difficultySandbox');
 const gameOverMenu = document.querySelector('#gameOver');
 const youWinMenu = document.querySelector('#youWin');
+const pauseMenu = document.querySelector('#pauseButton');
 const menuButton = document.querySelector('#menu');
 const menuButton2 = document.querySelector('#menu2');
 const restartButton = document.querySelector('#startOver');
@@ -26,10 +27,15 @@ const restartButton2 = document.querySelector('#startOver2');
 const retryButton = document.querySelector('#retry');
 const nextLevelButton = document.querySelector('#nextLevel');
 const startingRound = document.querySelector('#startRound');
+const menuButton3 = document.querySelector('#menu3');
+const retryButton2 = document.querySelector('#retry2');
+const resumeButton = document.querySelector('#resume');
+
 // const background = document.querySelector('#myVideo');
 // to do 
 /*
 subclasses for towers and like everything else 
+pause button
 visuals especially maps and tower turning? 
 flamethrower effects / names 
 abilities tower? mines, smite, burn/weaken/buff, group teleport, freeze/stun, money, 
@@ -63,7 +69,7 @@ var paths = choosepath(0); // 0=basic 1=cross 2=double 3=symmetry 4=castle 5=tri
 var availableTowers = [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]; //boolean values for which towers you can use. snip, flame, tesla, laser, slow, bomb, farm, rail, buff, super, level6, level7
 var totalmoney :number = 500;
 var lives :number = 10;
-var numboxes : number = 18;
+var numboxes : number = 20;
 var mouseover :string = "none";
 var selectedTower :string = "none";
 var mouseX :number = 0;
@@ -73,10 +79,12 @@ var autostart :string = "StartWave";
 var waveStart :number = 0;
 var retried :number = 0;
 var gameIsOver :number = 0;
+var paused :number = 0;
 var mouseDown :number = 0;
 var draggingTower :number = 0;
 var placingTowers :string = "Click to Place";
 var speedModifier :number = 1;
+var waveEnded :number = 1;
 var hint :string = "";
 var bonusHint :string = "Welcome to Final Defence! Good Luck!";
 var menutype :number = 0; //0 = main menu 1 = tower menu
@@ -108,6 +116,8 @@ var towerFootPrint :number = 95;
 gameOverMenu.style.display = "none";
 //@ts-ignore
 youWinMenu.style.display = "none";
+//@ts-ignore
+pauseMenu.style.display = "none";
 
 //enemy class
 class Enemy {
@@ -643,7 +653,7 @@ class Tower {
         }else if (this.type == "bomb") {
             this.damage = 2;
             this.reload = 750;
-            this.splash = 60;
+            this.splash = 80;
             this.range = 150;
             this.pierce = 25;
             this.target = "first";
@@ -1289,43 +1299,43 @@ class Tower {
             if (this.level == 1) {
                 this.damage = 2;
                 this.reload = 750;
-                this.splash = 60;
+                this.splash = 80;
                 this.range = 150;
                 this.pierce = 25;
             }else if (this.level == 2) {
                 this.damage = 4;
                 this.reload = 750;
-                this.splash = 60;
+                this.splash = 80;
                 this.range = 150;
                 this.pierce = 25;
             }else if (this.level == 3) {
                 this.damage = 6;
                 this.reload = 750;
-                this.splash = 60;
+                this.splash = 80;
                 this.range = 150;
                 this.pierce = 25;
             }else if (this.level == 4) {
                 this.damage = 8;
                 this.reload = 750;
-                this.splash = 60;
+                this.splash = 80;
                 this.range = 150;
                 this.pierce = 25;
             }else if (this.level == 5) {
                 this.damage = 10;
                 this.reload = 750;
-                this.splash = 60;
+                this.splash = 80;
                 this.range = 150;
                 this.pierce = 25;
             }else if (this.level == 6) {
                 this.damage = 20;
                 this.reload = 750;
-                this.splash = 120;
+                this.splash = 150;
                 this.range = 150;
                 this.pierce = 25;
             }else if (this.level == 7) {
                 this.damage = 30;
                 this.reload = 750;
-                this.splash = 60;
+                this.splash = 80;
                 this.range = 150;
                 this.pierce = 25;
             }
@@ -1463,13 +1473,13 @@ class Tower {
             this.reload *= 0.8;
         }
         if(this.buffs > 2){
-            this.damage += 5;
+            this.damage += 10;
             if(this.type == "laser" && this.level == 6){
-                this.lasermin += 5;
-                this.lasermax += 5;
+                this.lasermin += 10;
+                this.lasermax += 10;
             }else{
                 this.lasermin += 1;
-                this.lasermax += 5;
+                this.lasermax += 10;
             }
         }
         if(this.buffs > 3){
@@ -1664,26 +1674,69 @@ var state :GameState = new GameState(9,9,9,[]);
 
 //calls the waves in succession
 function spawnMultiWaves(waveArr){
-    wavetimeout(waveArr[0], 0);
+    waveEnded = 0;
+    waveTimeout(waveArr[0], 0);
     for(var i=1; i<waveArr.length; i++){
         //finds time for sending waves
         var time=0;
         for(var j=i-1; j>=0; j--){
             time += waveArr[j][0]*waveArr[j][1];
         }
-        wavetimeout(waveArr[i], time/speedModifier);
+        waveTimeout(waveArr[i], time/speedModifier);
     }
+    var time=0;
+    for(var j=waveArr.length-1; j>=0; j--){
+        time += waveArr[j][0]*waveArr[j][1];
+    }
+    //wave ended after last wave comes out. 
+    waveEndTimeout(time/speedModifier);
+}
+
+//sets waveEnd after timeout
+function waveEndTimeout(time){
+    var timefunction = setInterval(() => {
+        if(paused == 1){
+
+        }else{
+            if(retried == 0){
+                waveEnded = 1;
+            }
+            clearInterval(timefunction);
+        }
+    }, time);
+}
+
+//sends Boss after timeout
+function bossTimeout(boss, time){
+    var timefunction = setInterval(() => {
+        if(paused == 1){
+
+        }else{
+            if(retried == 0){
+                enemies.push(boss);
+            }
+            clearInterval(timefunction);
+        }
+    }, time);
 }
 
 //calls function after timeout
-function wavetimeout(arr, time){
+function waveTimeout(arr, time){
     var timefunction = setInterval(() => {
-        if(arr.length > 10){//for picking paths
-            spawnWave(arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6], arr[7], arr[8], arr[9], arr[10]);
-        }else{//regular
-            spawnWave(arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6], arr[7], arr[8], arr[9]);
+        if(paused == 1){
+
+        }else{
+            if(retried == 0){
+                if(arr.length > 11){//for spawning in boss
+                    spawnWave(arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6], arr[7], arr[8], arr[9], arr[10], arr[11]);
+                }else if(arr.length > 10){//for just picking paths
+                    spawnWave(arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6], arr[7], arr[8], arr[9], arr[10]);
+                }else{//regular
+                    spawnWave(arr[0], arr[1], arr[2], arr[3], arr[4], arr[5], arr[6], arr[7], arr[8], arr[9]);
+                }
+            }
+            clearInterval(timefunction);
         }
-        clearInterval(timefunction);
     }, time);
 }
 
@@ -1696,71 +1749,75 @@ function spawnWave(numenemies :number, density :number, health :number, speed :n
         bossRound = 1;
     }
     var enemiesfunction = setInterval(() => {
-        if(gameIsOver == 1){
-            clearInterval(enemiesfunction);
-        }
-        //check when to stop spawning
-        if (bossRound == 1) {
-            bossRound = 0;
-            for (var i = 0; i < enemies.length; i++) {
-                if (enemies[i] == boss) {
-                    bossRound = 1;
-                    break;
-                }
-            }
-            if (bossRound == 0) { //boss is dead
-                waveStart = 0;
+        if(paused == 1){
+        }else{
+            if(gameIsOver == 1 || retried == 1){
                 clearInterval(enemiesfunction);
-            }
+            }else{
+                //check when to stop spawning
+                if (bossRound == 1) {
+                    bossRound = 0;
+                    for (var i = 0; i < enemies.length; i++) {
+                        if (enemies[i] == boss) {
+                            bossRound = 1;
+                            break;
+                        }
+                    }
+                    if (bossRound == 0) { //boss is dead
+                        waveStart = 0;
+                        clearInterval(enemiesfunction);
+                    }
 
-        }
-        //spawn at enterance 
-        if(bossRound == 0){//default
-            if(paths3[0][0] != -1 && ePath == 0){ //3 lanes
-                switch(flipflop){
-                    case 1:
+                }
+                //spawn at enterance 
+                if(bossRound == 0){//default
+                    if(paths3[0][0] != -1 && ePath == 0){ //3 lanes
+                        switch(flipflop){
+                            case 1:
+                                enemies.push(new Enemy(spawnPoint(paths)[0], spawnPoint(paths)[1], health, speedModifier*speed, spawnDirection(paths), size, color, Emoney, armor, shield, regen, 1));
+                                flipflop = 2;
+                                break;
+                            case 2:
+                                enemies.push(new Enemy(spawnPoint(paths2)[0], spawnPoint(paths2)[1], health, speedModifier*speed, spawnDirection(paths2), size, color, Emoney, armor, shield, regen, 2));
+                                flipflop = 3;
+                                break;
+                            case 3:
+                                enemies.push(new Enemy(spawnPoint(paths3)[0], spawnPoint(paths3)[1], health, speedModifier*speed, spawnDirection(paths3), size, color, Emoney, armor, shield, regen, 3));
+                                flipflop = 1;
+                                break;
+                        }
+                    }else if(paths2[0][0] != -1 && ePath == 0){//2 lanes
+                        if(flipflop == 1){
+                            enemies.push(new Enemy(spawnPoint(paths)[0], spawnPoint(paths)[1], health, speedModifier*speed, spawnDirection(paths), size, color, Emoney, armor, shield, regen, 1));
+                        }else{
+                            enemies.push(new Enemy(spawnPoint(paths2)[0], spawnPoint(paths2)[1], health, speedModifier*speed, spawnDirection(paths2), size, color, Emoney, armor, shield, regen, 2));
+                        }
+                        flipflop = -flipflop;
+                    }else if(ePath != 0){ //pick lane with ePath
+                        switch(ePath){
+                            case 1:
+                                enemies.push(new Enemy(spawnPoint(paths)[0], spawnPoint(paths)[1], health, speedModifier*speed, spawnDirection(paths), size, color, Emoney, armor, shield, regen, 1));
+                                break;
+                            case 2:
+                                enemies.push(new Enemy(spawnPoint(paths2)[0], spawnPoint(paths2)[1], health, speedModifier*speed, spawnDirection(paths2), size, color, Emoney, armor, shield, regen, 2));
+                                break;
+                            case 3:
+                                enemies.push(new Enemy(spawnPoint(paths3)[0], spawnPoint(paths3)[1], health, speedModifier*speed, spawnDirection(paths3), size, color, Emoney, armor, shield, regen, 3));
+                                break;
+                        }
+                    }else{ //1 lane
                         enemies.push(new Enemy(spawnPoint(paths)[0], spawnPoint(paths)[1], health, speedModifier*speed, spawnDirection(paths), size, color, Emoney, armor, shield, regen, 1));
-                        flipflop = 2;
-                        break;
-                    case 2:
-                        enemies.push(new Enemy(spawnPoint(paths2)[0], spawnPoint(paths2)[1], health, speedModifier*speed, spawnDirection(paths2), size, color, Emoney, armor, shield, regen, 2));
-                        flipflop = 3;
-                        break;
-                    case 3:
-                        enemies.push(new Enemy(spawnPoint(paths3)[0], spawnPoint(paths3)[1], health, speedModifier*speed, spawnDirection(paths3), size, color, Emoney, armor, shield, regen, 3));
-                        flipflop = 1;
-                        break;
+                    }
+                }else{//spawn inside boss
+                    enemies.push(new Enemy(boss.x, boss.y, health, speedModifier*speed, boss.direction, size, color, Emoney, armor, shield, regen, 1));
+                    enemies[enemies.length-1].distance = boss.distance;
                 }
-            }else if(paths2[0][0] != -1 && ePath == 0){//2 lanes
-                if(flipflop == 1){
-                    enemies.push(new Enemy(spawnPoint(paths)[0], spawnPoint(paths)[1], health, speedModifier*speed, spawnDirection(paths), size, color, Emoney, armor, shield, regen, 1));
-                }else{
-                    enemies.push(new Enemy(spawnPoint(paths2)[0], spawnPoint(paths2)[1], health, speedModifier*speed, spawnDirection(paths2), size, color, Emoney, armor, shield, regen, 2));
+                current++;
+                if(current >= numenemies && bossRound == 0){
+                    waveStart = 0;
+                    clearInterval(enemiesfunction);
                 }
-                flipflop = -flipflop;
-            }else if(ePath != 0){ //pick lane with ePath
-                switch(ePath){
-                    case 1:
-                        enemies.push(new Enemy(spawnPoint(paths)[0], spawnPoint(paths)[1], health, speedModifier*speed, spawnDirection(paths), size, color, Emoney, armor, shield, regen, 1));
-                        break;
-                    case 2:
-                        enemies.push(new Enemy(spawnPoint(paths2)[0], spawnPoint(paths2)[1], health, speedModifier*speed, spawnDirection(paths2), size, color, Emoney, armor, shield, regen, 2));
-                        break;
-                    case 3:
-                        enemies.push(new Enemy(spawnPoint(paths3)[0], spawnPoint(paths3)[1], health, speedModifier*speed, spawnDirection(paths3), size, color, Emoney, armor, shield, regen, 3));
-                        break;
-                }
-            }else{ //1 lane
-                enemies.push(new Enemy(spawnPoint(paths)[0], spawnPoint(paths)[1], health, speedModifier*speed, spawnDirection(paths), size, color, Emoney, armor, shield, regen, 1));
             }
-        }else{//spawn inside boss
-            enemies.push(new Enemy(boss.x, boss.y, health, speedModifier*speed, boss.direction, size, color, Emoney, armor, shield, regen, 1));
-            enemies[enemies.length-1].distance = boss.distance;
-        }
-        current++;
-        if(current >= numenemies && bossRound == 0){
-            waveStart = 0;
-            clearInterval(enemiesfunction);
         }
     }, density/speedModifier);
 }
@@ -1883,6 +1940,11 @@ function towershoot(tower :Tower) :void {
             case "tesla":
                 color = "#EFAE3A";
                 break;
+        }
+        //handles range buff
+        if(tower.buffs >= 1){
+            speed = speed*1.2;
+            lifespan = lifespan*1.2;
         }
         if (tower.type == "Sniper" || tower.type == "Minigun" || tower.type == "bomb" || tower.type == "super" || tower.type == "railgun") { //shoot projectile
             if (inrange == 1) { 
@@ -2206,8 +2268,16 @@ function towershoot(tower :Tower) :void {
                             if(laserheatcounter > tower.lasertime){ //heat up every lasertime shots
                                 laserheatcounter = 0;
                                 tower.damage = tower.damage + tower.heatup; //heat up by tower heatup 
-                                if (tower.damage >= tower.lasermax) {
-                                    tower.damage = tower.lasermax;
+                                //removes a little armor from target
+                                if(target.shield == 0){
+                                    if(target.armor > 1){
+                                        target.armor -= 2;
+                                    }else if(target.armor == 1){
+                                        target.armor --;
+                                    }
+                                    if (tower.damage >= tower.lasermax) {
+                                        tower.damage = tower.lasermax;
+                                    }
                                 }
                             }else{
                                 laserheatcounter++;
@@ -2230,10 +2300,9 @@ function towershoot(tower :Tower) :void {
                             else { //deals damage
                                 target.health -= Math.floor(tower.damage) - target.armor;
                             }
-                            lasercounter = 0;
                         }
                         else { //shield
-                            if (shieldcounter >= 50) { //breaks the shield every 50 hits
+                            if (shieldcounter >= 4) { //breaks the shield every 50 hits
                                 target.shield--;
                                 shieldcounter = 0;
                             }
@@ -2242,6 +2311,7 @@ function towershoot(tower :Tower) :void {
                             }
                             tower.damage = tower.lasermin;
                         }
+                        lasercounter = 0;
                     }
                     else {
                         lasercounter += speedModifier * 1;
@@ -2347,8 +2417,10 @@ function towershoot(tower :Tower) :void {
                             }else{
                                 target.shield = target.shield-2; //2 damage to shields
                             }
-                            if(tower.level != 7){
+                            if(tower.level != 7 && tower.level != 6){
                                 tower.charge += 50;
+                            }else if(tower.level != 7 && tower.maxcharge > tower.charge){
+                                tower.charge += 25;
                             }
                         }
                     });
@@ -2529,17 +2601,20 @@ function animate(){
                 });
                 if(alreadyhit == 0){
                     if(shot.ap == 0){
-                        if(enemy.shield <= 0){
-                            if(shot.damage >= enemy.health+enemy.armor){//kills enemy
-                                enemy.health = 0;
-                            }else if (shot.damage < enemy.armor) {//less than armor
-                                enemy.health -= 1;
-                            }else {//lower health
-                                enemy.health -= (shot.damage-enemy.armor);
-                            }
-                        }else{
-                            if(shot.damage != 0){
-                                enemy.shield--;
+                        //explosion
+                        if(shot.damage != 0){
+                            if(enemy.shield <= 0){
+                                if(shot.damage >= enemy.health+enemy.armor){//kills enemy
+                                    enemy.health = 0;
+                                }else if (shot.damage <= enemy.armor) {//less than armor
+                                    enemy.health -= 1;
+                                }else {//lower health
+                                    enemy.health -= (shot.damage-enemy.armor);
+                                }
+                            }else{
+                                if(shot.damage != 0){
+                                    enemy.shield--;
+                                }
                             }
                         }
                     }else if(shot.ap > 1){//splash
@@ -2551,7 +2626,7 @@ function animate(){
                                 if(nearenemy.shield <= 0){
                                     if(shot.damage >= nearenemy.health+nearenemy.armor){//kills nearenemy
                                         nearenemy.health = 0;
-                                    }else if (shot.damage < nearenemy.armor) {//less than armor
+                                    }else if (shot.damage <= nearenemy.armor) {//less than armor
                                         nearenemy.health -= 1;
                                     }else {//lower health
                                         nearenemy.health -= (shot.damage-nearenemy.armor);
@@ -2767,11 +2842,14 @@ function animate(){
     }else if(mouseX > canvas.width-canvas.width/7.5 && mouseX < canvas.width-canvas.width/7.5 + (canvas.width/7.5)/2 && mouseY > canvas.height/(numboxes/2)*(12/2) && mouseY < canvas.height/(numboxes/2)*(12/2) + canvas.height/(numboxes/2)){
         mouseover = "sell";
     //@ts-ignore
-    }else if(mouseX > canvas.width-canvas.width/7.5 && mouseX < canvas.width-canvas.width/7.5 + (canvas.width/7.5)/2 && mouseY > canvas.height/(numboxes/2)*(14/2) && mouseY < canvas.height/(numboxes/2)*(14/2) + canvas.height/(numboxes/2)){
+    }else if(mouseX > canvas.width-canvas.width/7.5 && mouseX < canvas.width-canvas.width/7.5 + (canvas.width/7.5)/2 && mouseY > canvas.height/(numboxes/2)*(16/2) && mouseY < canvas.height/(numboxes/2)*(16/2) + canvas.height/(numboxes/2)){
         mouseover = "speed";
     //@ts-ignore
-    }else if(mouseX > canvas.width-canvas.width/7.5 + (canvas.width/7.5)/2 && mouseX < canvas.width - canvas.width/7.5 + (canvas.width/7.5)/2 + (canvas.width/7.5)/2 && mouseY > canvas.height/(numboxes/2)*(14/2) && mouseY < canvas.height/(numboxes/2)*(14/2)+canvas.height/(numboxes/2)){
+    }else if(mouseX > canvas.width-canvas.width/7.5 + (canvas.width/7.5)/2 && mouseX < canvas.width - canvas.width/7.5 + (canvas.width/7.5)/2 + (canvas.width/7.5)/2 && mouseY > canvas.height/(numboxes/2)*(16/2) && mouseY < canvas.height/(numboxes/2)*(16/2)+canvas.height/(numboxes/2)){
         mouseover = "towerPlacement";
+    //@ts-ignore
+    }else if(mouseX > canvas.width-canvas.width/7.5 + (canvas.width/7.5)/2 && mouseX < canvas.width - canvas.width/7.5 + (canvas.width/7.5)/2 + (canvas.width/7.5)/2 && mouseY > canvas.height/(numboxes/2)*(14/2) && mouseY < canvas.height/(numboxes/2)*(14/2)+canvas.height/(numboxes/2)){
+        mouseover = "pause";
     }else{
         mouseover = "none";
     }
@@ -2793,7 +2871,7 @@ function animate(){
 function activeWave(){
     if(waveStart == 1){
         return 1;
-    }else if(enemies.length == 0){
+    }else if(enemies.length == 0 && waveEnded == 1){
         return 0;
     }else{
         return 1;
@@ -2848,7 +2926,6 @@ addEventListener("click", () => {
     }else if(mouseover == "upgrade" || mouseover == "level6" || mouseover == "level7"){
         for(var i=0; i<towers.length; i++){
             if(towers[i].selected == 1){
-                console.log(towers[i].cost[towers[i].level]);
                 if(towers[i].type == "laser" && totalmoney >= towers[i].cost[towers[i].level] && towers[i].level == 5 && mouseover == "level6"){
                     //upgrades tower
                     totalmoney -= towers[i].cost[towers[i].level];
@@ -2928,6 +3005,7 @@ addEventListener("click", () => {
         if(autostart == "StartWave"){
             //starts next wave
             round++;
+            retried = 0;
             //@ts-ignore
             nextWave();
             waveStart = 1;
@@ -2946,7 +3024,26 @@ addEventListener("click", () => {
             placingTowers = "Click to Place";
         }
     }
+    //pause button
+    if(mouseover == "pause"){
+        pauseButton();
+    }
 })
+
+function pauseButton(){
+    if(paused == 0){
+        paused = 1;
+        mouseover = "none";
+        cancelAnimationFrame(animationId);
+        //@ts-ignore
+        pauseMenu.style.display ="flex";
+    }else if(paused == 1){
+        //@ts-ignore
+        pauseMenu.style.display = "none";
+        paused = 0;
+        animate();
+    }
+}
 
 //drag functionality
 document.body.onmousedown = function() { 
@@ -3181,7 +3278,10 @@ function drawLine(ctx, begin :number[], end :number[], stroke = 'black', width =
 
 //deselects towers on escape press
 document.addEventListener('keydown', function(event){
-	if(event.key === "Escape"){
+	if(selectedTower == "none"){
+        pauseButton();
+    }
+    if(event.key === "Escape"){
         towers.forEach(function (tower, index) {
             tower.selected = 0;
         });

@@ -36,7 +36,7 @@ startGameButton.addEventListener('click', function () {
             break;
         case 4:
             hint = "You have access to everything now, pick the best max upgrades to win"
-            bonusHint = "Only 35 waves, return of the Armored Behemoth";
+            bonusHint = "Only 33 waves, return of the Armored Behemoth";
             availableTowers = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
             totalmoney = 450;
             break;
@@ -90,7 +90,9 @@ startGameButton.addEventListener('click', function () {
             round = output.innerHTML-1;
             break;
     }
-    // round = output.innerHTML-1;
+    // for testing
+    // round = output.innerHTML-1; 
+    // totalmoney+=100000;
     //calculate round money
     // if(round != 0){
     //     for(var i=0; i<round; i++){
@@ -449,6 +451,7 @@ retryButton.addEventListener('click', function () {
     gameIsOver = 0;
     autostart = "StartWave";
     round = state.round;
+    waveEnded = 1;
 
     //deep copy state.towers so it doesn't get updated
     var tempTowers = state.towers.map((x) => x);
@@ -590,5 +593,80 @@ nextLevelButton.addEventListener('click', function () {
             break;
     }
     state.update(lives, totalmoney, round, towers);
+    animate();
+});
+
+//pause menu 
+retryButton2.addEventListener('click', function () {
+    pauseMenu.style.display = "none";
+    cancelAnimationFrame(animationId);
+    //remove all towers and enemies
+    for(var i = towers.length-1; i > -1; i--){
+        towers[i].sold = 1;
+        //remove range
+        towers[i].selected = 0;
+        towers[i].draw();
+        towers.splice(i, 1);
+    }
+    for(var i = enemies.length-1; i > -1; i--){
+        enemies.splice(i, 1);
+    }
+    for(var i= lasers.length-1; i>-1; i--){
+        lasers.splice(i, 1);
+    }
+    //reset variables to previous rounds
+    gameIsOver = 0;
+    autostart = "StartWave";
+    round = state.round;
+    waveEnded = 1;
+
+    //deep copy state.towers so it doesn't get updated
+    var tempTowers = state.towers.map((x) => x);
+
+    for(var i=0; i<tempTowers.length; i++){//replace towers
+        towers.push(new Tower(tempTowers[i].x, tempTowers[i].y, tempTowers[i].type, state.levels[i], 0));
+        towers[towers.length-1].update();
+        towers[towers.length-1].target = tempTowers[i].target;
+        if(towers[i].type == "tesla"){//reset tesla charge
+            towers[towers.length-1].charge = tempTowers[i].charge;
+        }
+        if(towers[i].type == "farm"){//remember farm generated
+            towers[towers.length-1].generated = tempTowers[i].generated;
+        }
+        towershoot(towers[towers.length-1]);
+        if(tempTowers[i].level =="6" && tempTowers[i].type == "laser"){
+            towershoot(towers[towers.length-1]);
+            towershoot(towers[towers.length-1]);
+            towershoot(towers[towers.length-1]);
+            towershoot(towers[towers.length-1]);
+        }
+    }
+    TowerPlaced();
+    lives = state.lives;
+    totalmoney = state.totalmoney;
+    retried = 1;
+    pauseButton();
+});
+
+menuButton3.addEventListener('click', function () {
+    cancelAnimationFrame(animationId);
+    pauseMenu.style.display = "none";
+    //remove all towers and enemies
+    for(var i = towers.length; i > -1; i--){
+        towers.splice(i, 1);
+    }
+    for(var i = enemies.length; i > -1; i--){
+        enemies.splice(i, 1);
+    }
+    //reset variables (might make a function for this)
+    autostart = "StartWave";
+    round = 0;
+    gameIsOver = 0;
+    mainMenu.style.display = "flex";
+});
+
+resumeButton.addEventListener('click', function () {
+    pauseMenu.style.display = "none";
+    paused = 0;
     animate();
 });

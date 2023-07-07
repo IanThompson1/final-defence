@@ -178,6 +178,18 @@ function drawLayout() {
             drawPath(paths3, canvas);
         }
     }
+    //pause button 
+    // var source = "./img/pauseButton.png";
+    // var pos = [1620, 60];
+    // var pauseImg = new Sprite({
+    //     position: {
+    //         x: pos[0]*scaleW,
+    //         y: pos[1]*scaleH
+    //     },
+    //     imageSrc: source,
+    //     scale: .2
+    // });
+    // pauseImg.update();
 
     // temp for testing walls
     // c.fillStyle="green";
@@ -211,7 +223,7 @@ function drawLayout() {
             //startwave button
             c.fillStyle = "#2CF721";
             c.fillRect(canvas.width - canvas.width / 7.5 + 2.5, canvas.height - canvas.height / (numboxes / 2) + 2.5, (canvas.width / 7.5) - 5, canvas.height / (numboxes / 2) - 5);
-            addText(autostart.toString(), canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 4, canvas.height / (numboxes / 2) * (16 / 2), "black", numboxes, 1, 0.2);
+            addText(autostart.toString(), canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 4, canvas.height / (numboxes / 2) * (18 / 2), "black", numboxes, 1, 0.2);
             c.fillStyle = "#A6A6A6";
         }
     }
@@ -219,9 +231,15 @@ function drawLayout() {
     addDoubleText("Money", Math.floor(totalmoney).toString(), canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (0 / 2), "green", numboxes);
     addDoubleText("Lives", lives.toString(), canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (0 / 2), "red", numboxes);
     //placing towers button
-    addText(placingTowers.toString(), canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (14 / 2), "black", numboxes);
+    addText(placingTowers.toString(), canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (16 / 2), "black", numboxes);
     //speed button
-    addText("Speed:"+speedModifier, canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (14 / 2),"yellow",numboxes);
+    addText("Speed:"+speedModifier, canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (16 / 2),"yellow",numboxes);
+    //pause button
+    if(paused == 0){
+        addDoubleText("Pause", "(esc)", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (14 / 2), "black", numboxes);
+    }else{
+        addDoubleText("Play", "(esc)", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (14 / 2), "black", numboxes);
+    }
     //wave hints
     if (round == 0) {
         c.fillStyle = "#D5E645";
@@ -682,7 +700,7 @@ function drawLayout() {
                 addDoubleText("", "", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (4 / 2), "black", numboxes);
 
                 addDoubleText("Buffer", "level:3", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
-                addDoubleText("Damage", "+5", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
+                addDoubleText("Damage", "+10", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
                 addText("sell:"+towers[i].value, canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (12 / 2), "yellow", numboxes);
                 addDoubleText("upgrade", "Cost:"+towers[i].cost[towers[i].level], canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (12 / 2), "black", numboxes, canAfford(towers[i].cost[towers[i].level]));
             }
@@ -690,7 +708,7 @@ function drawLayout() {
                 addDoubleText("Buffer", "level:3", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes);
                 addDoubleText("Range", "1.2", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes);
                 addDoubleText("Speed", "1.2", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (4 / 2), "black", numboxes);
-                addDoubleText("Damage", "+5", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (4 / 2), "black", numboxes);
+                addDoubleText("Damage", "+10", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (4 / 2), "black", numboxes);
 
                 addDoubleText("Buffer", "level:4", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
                 addDoubleText("Pierce", "+1 OR x1.2", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
@@ -703,7 +721,7 @@ function drawLayout() {
                 addDoubleText("Buffer", "level:4", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes);
                 addDoubleText("Range", "1.2", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes);
                 addDoubleText("Speed", "1.2", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (4 / 2), "black", numboxes);
-                addDoubleText("Damage", "+5", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (4 / 2), "black", numboxes);
+                addDoubleText("Damage", "+10", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (4 / 2), "black", numboxes);
                 addDoubleText("Pierce", "+1 OR x1.2", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (6 / 2), "black", numboxes);
 
                 addDoubleText("Buffer", "level:5", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes);
@@ -715,7 +733,7 @@ function drawLayout() {
                 addDoubleText("Buffer", "level:5", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes);
                 addDoubleText("Range", "1.2", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes);
                 addDoubleText("Speed", "1.2", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (4 / 2), "black", numboxes);
-                addDoubleText("Damage", "+5", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (4 / 2), "black", numboxes);
+                addDoubleText("Damage", "+10", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (4 / 2), "black", numboxes);
                 addDoubleText("Pierce", "+1 OR x1.2", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (6 / 2), "black", numboxes);
                 addDoubleText("Damage", "x1.2", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (6 / 2), "black", numboxes);
 
@@ -786,7 +804,7 @@ function drawLayout() {
             temptowerlevel = towers[i].level;
         }
     }
-    if((mouseover != "none" && mouseover != "upgrade" && mouseover != "sell" && mouseover != "startWave" && (temptowertype != "farm" || temptowerlevel != 5) && (temptowertype != "farm" || mouseover != "target") && (temptowertype != "ice" || mouseover != "target") && (temptowertype != "buffer" || mouseover != "target") && (temptowertype != "buffer" || temptowerlevel != 5)) || selectedTower != "none"){
+    if(((mouseover != "none" && mouseover != "upgrade" && mouseover != "sell" && mouseover != "startWave" && (temptowertype != "farm" || temptowerlevel != 5) && (temptowertype != "farm" || mouseover != "target") && (temptowertype != "ice" || mouseover != "target") && (temptowertype != "buffer" || mouseover != "target") && (temptowertype != "buffer" || temptowerlevel != 5)) || selectedTower != "none") && mouseover != "pause"){
         c.fillStyle = "white";
         c.fillRect(canvas.width - 2*(canvas.width / 7.5),0,canvas.width / 7.5, canvas.height / (numboxes / 4));
     }
@@ -807,7 +825,7 @@ function drawLayout() {
             break;
         case "laser":
             addText("Heatup for high attack",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
-            addText("Weak against shields",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
+            addText("Burns through armor",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
             break;
         case "tesla":
             addText("2x shield, has to charge",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
