@@ -3297,7 +3297,14 @@ function drawLine(ctx, begin :number[], end :number[], stroke = 'black', width =
 
 //deselects towers on escape press
 document.addEventListener('keydown', function(event){
-	if(selectedTower == "none"){
+    // @ts-ignore
+    var mainstyle = window.getComputedStyle(mainMenu);
+    // @ts-ignore
+    var winstyle = window.getComputedStyle(gameOverMenu);
+    // @ts-ignore
+    var losestyle = window.getComputedStyle(youWinMenu);
+    // checks if other menus are up to stop pausing inbetween
+	if(selectedTower == "none" && mainstyle.getPropertyValue('display') == 'none' && winstyle.getPropertyValue('display') == 'none' && losestyle.getPropertyValue('display') == 'none'){
         pauseButton();
     }
     if(event.key === "Escape"){
