@@ -12,38 +12,57 @@ startGameButton.addEventListener('click', function () {
         case 0:
             bonusHint = "Welcome to Final Defence! Good Luck!";
             hint = "Watch out for enemies with shields and armor";
-            availableTowers = [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0];
+            availableTowers = [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5];
             totalmoney = 250;
             break;
         case 1:
             bonusHint = "You now have access to the Bomb and Slow towers";
             hint = "Here you will encounter grouped, speedy, and health regen enemies";
-            availableTowers = [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0];
+            availableTowers = [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 5];
             totalmoney = 300;
             break;
         case 2:
             bonusHint = "You can now use the Railgun to help against 2 different paths!";
             hint = "Enemies here have a lot of health and come in groups";
-            availableTowers = [1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0];
+            availableTowers = [1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 5];
             totalmoney = 350;
             break;
         case 3:
             hint = "Luckily someone left a free farm for you to use against the tanks!"
             bonusHint = "For this map you can upgrade all of your towers 1 more time";
             towers.push(new Tower(200, 200,"farm", 1, 0));
-            availableTowers = [1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1];
+            availableTowers = [1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 5];
             totalmoney = 400;
             break;
         case 4:
             hint = "You have access to everything now, pick the best max upgrades to win"
             bonusHint = "Only 33 waves, return of the Armored Behemoth";
-            availableTowers = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+            availableTowers = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 5];
             totalmoney = 450;
             break;
         case 5:
-            bonusHint = "Final Challenge! Battle through 50 waves to win!";
-            availableTowers = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
-            totalmoney = 500;
+            bonusHint = "Final Challenge! Every difficulty is a new challenge! (easy/medium finished)";
+            switch (difficulty) {
+                case 1:
+                    availableTowers = [1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5];
+                    totalmoney = 500;
+                    break;
+                case 2:
+                    availableTowers = [0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 5];//sell for 0
+                    totalmoney = 600;
+                    break;
+                case 3:
+                    availableTowers = [1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 5];
+                    totalmoney = 500;
+                    break;
+                case 4:
+                    availableTowers = [1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 5];
+                    totalmoney = 500;
+                    break;
+                default:
+                    availableTowers = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 5];
+                    totalmoney = 500;
+            }
             break;
     }
     switch (difficulty) {
@@ -84,11 +103,16 @@ startGameButton.addEventListener('click', function () {
                     towerSpots.push([x,y]);
                 }
             }
-            availableTowers = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+            availableTowers = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 5];
             bonusHint = "Sandbox, feel free to test out different tower combinations";
             hint = "Custom Sandbox rounds";
             round = output.innerHTML-1;
             break;
+    }
+    //most tower spots
+    if(difficulty != 5){
+        towerSpots = [];
+        towerSpots = towerSpots1;
     }
     // for testing
     // round = output.innerHTML-1; 
@@ -246,38 +270,57 @@ restartButton.addEventListener('click', function () {
         case 0:
             bonusHint = "Welcome to Final Defence! Good Luck!";
             hint = "Watch out for enemies with shields and armor";
-            availableTowers = [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0];
+            availableTowers = [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5];
             totalmoney = 250;
             break;
         case 1:
             bonusHint = "You now have access to the Bomb and Slow towers";
             hint = "Here you will encounter grouped, speedy, and health regen enemies";
-            availableTowers = [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0];
+            availableTowers = [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 5];
             totalmoney = 300;
             break;
         case 2:
             bonusHint = "You can now use the Railgun to help against 2 different paths!";
             hint = "Enemies here have a lot of health and come in groups";
-            availableTowers = [1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0];
+            availableTowers = [1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 5];
             totalmoney = 350;
             break;
         case 3:
             hint = "Luckily someone left a free farm for you to use against the tanks!"
             bonusHint = "For this map you can upgrade all of your towers 1 more time";
             towers.push(new Tower(200, 200,"farm", 1, 0));
-            availableTowers = [1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1];
+            availableTowers = [1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 5];
             totalmoney = 400;
             break;
         case 4:
             hint = "You have access to everything now, pick the best max upgrades to win"
             bonusHint = "Only 35 waves, return of the Armored Behemoth";
-            availableTowers = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+            availableTowers = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 5];
             totalmoney = 450;
             break;
         case 5:
             bonusHint = "Final Challenge! Battle through 50 waves to win!";
-            availableTowers = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
-            totalmoney = 500;
+            switch (difficulty) {
+                case 1:
+                    availableTowers = [1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5];
+                    totalmoney = 500;
+                    break;
+                case 2:
+                    availableTowers = [0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 5];//sell for 0
+                    totalmoney = 600;
+                    break;
+                case 3:
+                    availableTowers = [1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 5];
+                    totalmoney = 500;
+                    break;
+                case 4:
+                    availableTowers = [1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 5];
+                    totalmoney = 500;
+                    break;
+                default:
+                    availableTowers = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 5];
+                    totalmoney = 500;
+            }
             break;
     }
     switch (difficulty) {
@@ -318,7 +361,7 @@ restartButton.addEventListener('click', function () {
                     towerSpots.push([x,y]);
                 }
             }
-            availableTowers = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+            availableTowers = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 5];
             bonusHint = "Sandbox, feel free to test out different tower combinations";
             hint = "Custom Sandbox rounds";
             round = output.innerHTML-1;
@@ -348,38 +391,57 @@ restartButton2.addEventListener('click', function () {
         case 0:
             bonusHint = "Welcome to Final Defence! Good Luck!";
             hint = "Watch out for enemies with shields and armor";
-            availableTowers = [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0];
+            availableTowers = [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5];
             totalmoney = 250;
             break;
         case 1:
             bonusHint = "You now have access to the Bomb and Slow towers";
             hint = "Here you will encounter grouped, speedy, and health regen enemies";
-            availableTowers = [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0];
+            availableTowers = [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 5];
             totalmoney = 300;
             break;
         case 2:
             bonusHint = "You can now use the Railgun to help against 2 different paths!";
             hint = "Enemies here have a lot of health and come in groups";
-            availableTowers = [1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0];
+            availableTowers = [1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 5];
             totalmoney = 350;
             break;
         case 3:
             hint = "Luckily someone left a free farm for you to use against the tanks!"
             bonusHint = "For this map you can upgrade all of your towers 1 more time";
             towers.push(new Tower(200, 200,"farm", 1, 0));
-            availableTowers = [1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1];
+            availableTowers = [1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 5];
             totalmoney = 400;
             break;
         case 4:
             hint = "You have access to everything now, pick the best max upgrades to win"
             bonusHint = "Only 35 waves, return of the Armored Behemoth";
-            availableTowers = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+            availableTowers = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 5];
             totalmoney = 450;
             break;
         case 5:
             bonusHint = "Final Challenge! Battle through 50 waves to win!";
-            availableTowers = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
-            totalmoney = 500;
+            switch (difficulty) {
+                case 1:
+                    availableTowers = [1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5];
+                    totalmoney = 500;
+                    break;
+                case 2:
+                    availableTowers = [0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 5];//sell for 0
+                    totalmoney = 600;
+                    break;
+                case 3:
+                    availableTowers = [1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 5];
+                    totalmoney = 500;
+                    break;
+                case 4:
+                    availableTowers = [1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 5];
+                    totalmoney = 500;
+                    break;
+                default:
+                    availableTowers = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 5];
+                    totalmoney = 500;
+            }
             break;
     }
     switch (difficulty) {
@@ -420,7 +482,7 @@ restartButton2.addEventListener('click', function () {
                     towerSpots.push([x,y]);
                 }
             }
-            availableTowers = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+            availableTowers = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 5];
             bonusHint = "Sandbox, feel free to test out different tower combinations";
             hint = "Custom Sandbox rounds";
             round = output.innerHTML-1;
@@ -514,38 +576,57 @@ nextLevelButton.addEventListener('click', function () {
         case 0:
             bonusHint = "Welcome to Final Defence! Good Luck!";
             hint = "Watch out for enemies with shields and armor";
-            availableTowers = [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0];
+            availableTowers = [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5];
             totalmoney = 250;
             break;
         case 1:
             bonusHint = "You now have access to the Bomb and Slow towers";
             hint = "Here you will encounter grouped, speedy, and health regen enemies";
-            availableTowers = [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0];
+            availableTowers = [1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 5];
             totalmoney = 300;
             break;
         case 2:
             bonusHint = "You can now use the Railgun to help against 2 different paths!";
             hint = "Enemies here have a lot of health and come in groups";
-            availableTowers = [1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0];
+            availableTowers = [1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 5];
             totalmoney = 350;
             break;
         case 3:
             hint = "Luckily someone left a free farm for you to use against the tanks!"
             bonusHint = "For this map you can upgrade all of your towers 1 more time";
             towers.push(new Tower(200, 200,"farm", 1, 0));
-            availableTowers = [1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1];
+            availableTowers = [1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 5];
             totalmoney = 400;
             break;
         case 4:
             hint = "You have access to everything now, pick the best max upgrades to win"
             bonusHint = "Only 35 waves, return of the Armored Behemoth";
-            availableTowers = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+            availableTowers = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 5];
             totalmoney = 450;
             break;
         case 5:
             bonusHint = "Final Challenge! Battle through 50 waves to win!";
-            availableTowers = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
-            totalmoney = 500;
+            switch (difficulty) {
+                case 1:
+                    availableTowers = [1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5];
+                    totalmoney = 500;
+                    break;
+                case 2:
+                    availableTowers = [0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 5];//sell for 0
+                    totalmoney = 600;
+                    break;
+                case 3:
+                    availableTowers = [1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 5];
+                    totalmoney = 500;
+                    break;
+                case 4:
+                    availableTowers = [1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 5];
+                    totalmoney = 500;
+                    break;
+                default:
+                    availableTowers = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 5];
+                    totalmoney = 500;
+            }
             break;
     }
     switch (difficulty) {
@@ -586,7 +667,7 @@ nextLevelButton.addEventListener('click', function () {
                     towerSpots.push([x,y]);
                 }
             }
-            availableTowers = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+            availableTowers = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 5];
             bonusHint = "Sandbox, feel free to test out different tower combinations";
             hint = "Custom Sandbox rounds";
             round = output.innerHTML-1;

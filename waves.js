@@ -26,8 +26,14 @@ function nextWave() {
             spd = 1.2;
             break;
     }
+    //final map
+    if(pathNum == 5){
+        hp = 1; //health
+        den = 1; //density
+        spd = 1; //speed
+    }
     //rounds    
-    if(pathNum == 0 && difficulty != 5){//basic
+    if(pathNum == 0 && difficulty != 5 || (pathNum == 5 && difficulty == 1)){//basic
         switch(round){
             case 1: //money 50
                 spawnWave(10, 1000 * den, Math.floor(10 * hp), 3 * spd, 20, "green", 5, 0, 0, 0); //basic 
@@ -155,17 +161,27 @@ function nextWave() {
                 gameIsOver = 1;
                 gameOver();
         }
-    }else if(pathNum == 1 && difficulty != 5){//cross
+    }else if(pathNum == 1 && difficulty != 5 || (pathNum == 5 && difficulty == 2)){//cross
         switch(round){
             case 1: //money 50
                 spawnWave(10, 1000 * den, Math.floor(10 * hp), 3 * spd, 20, "green", 5, 0, 0, 0); //basic 
-                hint = "Selecting the tower and clicking \"target\" in the top right";
-                bonusHint = "To prioritize enemies you can change a towers target by";
+                if(pathNum == 5){
+                    hint = "These are the same waves as first challenge";
+                    bonusHint = "but now they come from 3 paths!";
+                }else{
+                    hint = "Selecting the tower and clicking \"target\" in the top right";
+                    bonusHint = "To prioritize enemies you can change a towers target by";
+                }
                 break;
             case 2: //money 100
                 spawnWave(20, 800 * den, Math.floor(10 * hp), 3 * spd, 20, "green", 5, 0, 0, 0); //basic 
-                hint = "Selecting the tower and clicking \"target\" in the top right";
-                bonusHint = "To prioritize enemies you can change a towers target by";
+                if(pathNum == 5){
+                    hint = "You are also very restricted in your tower use";
+                    bonusHint = "Extreme Difficulty: Selling return 0 Money!";
+                }else{
+                    hint = "Selecting the tower and clicking \"target\" in the top right";
+                    bonusHint = "To prioritize enemies you can change a towers target by";
+                }
                 break;
             case 3: //money 100
                 var multi = [];
@@ -173,6 +189,7 @@ function nextWave() {
                 multi.push([10, 800 * den, Math.floor(10 * hp), 3 * spd, 20, "green", 5, 0, 0, 0]); //basics
                 multi.push([5, 500 * den, Math.floor(10 * hp), 3 * spd, 20, "green", 5, 0, 0, 0]); //tighter pack
                 spawnMultiWaves(multi);
+                hint = "";
                 break;
             case 4: //money 150
                 spawnWave(30, 500 * den, Math.floor(10 * hp), 3 * spd, 20, "green", 5, 0, 0, 0); //basic 
@@ -289,7 +306,7 @@ function nextWave() {
                 bonusHint = "";
                 break;
             case 27: //money 200
-                spawnWave(10, 2000 * den, Math.floor(500 * hp), 2 * spd, 20, "green", 20, 10, 0, 50); //high health 
+                spawnWave(10, 2000 * den, Math.floor(500 * hp), 2 * spd, 20, "red", 20, 10, 0, 50); //high health 
                 hint = "grouped again";
                 break;
             case 28: //money 200
@@ -308,9 +325,9 @@ function nextWave() {
                 hint = "Spawner Boss";
                 break;
             case 30:
-                var boss = new Enemy(spawnPoint(paths)[0], spawnPoint(paths)[1], Math.floor(5000 * hp), 1.4 * spd, spawnDirection(paths), 60, "boss", 500, 0, 0, 50, 1);
+                var boss = new Enemy(spawnPoint(paths)[0], spawnPoint(paths)[1], Math.floor(5000 * hp), 1.4 * spd, spawnDirection(paths), 60, "boss", 500, 0, 0, 0, 1);
                 enemies.push(boss);
-                spawnWave(10, 1000 * den, Math.floor(50 * hp), 3 * spd, 15, "pink", 0, 0, 0, 0, boss); //minions
+                spawnWave(10, 1000 * den, Math.floor(50 * hp), 3 * spd, 15, "pink", 0, 0, 0, 0, 0, boss); //minions
                 break;
             default:
                 //win
@@ -318,12 +335,17 @@ function nextWave() {
                 gameIsOver = 1;
                 gameOver();
         }
-    }else if(pathNum == 2 && difficulty != 5){//double
+    }else if(pathNum == 2 && difficulty != 5 || (pathNum == 5 && difficulty == 3)){//double
         switch(round){
             case 1: //money 100
                 spawnWave(20, 1000 * den, Math.floor(10 * hp), 3 * spd, 20, "green", 5, 0, 0, 0, 1); //basic 
-                hint = "";
-                bonusHint = "";
+                if(pathNum == 5){
+                    hint = "These are the same waves as double";
+                    bonusHint = "Unfinished challenge!";
+                }else{
+                    hint = "";
+                    bonusHint = "";
+                }
                 break;
             case 2: //money 100
                 spawnWave(20, 1000 * den, Math.floor(20 * hp), 3 * spd, 20, "green", 5, 0, 0, 0, 2); //basic 
@@ -490,11 +512,17 @@ function nextWave() {
                 gameIsOver = 1;
                 gameOver();
         }
-    }else if(pathNum == 3 && difficulty != 5){//symmetry
+    }else if(pathNum == 3 && difficulty != 5 || (pathNum == 5 && difficulty == 4)){//symmetry
         switch(round){
             case 1: //money 100
                 spawnWave(20, 500 * den, Math.floor(20 * hp), 3.5 * spd, 20, "green", 5, 0, 0, 0); //basic 
-                hint = "Farms Generate Money at the END of each round";
+                if(pathNum == 5){
+                    hint = "These are the same waves as Symmetry";
+                    bonusHint = "Unfinished challenge!";
+                }else{
+                    hint = "Farms Generate Money at the END of each round";
+                    bonusHint = "";
+                }
                 break;
             case 2: //money 150
                 var multi = [];
@@ -725,7 +753,7 @@ function nextWave() {
                 gameIsOver = 1;
                 gameOver();
         }
-    }else if(pathNum == 4 && difficulty != 5){//castle
+    }else if(pathNum == 4 && difficulty != 5 || (pathNum == 5 && difficulty == 3)){//castle
         switch(round){
             case 1: //money 100
                 spawnWave(20, 700 * den, Math.floor(30 * hp), 3 * spd, 20, "green", 5, 0, 0, 0); //basic 
@@ -922,7 +950,7 @@ function nextWave() {
                 gameIsOver = 1;
                 gameOver();
         }
-    }else if(pathNum == 5 && difficulty != 5){//tripple
+    }else if(pathNum == 5 && difficulty == 4){//tripple
         switch(round){
             case 1: //money 100
                 spawnWave(10, 1000 * den, Math.floor(10 * hp), 3 * spd, 20, "green", 10, 0, 0, 0); //basic 

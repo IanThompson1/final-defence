@@ -32,6 +32,8 @@ var retryButton2 = document.querySelector('#retry2');
 var resumeButton = document.querySelector('#resume');
 // const background = document.querySelector('#myVideo');
 // to do 
+// tomorrow: html waves consistent for restarts. stone cliffs only easy/medium. 
+// cont: remember updates. huge slow buff, reworked buffer, tower placement toggle / more spots 
 /*
 subclasses for towers and like everything else
 pause button
@@ -65,7 +67,7 @@ var paths3 = [[-1]];
 var pathNum = 0;
 //@ts-ignore
 var paths = choosepath(0); // 0=basic 1=cross 2=double 3=symmetry 4=castle 5=tripple
-var availableTowers = [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0]; //boolean values for which towers you can use. snip, flame, tesla, laser, slow, bomb, farm, rail, buff, super, level6, level7
+var availableTowers = [1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5]; //mostly boolean values for which towers you can use. snip, flame, tesla, laser, slow, bomb, farm, rail, buff, super, level6, level7, selling, upgrade level.
 var totalmoney = 500;
 var lives = 10;
 var numboxes = 20;
@@ -83,30 +85,21 @@ var mouseDown = 0;
 var draggingTower = 0;
 var placingTowers = "Click to Place";
 var speedModifier = 1;
+var showTowerSpots = 1;
 var waveEnded = 1;
 var hint = "";
 var bonusHint = "Welcome to Final Defence! Good Luck!";
 var menutype = 0; //0 = main menu 1 = tower menu
-// var snipercosts = [200,300,400,500,600,800,1500];
-// var miniguncosts = [150,250,350,450,600,900,900];
-// var teslacosts = [250,350,450,550,650,1800,2000];
-// var lasercosts = [250,350,450,550,650,1500,2000];
-// var farmcosts = [300,400,500,600,700,800,1000];
-// var icecosts = [200,250,300,350,400,800,1200];
-// var bombcosts = [100,200,300,400,500,1000,1300];
-// var supercosts = [2000,3000,4000,5000,6000,8000,10000];
-// var buffercosts = [500,600,700,1200,1400];
-// var railguncosts = [700,500,700,900,1100,3000,3000];
-//old version prices 
+//tower prices 
 var snipercosts = [150, 200, 250, 300, 350, 1000, 1400];
 var miniguncosts = [100, 150, 200, 250, 300, 600, 700];
 var teslacosts = [200, 220, 240, 300, 350, 1100, 1200];
 var lasercosts = [150, 200, 250, 300, 350, 900, 1400];
 var farmcosts = [800, 1000, 1200, 1400, 1600, 1800, 2000];
-var icecosts = [200, 150, 200, 250, 300, 800, 1000];
+var icecosts = [100, 120, 150, 200, 200, 500, 500];
 var bombcosts = [100, 150, 200, 250, 300, 800, 800];
 var supercosts = [3000, 4000, 5000, 6000, 7000, 10000, 15000];
-var buffercosts = [500, 700, 900, 1200, 1500];
+var buffercosts = [100, 200, 400, 500, 700];
 var railguncosts = [400, 500, 600, 700, 800, 1200, 1200];
 var towerFootPrint = 95;
 //@ts-ignore
@@ -541,7 +534,7 @@ var Tower = /** @class */ (function () {
             this.range = 350;
             this.target = "first";
             this.pierce = 1;
-            this.value = 120;
+            this.value = 150;
             this.cost = snipercosts;
             this.tallness = -29;
         }
@@ -551,7 +544,7 @@ var Tower = /** @class */ (function () {
             this.range = 150;
             this.target = "first";
             this.pierce = 1;
-            this.value = 80;
+            this.value = 100;
             this.cost = miniguncosts;
             this.tallness = -18;
         }
@@ -566,7 +559,7 @@ var Tower = /** @class */ (function () {
             this.numTargets = 1;
             this.chargespd = 2.2;
             this.teslatargets = [];
-            this.value = 150;
+            this.value = 200;
             this.cost = teslacosts;
             this.tallness = 31;
         }
@@ -591,11 +584,12 @@ var Tower = /** @class */ (function () {
             this.tallness = 0;
         }
         else if (this.type == "ice") {
-            this.range = 130;
-            this.slow = 20;
-            this.value = 200;
+            this.range = 200;
+            this.slow = 10;
+            this.value = 100;
             this.cost = icecosts;
             this.tallness = 0;
+            this.target = "first";
         }
         else if (this.type == "bomb") {
             this.damage = 2;
@@ -614,14 +608,14 @@ var Tower = /** @class */ (function () {
             this.range = 350;
             this.target = "first";
             this.pierce = 1;
-            this.value = 2000;
+            this.value = 3000;
             this.cost = supercosts;
             this.tallness = -4;
         }
         else if (this.type == "buffer") { //1=range, 2=atk spd, 3=damage, 4=peirce, 5=damage2
-            this.range = 200;
+            this.range = 10000;
             this.buff = 1;
-            this.value = 400;
+            this.value = 100;
             this.cost = buffercosts;
             this.tallness = 0;
         }
@@ -631,7 +625,7 @@ var Tower = /** @class */ (function () {
             this.range = 350;
             this.pierce = 35;
             this.target = "first";
-            this.value = 600;
+            this.value = 400;
             this.cost = railguncosts;
             this.tallness = 0;
             this.railwidth = 11;
@@ -915,6 +909,29 @@ var Tower = /** @class */ (function () {
         // }
         // //@ts-ignore
         // c.fill();
+        //buffs 
+        if (this.buffs >= 1) {
+            //@ts-ignore
+            c.fillStyle = "#FF7173";
+            //@ts-ignore
+            c.fillRect(this.x - scaleW * (towerFootPrint / 2 - 5) + scaleW * (towerFootPrint - 10) - scaleW * 22.5, this.y - scaleH * (towerFootPrint / 2 - 2.5), scaleW * 25, scaleH * 15);
+        }
+        if (this.buffs >= 2) {
+            //@ts-ignore
+            c.fillRect(this.x - scaleW * (towerFootPrint / 2 - 5) + scaleW * (towerFootPrint - 10) - scaleW * 22.5, this.y - scaleH * (towerFootPrint / 2 - 17.5), scaleW * 25, scaleH * 15);
+        }
+        if (this.buffs >= 3) {
+            //@ts-ignore
+            c.fillRect(this.x - scaleW * (towerFootPrint / 2 - 5) + scaleW * (towerFootPrint - 10) - scaleW * 22.5, this.y - scaleH * (towerFootPrint / 2 - 32.5), scaleW * 25, scaleH * 15);
+        }
+        if (this.buffs >= 4) {
+            //@ts-ignore
+            c.fillRect(this.x - scaleW * (towerFootPrint / 2 - 5) + scaleW * (towerFootPrint - 10) - scaleW * 22.5, this.y - scaleH * (towerFootPrint / 2 - 47.5), scaleW * 25, scaleH * 15);
+        }
+        if (this.buffs >= 5) {
+            //@ts-ignore
+            c.fillRect(this.x - scaleW * (towerFootPrint / 2 - 5) + scaleW * (towerFootPrint - 10) - scaleW * 22.5, this.y - scaleH * (towerFootPrint / 2 - 62.5), scaleW * 25, scaleH * 15);
+        }
         //level
         if (this.level >= 1) {
             //@ts-ignore
@@ -949,13 +966,6 @@ var Tower = /** @class */ (function () {
         if (this.level >= 5) {
             //@ts-ignore
             c.fillRect(this.x - scaleW * (towerFootPrint / 2 - 5) + scaleW * (towerFootPrint - 10) - scaleW * 20, this.y - scaleH * (towerFootPrint / 2 - 65), scaleW * 20, scaleH * 10);
-        }
-        //buffs 
-        if (this.buffs >= 1) {
-            //@ts-ignore
-            c.fillStyle = "#FF7173";
-            //@ts-ignore
-            c.fillRect(this.x + scaleW * -25, this.y - scaleH * (towerFootPrint / 2 - 5), scaleW * 20, scaleH * 10);
         }
         //range
         if (this.selected == 1) {
@@ -1245,31 +1255,31 @@ var Tower = /** @class */ (function () {
         }
         else if (this.type == "ice") {
             if (this.level == 1) {
-                this.range = 130;
+                this.range = 200;
                 this.slow = 20;
             }
             else if (this.level == 2) {
-                this.range = 130;
+                this.range = 200;
                 this.slow = 30;
             }
             else if (this.level == 3) {
-                this.range = 130;
+                this.range = 200;
                 this.slow = 40;
             }
             else if (this.level == 4) {
-                this.range = 130;
+                this.range = 200;
                 this.slow = 50;
             }
             else if (this.level == 5) {
-                this.range = 130;
+                this.range = 200;
                 this.slow = 60;
             }
             else if (this.level == 6) {
-                this.slow = 60;
-                this.range = 200;
+                this.slow = 70;
+                this.range = 300;
             }
             else if (this.level == 7) {
-                this.range = 130;
+                this.range = 200;
                 this.slow = 80;
             }
         }
@@ -1370,23 +1380,18 @@ var Tower = /** @class */ (function () {
         }
         else if (this.type == "buffer") { //0=range, 1=atk spd, 2=damage, 3=peirce, 4=damage2
             if (this.level == 1) {
-                this.range = 200;
                 this.buff = 1;
             }
             else if (this.level == 2) {
-                this.range = 200;
                 this.buff = 2;
             }
             else if (this.level == 3) {
-                this.range = 200;
                 this.buff = 3;
             }
             else if (this.level == 4) {
-                this.range = 200;
                 this.buff = 4;
             }
             else if (this.level == 5) {
-                this.range = 200;
                 this.buff = 5;
             }
         }
@@ -1467,7 +1472,13 @@ var Tower = /** @class */ (function () {
                 sellpercent = 10;
                 break;
         }
-        this.value = Math.floor(tempValue * (sellpercent / 10)); //80%
+        // console.log(tempValue);
+        this.value = Math.floor(tempValue * (sellpercent / 10));
+        // console.log(this.value);
+        //0 sell value
+        if (availableTowers[12] == 0) {
+            this.value = 0;
+        }
         //tower buffs
         if (this.buffs > 0) { //1=range, 2=atk spd, 3=damage, 4=peirce, 5=damage2
             this.range = this.range * 1.2;
@@ -2534,6 +2545,7 @@ function animate() {
                 towers.push(new Tower(mouseX, mouseY, "Sniper", 1, 0));
                 totalmoney -= towers[towers.length - 1].cost[0];
                 towershoot(towers[towers.length - 1]);
+                towers[towers.length - 1].update();
                 TowerPlaced();
                 selectedTower = "none";
             }
@@ -2907,6 +2919,10 @@ function animate() {
         mouseover = "speed";
         //@ts-ignore
     }
+    else if (mouseX > canvas.width - canvas.width / 7.5 && mouseX < canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2 && mouseY > canvas.height / (numboxes / 2) * (14 / 2) && mouseY < canvas.height / (numboxes / 2) * (14 / 2) + canvas.height / (numboxes / 2)) {
+        mouseover = "towerSpots";
+        //@ts-ignore
+    }
     else if (mouseX > canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2 && mouseX < canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2 + (canvas.width / 7.5) / 2 && mouseY > canvas.height / (numboxes / 2) * (16 / 2) && mouseY < canvas.height / (numboxes / 2) * (16 / 2) + canvas.height / (numboxes / 2)) {
         mouseover = "towerPlacement";
         //@ts-ignore
@@ -2994,6 +3010,7 @@ addEventListener("click", function () {
         towers.push(new Tower(towerSpots[nearestSpot()][0], towerSpots[nearestSpot()][1], selectedTower, 1, 0));
         totalmoney -= towers[towers.length - 1].cost[0];
         towershoot(towers[towers.length - 1]);
+        towers[towers.length - 1].update();
         TowerPlaced();
         selectedTower = "none";
     }
@@ -3112,6 +3129,26 @@ addEventListener("click", function () {
     if (mouseover == "pause") {
         pauseButton();
     }
+    //tower spots button
+    if (mouseover == "towerSpots") {
+        if (showTowerSpots == 0) {
+            showTowerSpots = 1;
+            towerSpots = [];
+            towerSpots = towerSpots1;
+        }
+        else {
+            showTowerSpots = 0;
+            towerSpots = [];
+            //@ts-ignore
+            for (var x = 0; x < canvas.width; x += 10) {
+                //@ts-ignore
+                for (var y = 0; y < canvas.height; y += 10) {
+                    //@ts-ignore
+                    towerSpots.push([x, y]);
+                }
+            }
+        }
+    }
 });
 function pauseButton() {
     if (paused == 0) {
@@ -3136,42 +3173,21 @@ document.body.onmouseup = function () {
     --mouseDown;
 };
 function changeTarget(tower) {
-    if (tower.type != "laser") {
-        switch (tower.target) {
-            case "first": {
-                tower.target = "last";
-                break;
-            }
-            case "last": {
-                tower.target = "strong";
-                break;
-            }
-            case "strong": {
-                tower.target = "weak";
-                break;
-            }
-            case "weak": {
-                tower.target = "first";
-            }
+    switch (tower.target) {
+        case "first": {
+            tower.target = "last";
+            break;
         }
-    }
-    else { // targetting for laser
-        switch (tower.target) {
-            case "first": {
-                tower.target = "last";
-                break;
-            }
-            case "last": {
-                tower.target = "strong";
-                break;
-            }
-            case "strong": {
-                tower.target = "weak";
-                break;
-            }
-            case "weak": {
-                tower.target = "first";
-            }
+        case "last": {
+            tower.target = "strong";
+            break;
+        }
+        case "strong": {
+            tower.target = "weak";
+            break;
+        }
+        case "weak": {
+            tower.target = "first";
         }
     }
 }
@@ -3197,7 +3213,7 @@ function changeGameSpeed() {
                 towers[towers.length - 1].generated = towers[i].generated;
             }
             towershoot(towers[towers.length - 1]);
-            if ((towers[i].type == "laser" || towers[i].type == "tesla") && towers[i].level == 6) {
+            if (towers[i].type == "laser" && towers[i].level == 6) {
                 towershoot(towers[towers.length - 1]);
                 towershoot(towers[towers.length - 1]);
                 towershoot(towers[towers.length - 1]);
@@ -3463,25 +3479,58 @@ function setPathRubble() {
     }
 }
 function TowerPlaced() {
-    //handles buffer tower when tower is placed
-    for (var i = 0; i < towers.length; i++) { //non buffer
-        var isbuffer = 0;
-        for (var j = 0; j < towers.length; j++) { //buffer
-            if (towers[i].type != "buffer" && towers[j].type == "buffer") {
-                if (targetinellipse(towers[j].x, towers[j].y, towers[j].range, towers[i].x, towers[i].y, new Enemy(0, 0, 0, 0, "N", 0, "clear", 0, 0, 0, 0, 1)) == 1) {
-                    isbuffer = 1;
-                    if (towers[i].buffs < towers[j].buff) {
-                        towers[i].buffs = towers[j].buff;
-                        towers[i].update();
-                    }
-                }
-            }
-        }
-        if (isbuffer == 0) {
+    //handles buffer towers when tower is placed or sold
+    for (var i = 0; i < towers.length; i++) { //remove all buffs
+        if (towers[i].type != "buffer") {
             towers[i].buffs = 0;
             towers[i].update();
         }
     }
+    for (var c = 5; c > 0; c--) { //c is the level count variable
+        for (var i = 0; i < towers.length; i++) { //add buffs
+            if (towers[i].type == "buffer" && towers[i].level == c) {
+                //buff closest 5 towers
+                var buffarr = findClosestTowers(towers[i], 2);
+                for (var j = 0; j < buffarr.length; j++) {
+                    buffarr[j].buffs = c;
+                    buffarr[j].update();
+                }
+            }
+        }
+    }
+    // buffer info for all towers in range*
+    // for(var i=0; i<towers.length; i++){//non buffer
+    //     var isbuffer = 0;
+    //     for(var j=0; j<towers.length; j++){//buffer
+    //         if(towers[i].type != "buffer" && towers[j].type == "buffer"){
+    //             if (targetinellipse(towers[j].x,towers[j].y, towers[j].range, towers[i].x, towers[i].y, new Enemy(0,0,0,0,"N",0,"clear",0,0,0,0,1)) == 1) {
+    //                 isbuffer = 1;
+    //                 if(towers[i].buffs < towers[j].buff){
+    //                     towers[i].buffs = towers[j].buff;
+    //                     towers[i].update();
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     if(isbuffer == 0){
+    //         towers[i].buffs = 0;
+    //         towers[i].update();
+    //     }
+    // }
+}
+function findClosestTowers(Tower, num) {
+    var distances = [];
+    for (var i = 0; i < towers.length; i++) {
+        if (towers[i].type != "buffer" && towers[i].buffs == 0) {
+            var newdistance = Math.sqrt(Math.pow(towers[i].x - Tower.x, 2) + Math.pow(towers[i].y - Tower.y, 2));
+            //@ts-ignore
+            distances.push({ tower: towers[i], distance: newdistance });
+        }
+    }
+    //@ts-ignore
+    distances.sort(function (a, b) { return a.distance - b.distance; });
+    //@ts-ignore
+    return distances.slice(0, num).map(function (obj) { return obj.tower; });
 }
 function lineCrossesCircle(m, slope, h, k, r) {
     // Calculate the coefficients of the quadratic equation

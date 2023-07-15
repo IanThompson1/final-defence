@@ -198,13 +198,12 @@ function drawLayout() {
     // }
 
     // show possible tower spots
-    if(difficulty < 5){
+    if(showTowerSpots == 1 && difficulty != 5){
         c.fillStyle="green";
         for(var i=0; i<towerSpots.length; i++){
             c.fillRect(towerSpots[i][0]-towerFootPrint/2*scaleW, towerSpots[i][1]-towerFootPrint/2*scaleH, towerFootPrint*scaleW, towerFootPrint*scaleH);
         }
     }
-    
     
     //menu background
     c.fillStyle = "#A6A6A6";
@@ -239,6 +238,11 @@ function drawLayout() {
         addDoubleText("Pause", "(esc)", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (14 / 2), "black", numboxes);
     }else{
         addDoubleText("Play", "(esc)", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (14 / 2), "black", numboxes);
+    }
+    if(showTowerSpots == 1){
+        addDoubleText("Free", "Placement", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (14 / 2),"black",numboxes);
+    }else{
+        addDoubleText("Tower", "Spots", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (14 / 2),"black",numboxes);
     }
     //wave hints
     if (round == 0) {
@@ -278,7 +282,7 @@ function drawLayout() {
             addDoubleText("laser", "Cost: 150", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (4 / 2), "black", numboxes, canAfford(150));
         }
         if(availableTowers[4] == 1){
-            addDoubleText("Slow", "Cost: 200", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (6 / 2), "black", numboxes, canAfford(200));
+            addDoubleText("Slow", "Cost: 100", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (6 / 2), "black", numboxes, canAfford(100));
         }
         if(availableTowers[5] == 1){
             addDoubleText("Bomb", "Cost: 100", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (6 / 2), "black", numboxes, canAfford(100));
@@ -290,7 +294,7 @@ function drawLayout() {
             addDoubleText("Railgun", "Cost: 400", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (8 / 2), "black", numboxes, canAfford(400));
         }
         if(availableTowers[8] == 1){
-            addDoubleText("Buffer", "Cost: 500", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes, canAfford(500));
+            addDoubleText("Buffer", "Cost: 100", canvas.width - canvas.width / 7.5, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes, canAfford(100));
         }
         if(availableTowers[9] == 1){
             addDoubleText("Super", "Cost: 3000", canvas.width - canvas.width / 7.5 + (canvas.width / 7.5) / 2, canvas.height / (numboxes / 2) * (10 / 2), "black", numboxes, canAfford(3000));
@@ -848,8 +852,8 @@ function drawLayout() {
             addText("Damage:50",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
             break;
         case "buffer":
-            addText("Gives buffs to",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
-            addText("towers in range",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
+            addText("Gives buffs to the",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
+            addText("TWO closest towers",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
             break;
         case "railgun":
             addText("Slow line attack",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
@@ -862,6 +866,10 @@ function drawLayout() {
         case "speed":
             addText("toggles game speed",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
             addText("only works between rounds",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
+            break;
+        case "towerSpots":
+            addText("Toggles tower",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, 0, "black", numboxes, 1, 0.2);
+            addText("placement",canvas.width - 2*(canvas.width / 7.5) + (canvas.width/7.5)/4, canvas.height / (numboxes / 2) * (2 / 2), "black", numboxes, 1, 0.2);
             break;
         case "level6":
             switch(temptowertype){
